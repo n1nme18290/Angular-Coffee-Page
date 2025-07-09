@@ -1,0 +1,113 @@
+
+
+
+<button nz-button nzType="primary">一般隨著文字的大小變化按鈕</button>
+<br>
+<button nz-button nzType="primary" nzShape="circle" class="btn-styles3">
+    <span nz-icon nzType="caret-up" nzTheme="outline"></span>
+</button>
+<button nz-button nzType="primary" nzShape="circle" class="btn-styles3">
+    <span nz-icon nzType="caret-down" nzTheme="outline"></span>
+</button>
+<br>
+
+
+<div class="box">
+    <h2 nz-typography>登入帳號</h2>
+
+
+    <div class="input-block">
+        <h5 nz-typography style="margin: 0;">請輸入帳號：</h5>
+        <input nz-input placeholder="請輸入帳號" nzSize="large" />
+    </div>
+
+    <div class="input-block">
+        <h5 nz-typography style="margin: 0;">請輸入密碼：</h5>
+
+        <nz-input-group [nzSuffix]="suffixTemplate" nzSize="large">
+            <input [type]="passwordVisible ? 'text' : 'password'" nz-input placeholder="請輸入密碼" [(ngModel)]="password" />
+        </nz-input-group>
+
+        <ng-template #suffixTemplate>
+            <span nz-icon class="ant-input-password-icon" [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                (click)="passwordVisible = !passwordVisible"></span>
+        </ng-template>
+    </div>
+
+
+    <br>
+    <button nz-button nzType="primary" nzBlock class="btn-styles1">稱滿整個頁面的按鈕</button>
+
+
+    <button nz-button nzType="primary" nzBlock class="btn-styles2">另一個style</button>
+</div>
+
+<br>
+
+<div class="select-box">
+    <h5 nz-typography style="margin: 0;">選擇分配給:</h5>
+
+    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a person" [(ngModel)]="selectedValue">
+        <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
+        <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
+        <nz-option nzLabel="Tom" nzValue="tom"></nz-option>
+    </nz-select>
+</div>
+
+
+<br>
+
+<div class="switch-box">
+    <h5 nz-typography style="margin: 0;">設備開關</h5>
+    <nz-switch nzSize="small" [ngModel]="true"></nz-switch>
+</div>
+
+<br>
+
+
+<div class="info">
+    <nz-avatar [nzSize]="64" nzIcon="user"
+        nzSrc="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5jYNdL7EfoBGgHMaYkwvlXLCCyHJ26Wf8Zw&s"></nz-avatar>
+
+    <div class="info-text">
+        <h3 nz-typography>使用者名稱</h3>
+        <h5 nz-typography>abcdefg</h5>
+    </div>
+</div>
+
+<br>
+<div class="title">
+
+    <button nz-button nzType="primary" nzShape="circle" class="btn-styles4">
+        <span nz-icon nzType="left" nzTheme="outline"></span>
+    </button>
+
+    <h1 nz-typography>這是一個大標題</h1>
+
+</div>
+<nz-page-header (nzBack)="onBack()" nzBackIcon nzTitle="Title" nzSubtitle=""></nz-page-header>
+
+
+<br>
+
+<div class="input-block">
+    <h5 nz-typography style="margin: 0;">查詢使用者：</h5>
+    <nz-input-group [nzSuffix]="suffixIconSearch" nzSize="large">
+        <input type="text" nz-input placeholder="input search text" />
+    </nz-input-group>
+    <ng-template #suffixIconSearch>
+        <span nz-icon nzType="search"></span>
+    </ng-template>
+</div>
+
+
+<br>
+
+<nz-tabset>
+    <nz-tab nzTitle="使用者使用紀錄"></nz-tab>
+    <nz-tab nzTitle="設備異常紀錄"></nz-tab>
+    <nz-tab nzTitle="設備操作紀錄"></nz-tab>
+</nz-tabset>
+
+
+<div style="height: 50px;"></div>

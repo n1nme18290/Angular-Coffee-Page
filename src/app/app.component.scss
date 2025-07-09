@@ -1,0 +1,58 @@
+button[nz-button] {
+  margin-right: 8px;
+  margin-bottom: 12px;
+  height: 40px; //增加上下寬度
+  border-radius: 100px; //圓角設定
+  border: 2px solid #000000; //邊框設定
+  font-weight: bold;//粗體
+
+  background-color: #FFB433; //顏色設定
+  color: #000000; //字體顏色
+}
+
+button[nz-button].btn-styles1 {
+  background-color: #FFB433; //顏色設定
+  color: #000000; //字體顏色
+}
+
+button[nz-button].btn-styles2 {
+  background-color: #ffffff; //顏色設定
+  color: #000000; //字體顏色
+}
+
+button[nz-button].btn-styles3 {
+  width: 40px;
+  background-color: #000000; //顏色設定
+  color: #ffffff; //字體顏色
+}
+
+
+
+.input-block{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+  width: 100%;
+
+  input[nz-input]{
+  border-radius: 10px ;
+  margin-top: 5px; //微調密碼框  
+  width: 100%;
+  }
+
+}
+
+.box{
+  width: 610px;
+  height: 430px;
+  border: 2px solid black;         // 黑邊框
+  border-radius: 12px;             // 圓角
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); // 陰影
+  padding: 12px 12px;              // 上下12px，左右24px
+  box-sizing: border-box;          // 確保 padding 不影響 width 計算
+  background-color: white; 
+  display: flex;
+  flex-direction: column;     // 垂直排列
+  justify-content: center;    // 垂直置中
+  align-items: center;        // 水平置中
+}
