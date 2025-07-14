@@ -1,0 +1,29 @@
+<nz-layout>
+  <nz-header></nz-header>
+  <nz-content>
+    <div class="box">
+      <h2 nz-typography>登入帳號</h2>
+      <div class="input-block">
+        <h5 nz-typography style="margin: 0;">請輸入帳號：</h5>
+        <input nz-input placeholder="請輸入帳號" nzSize="large" />
+      </div>
+      <div class="input-block">
+        <h5 nz-typography style="margin: 0;">請輸入密碼：</h5>
+
+        <nz-input-group [nzSuffix]="suffixTemplate" nzSize="large">
+            <input [type]="passwordVisible ? 'text' : 'password'" nz-input placeholder="請輸入密碼" [(ngModel)]="password" />
+        </nz-input-group>
+
+        <ng-template #suffixTemplate>
+            <span nz-icon class="ant-input-password-icon" [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                (click)="passwordVisible = !passwordVisible"></span>
+        </ng-template>
+      </div>
+      <br>
+      <button nz-button nzType="primary" nzBlock class="btn-styles1">登入</button>
+      <button nz-button nzType="primary" nzBlock class="btn-styles2">註冊帳號</button>
+
+    </div>
+  </nz-content>
+
+</nz-layout>

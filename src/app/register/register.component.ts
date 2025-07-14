@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
@@ -10,43 +11,20 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { NzDrawerModule} from 'ng-zorro-antd/drawer';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
-
-
-
 @Component({
-  selector: 'app-components',
+  selector: 'app-register',
   standalone: true,
-  imports: [NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
-    , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule,NzDrawerModule,
-    NzRadioModule,
-
-  ],
-  templateUrl: './components.component.html',
-  styleUrl: './components.component.scss'
+  imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
+    , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
+    NzRadioModule,],
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.scss'
 })
-export class ComponentsComponent {
-
+export class RegisterComponent {
   passwordVisible = false;
   password?: string;
 
-  selectedValue = null;
-
-  onBack(): void {
-    console.log('onBack');
-  }
-
-  visible = false;
-
-  open(): void {
-    this.visible = true;
-  }
-
-  close(): void {
-    this.visible = false;
-  }
-
-  
 
 }

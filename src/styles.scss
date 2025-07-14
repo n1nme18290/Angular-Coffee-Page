@@ -1,1 +1,38 @@
-/* You can add global styles to this file, and also import other style files */
+html, body, app-root {
+  height: 100%; //設定整個頁面、body、Angular 根元件 app-root 高度為 100%
+  margin: 0; //移除預設的外距
+}
+
+.ant-layout {
+  height: 100%;//讓整個 layout 撐滿整個畫面高度
+  display: flex;//使用 flex 排版
+  flex-direction: column; //設為直向排列：header → content → footer
+}
+
+.ant-layout-header {
+  background: #80CBC4;
+  color: #000000;
+  height: 160px; //設定 header 的高度為 200px
+  display: flex;
+  align-items: center; //垂直置中
+  font-size: 24px; //文字大小
+
+  padding: 0; // 移除預設 padding
+}
+
+.ant-layout-content {
+  background: #FBF8EF;
+  color: #000000;
+  flex: 1; // 撐滿剩餘空間 
+  display: flex;
+  align-items: flex-start; //垂直對齊「上方」開始
+  justify-content: center;//水平置中
+  padding-top: 35px;//上方留空間(把東西往下推)
+}
+
+.ant-layout-footer {
+  background: #f0f0f0;
+  text-align: center;
+  padding: 16px 0;//上下內距 16px（讓內容不要貼邊）
+  font-size: 14px;//文字大小
+}
