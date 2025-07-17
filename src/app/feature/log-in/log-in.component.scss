@@ -1,3 +1,7 @@
+:host {
+        text-align: left; //文字靠右
+      }
+
 button[nz-button] {
     margin-right: 8px;
     margin-bottom: 12px;
@@ -35,7 +39,7 @@ button[nz-button].btn-styles4 {
 
 
 
-.input-block {
+.input-block { //對話框
     display: flex;
     flex-direction: column;
     margin-bottom: 4px;
@@ -59,89 +63,20 @@ button[nz-button].btn-styles4 {
     }
 }
 
-.box {
+.box { //白色大框
     width: 610px;
     height: 430px;
     border: 2px solid black; // 黑邊框
     border-radius: 12px; // 圓角
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); // 陰影
-    padding: 12px 12px; // 上下12px，左右24px
+    padding: 12px 24px; // 上下12px，左右24px
     box-sizing: border-box; // 確保 padding 不影響 width 計算
     background-color: white;
     display: flex;
     flex-direction: column; // 垂直排列
     justify-content: center; // 垂直置中
     align-items: center; // 水平置中
-}
-
-
-.select-box {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-
-    nz-select {
-        width: 250px;
-    }
-}
-
-.switch-box {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
 
 }
 
 
-nz-avatar {
-    margin-top: 16px;
-    margin-right: 16px;
-}
-
-
-
-.info-text {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-
-    h3[nz-typography] {
-        margin: 10px 0 0 0;
-    }
-
-    h5[nz-typography] {
-        margin: 4px 0 0 0;
-    }
-}
-
-.info {
-    display: flex;
-    flex-direction: row;
-    justify-content: center; // 垂直置中
-    align-items: center; // 水平置中
-
-    gap: 5px;
-    width: 100%;
-
-}
-
-.title{
-    display: flex;
-    flex-direction: row;
-    align-items: center; // 水平置中
-    gap: 20px;
-    width: 100%;
-}
-
-////////
-.container {
-      padding: 20px;
-    }
-    
-    .drawer-content {
-      padding: 16px;
-    }

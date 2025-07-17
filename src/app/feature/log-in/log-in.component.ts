@@ -13,18 +13,29 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { Router } from '@angular/router';
+
+
 @Component({
-  selector: 'app-register',
+  selector: 'app-log-in',
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
     NzRadioModule,],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  templateUrl: './log-in.component.html',
+  styleUrl: './log-in.component.scss'
 })
-export class RegisterComponent {
+export class LogInComponent {
+  constructor(private router: Router) {}
+
   passwordVisible = false;
   password?: string;
 
+  GoBackRegister(){
+    this.router.navigate(['/register']);
+  }
+  GoPersonalInfo(){
+    this.router.navigate(['/personal-info']);
+  }
 
 }

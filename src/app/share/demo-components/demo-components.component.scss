@@ -28,10 +28,12 @@ button[nz-button].btn-styles3 {
 
 button[nz-button].btn-styles4 {
     width: 40px;
-    background-color: #80CBC4; //顏色設定
+    background-color: #ffffff; //顏色設定
     color: #000000; //字體顏色
-    border: 2px solid #80CBC4;
+    border: 2px solid #ffffff; 
 }
+
+
 
 
 
@@ -70,8 +72,8 @@ button[nz-button].btn-styles4 {
     background-color: white;
     display: flex;
     flex-direction: column; // 垂直排列
-    justify-content: center; // 水平置中
-    align-items: center; // 垂直置中
+    justify-content: center; // 垂直置中
+    align-items: center; // 水平置中
 }
 
 
@@ -107,32 +109,29 @@ nz-avatar {
 .info-text {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    width: auto;
-    align-items: flex-start; //靠左邊對其
+    width: 100%;
 
     h3[nz-typography] {
-        margin:0;
-        line-height: 1.4;
+        margin: 10px 0 0 0;
     }
 
     h5[nz-typography] {
         margin: 4px 0 0 0;
-            line-height: 1.4;
     }
 }
 
 .info {
     display: flex;
     flex-direction: row;
+    justify-content: center; // 垂直置中
     align-items: center; // 水平置中
 
-    gap: 12px;
-
+    gap: 5px;
+    width: 100%;
 
 }
 
-.title {
+.title{
     display: flex;
     flex-direction: row;
     align-items: center; // 水平置中
@@ -140,41 +139,3 @@ nz-avatar {
     width: 100%;
 }
 
-
-
-
-.blue-area {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center; // 垂直置中
-    padding: 16px 24px;
-    min-height: 96px;
-    gap: 5px;
-    width: 100%;
-
-
-}
-
-.blue-area-btn {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-
-
-}
-
-.left-area {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
-    
-}
-
-.drawer-back{
-    background-color: #FBF8EF;
-    
-}

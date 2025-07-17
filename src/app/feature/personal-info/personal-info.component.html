@@ -1,0 +1,108 @@
+<nz-layout>
+    <nz-header>
+        <div class="blue-area">
+            <div class="left-area">
+                <button nz-button nzType="primary" (click)="open()" class="btn-styles4"><span nz-icon nzType="menu"
+                        nzTheme="outline" class="big-icon"></span></button>
+                <nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="left" nzTitle="咖啡機資料管理"
+                    (nzOnClose)="close()">
+                    <ng-container *nzDrawerContent>
+                        <p>咖啡設備管理</p>
+                        <p>歷史紀錄頁面</p>
+                    </ng-container>
+                </nz-drawer>
+                <div class="info">
+                    <nz-avatar [nzSize]="64" nzIcon="user"
+                        nzSrc="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5jYNdL7EfoBGgHMaYkwvlXLCCyHJ26Wf8Zw&s"></nz-avatar>
+
+                    <div class="info-text">
+                        <h3 nz-typography>使用者名稱</h3>
+                        <h5 nz-typography>abcdefg</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="blue-area-btn">
+                <button nz-button nzType="primary" class="btn-styles2" (click)="Infoopene()">修改資料</button>
+                <button nz-button nzType="primary" (click)="GoBackToLogIn()">登出</button>
+            </div>
+
+            <div class="modal-overlay" *ngIf="Infoechange" (click)="Infoclose()">
+                <div class="Info-box" (click)="$event.stopPropagation()">
+
+
+                    <div class="input-block">
+                        <h5 nz-typography style="margin: 0;">更改使用者名稱：</h5>
+                        <input nz-input placeholder="請輸入新使用者名稱" nzSize="large" />
+                    </div>
+
+                    <div class="input-block">
+                        <h5 nz-typography style="margin: 0;">更改密碼：</h5>
+
+                        <nz-input-group [nzSuffix]="suffixTemplate" nzSize="large">
+                            <input [type]="passwordVisible ? 'text' : 'password'" nz-input placeholder="請輸入新密碼"
+                                [(ngModel)]="password" />
+                        </nz-input-group>
+
+                        <ng-template #suffixTemplate>
+                            <span nz-icon class="ant-input-password-icon"
+                                [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                                (click)="passwordVisible = !passwordVisible"></span>
+                        </ng-template>
+                    </div>
+
+                    <div class="input-block">
+                        <h5 nz-typography style="margin: 0;">確認新密碼：</h5>
+
+                        <nz-input-group [nzSuffix]="suffixTemplate" nzSize="large">
+                            <input [type]="passwordVisible ? 'text' : 'password'" nz-input placeholder="再次請輸入新密碼"
+                                [(ngModel)]="password" />
+                        </nz-input-group>
+
+                        <ng-template #suffixTemplate>
+                            <span nz-icon class="ant-input-password-icon"
+                                [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+                                (click)="passwordVisible = !passwordVisible"></span>
+                        </ng-template>
+                    </div>
+
+                    <button nz-button nzType="primary" nzBlock class="btn-styles1">確認更改</button>
+                    <button nz-button nzType="default" nzBlock class="btn-styles2" (click)="Infoclose()">取消更改</button>
+
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+    </nz-header>
+    <nz-content>
+        <div class="content-inner">
+
+            <div class="box">
+            </div>
+
+
+            <div class="blue-area-btn">
+                <button nz-button nzType="primary" class="btn-styles2">咖啡兌換QR code</button>
+                <button nz-button nzType="primary" class="btn-styles2" (click)="Coffeeopene()">咖啡存量</button>
+            </div>
+
+            <div class="modal-overlay" *ngIf="Coffeechange" (click)="Coffeeclose()">
+                <div class="Coffee-box" (click)="$event.stopPropagation()">
+                    <h2 nz-typography>咖啡存量</h2>
+                    <h5 nz-typography>目前持有杯數: 10 杯</h5>
+
+                    <button nz-button nzType="primary" nzBlock class="btn-styles1">獲取更多咖啡</button>
+
+                    <button nz-button nzType="default" nzBlock class="btn-styles1" (click)="Coffeeclose()">關閉</button>
+
+                </div>
+            </div>
+
+        </div>
+    </nz-content>
+
+</nz-layout>

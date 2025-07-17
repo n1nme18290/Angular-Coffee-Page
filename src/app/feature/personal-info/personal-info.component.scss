@@ -1,0 +1,215 @@
+:host {
+    text-align: left;
+}
+
+button[nz-button] {
+    margin-right: 8px;
+    margin-bottom: 12px;
+    height: 40px; //增加上下寬度
+    border-radius: 100px; //圓角設定
+    border: 2px solid #000000; //邊框設定
+    font-weight: bold; //粗體
+
+    background-color: #FFB433;
+    color: #000000;
+}
+
+button[nz-button].btn-styles1 {
+    background-color: #FFB433;
+    color: #000000;
+}
+
+button[nz-button].btn-styles2 {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+button[nz-button].btn-styles3 {
+    width: 40px;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+button[nz-button].btn-styles4 {
+    //icon btn
+    background-color: #80CBC4;
+    color: #000000;
+    border: 2px solid #80CBC4;
+    width: 64px;
+    height: 64px;
+
+    .big-icon {
+        font-size: 28px; // 控制 icon 大小
+    }
+}
+
+
+
+.input-block {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4px;
+    width: 100%;
+
+    input[nz-input] {
+        border-radius: 10px;
+
+        width: 100%;
+    }
+
+    nz-input-group {
+        margin-top: 5px;
+        border-radius: 10px;
+        width: 100%;
+
+
+        .ant-input-wrapper {
+            border-radius: 10px;
+        }
+    }
+}
+
+.box {
+    width: 1280px;
+    height: 450px;
+    border: 2px solid black; // 黑邊框
+    border-radius: 12px; // 圓角
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); // 陰影
+    padding: 12px 24px; // 上下12px，左右24px
+    box-sizing: border-box; // 確保 padding 不影響 width 計算
+    background-color: white;
+    display: flex;
+    flex-direction: column; // 垂直排列
+    justify-content: center; // 水平置中
+    align-items: center; // 垂直置中
+}
+
+
+
+.info-text {
+    //個人資訊文字
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: auto;
+    align-items: flex-start; //靠左邊對其
+
+    h3[nz-typography] {
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    h5[nz-typography] {
+        margin: 4px 0 0 0;
+        line-height: 1.4;
+    }
+}
+
+.info {
+    //個人資訊文字+頭像
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+
+
+}
+
+
+.blue-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center; // 垂直置中
+    padding: 16px 64px;
+    min-height: 96px;
+    gap: 5px;
+    width: 100%;
+
+
+}
+
+.blue-area-btn {
+    //藍區域按鈕
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 100%
+}
+
+.left-area {
+    //藍區域左邊:drawer+info
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    height: 100%
+}
+
+
+///content
+
+.content-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.content-inner .box {
+    align-self: center;
+    /* box 置中 */
+}
+
+.content-inner .blue-area-btn {
+    align-self: flex-start;
+    /* 按鈕靠左 */
+}
+
+
+//infobox
+.Info-box {
+    width: 700px;
+    height: 420px;
+    border: 2px solid black; // 黑邊框
+    border-radius: 12px; // 圓角
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); // 陰影
+    padding: 12px 24px; // 上下12px，左右24px
+    box-sizing: border-box; // 確保 padding 不影響 width 計算
+    background-color: white;
+    display: flex;
+    flex-direction: column; // 垂直排列
+    justify-content: center; // 垂直置中
+    align-items: center; // 水平置中
+
+}
+
+.Coffee-box{
+    width: 610px;
+    height: 660px;
+    border: 2px solid black; // 黑邊框
+    border-radius: 12px; // 圓角
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); // 陰影
+    padding: 12px 24px; // 上下12px，左右24px
+    box-sizing: border-box; // 確保 padding 不影響 width 計算
+    background-color: white;
+    display: flex;
+    flex-direction: column; // 垂直排列
+    justify-content: center; // 垂直置中
+    align-items: center; // 水平置中
+
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
