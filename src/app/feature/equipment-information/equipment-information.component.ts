@@ -14,67 +14,21 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-personal-info',
+  selector: 'app-equipment-information',
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
-    NzRadioModule, NzModalModule, CommonModule,],
-  templateUrl: './personal-info.component.html',
-  styleUrl: './personal-info.component.scss'
+    NzRadioModule,],
+  templateUrl: './equipment-information.component.html',
+  styleUrl: './equipment-information.component.scss'
 })
-export class PersonalInfoComponent {
-  constructor(private router: Router) { }
-
-  passwordVisible = false;
-  password?: string;
-
-  visible = false;
-
-  open(): void {
-    this.visible = true;
-  }
-
-  close(): void {
-    this.visible = false;
-  }
-  //other page
-  GoLogIn() {
-    this.router.navigate(['/log-in']);
-  }
-  GoEquipment() {
+export class EquipmentInformationComponent {
+    constructor(private router: Router) {}
+    GoEquipment(){
     this.router.navigate(['/equipment']);
   }
 
-
-
-  //Info
-  //coffee
-  Infoechange = false;
-
-  Infoopene(): void {
-    this.Infoechange = true;
-  }
-
-  Infoclose(): void {
-    this.Infoechange = false;
-  }
-
-
-
-
-  //coffee
-  Coffeechange = false;
-
-  Coffeeopene(): void {
-    this.Coffeechange = true;
-  }
-
-  Coffeeclose(): void {
-    this.Coffeechange = false;
-  }
 
 }

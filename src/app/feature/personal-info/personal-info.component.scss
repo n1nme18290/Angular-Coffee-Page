@@ -43,6 +43,15 @@ button[nz-button].btn-styles4 {
     }
 }
 
+button[nz-button].btn-styles5 {
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #ffffff;
+}
+button[nz-button].btn-styles5:hover {
+    color: #69A6A7; 
+}
+
 
 
 .input-block {
@@ -213,3 +222,4 @@ button[nz-button].btn-styles4 {
     align-items: center;
     z-index: 1000;
 }
+
