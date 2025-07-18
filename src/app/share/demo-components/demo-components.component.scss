@@ -27,10 +27,16 @@ button[nz-button].btn-styles3 {
 }
 
 button[nz-button].btn-styles4 {
-    width: 40px;
-    background-color: #ffffff; //顏色設定
-    color: #000000; //字體顏色
-    border: 2px solid #ffffff; 
+    //icon btn
+    background-color: #80CBC4;
+    color: #000000;
+    border: 2px solid #80CBC4;
+    width: 64px;
+    height: 64px;
+
+    .big-icon {
+        font-size: 28px; // 控制 icon 大小
+    }
 }
 
 
