@@ -32,6 +32,7 @@ export class RegisterComponent {
   passwordVisible = false;
   password?: string;
 
+  //連結
   GoLogIn(){
     this.router.navigate(['/log-in']);
   }

@@ -26,12 +26,14 @@ import { Router } from '@angular/router';
   styleUrl: './log-in.component.scss'
 })
 export class LogInComponent {
-  constructor(private router: Router) {}
+  
 
   passwordVisible = false;
   password?: string;
 
-  GoBackRegister(){
+  //連結
+  constructor(private router: Router) {}
+  GoRegister(){
     this.router.navigate(['/register']);
   }
   GoPersonalInfo(){

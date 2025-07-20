@@ -14,71 +14,24 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-personal-info',
+  selector: 'app-abnormal-history',
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
-    NzRadioModule, NzModalModule, CommonModule,],
-  templateUrl: './personal-info.component.html',
-  styleUrl: './personal-info.component.scss'
+    NzRadioModule,],
+  templateUrl: './abnormal-history.component.html',
+  styleUrl: './abnormal-history.component.scss'
 })
-export class PersonalInfoComponent {
-  constructor(private router: Router) { }
-
-  passwordVisible = false;
-  password?: string;
-
-  visible = false;
-
-  open(): void {
-    this.visible = true;
-  }
-
-  close(): void {
-    this.visible = false;
-  }
-
+export class AbnormalHistoryComponent {
   //連結
-  GoLogIn() {
-    this.router.navigate(['/log-in']);
-  }
-  GoEquipment() {
-    this.router.navigate(['/equipment']);
-  }
-  GoHistory() {
-    this.router.navigate(['/user-history']);
-
+  constructor(private router: Router) { }
+  GoPersonalInfo() {
+    this.router.navigate(['/personal-info']);
   }
 
 
 
-  //Info
-  Infoechange = false;
-
-  Infoopene(): void {
-    this.Infoechange = true;
-  }
-
-  Infoclose(): void {
-    this.Infoechange = false;
-  }
-
-
-
-
-  //coffee
-  Coffeechange = false;
-
-  Coffeeopene(): void {
-    this.Coffeechange = true;
-  }
-
-  Coffeeclose(): void {
-    this.Coffeechange = false;
-  }
 
 }
