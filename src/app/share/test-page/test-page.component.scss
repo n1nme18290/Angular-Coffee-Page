@@ -67,17 +67,17 @@ button[nz-button].btn-styles4 {
         transition: color 0.3s;
       }
 
+      .trigger:hover {
+        color: #1890ff;
+      }
 
       .logo {
         height: 32px;
         background-color:#001529;
         margin: 16px;
-        
+        color:#ffffff !important;
       }
 
       nz-breadcrumb {
         margin: 16px 0;
       }
-.h2 {
-    color: #ffffff;
-}

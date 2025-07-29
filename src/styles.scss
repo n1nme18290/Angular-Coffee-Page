@@ -10,7 +10,7 @@ html, body, app-root {
 }
 
 .ant-layout-header {
-  background: #80CBC4;
+  background: #27496D !important;
   color: #000000;
   height: 160px; //設定 header 的高度為 200px
   display: flex;
@@ -21,7 +21,7 @@ html, body, app-root {
 }
 
 .ant-layout-content {
-  background: #FBF8EF;
+  background: #F0F2F5;
   color: #000000;
   flex: 1; // 撐滿剩餘空間 
   display: flex;

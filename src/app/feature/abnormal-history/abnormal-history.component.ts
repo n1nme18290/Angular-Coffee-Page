@@ -27,9 +27,42 @@ import { Router } from '@angular/router';
 export class AbnormalHistoryComponent {
   //連結
   constructor(private router: Router) { }
+
+  GoLogIn() {
+    this.router.navigate(['/log-in']);
+  }
   GoPersonalInfo() {
     this.router.navigate(['/personal-info']);
+
   }
+  GoEquipment() {
+    this.router.navigate(['/equipment']);
+  }
+  GoEquipmentInformation() {
+    this.router.navigate(['/equipment-information']);
+  }
+
+  GoUserHistory() {
+    this.router.navigate(['/user-history']);
+  }
+  GoAbnormalHistory() {
+    this.router.navigate(['/abnormal-history']);
+  }
+  GoEquipmentHistory() {
+    this.router.navigate(['/equipment-history']);
+  }
+  GoDeliveryHistory(){
+    this.router.navigate(['//delivery-history'])
+  }
+
+  //
+  isCollapsed = false;
+  toggleCollapsed(): void {
+    this.isCollapsed = !this.isCollapsed;
+  }
+
+
+
 
 
 

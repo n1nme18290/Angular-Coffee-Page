@@ -6,66 +6,78 @@ button[nz-button] {
     border: 2px solid #000000; //邊框設定
     font-weight: bold; //粗體
 
-    background-color: #FFB433;
-    color: #000000;
+    background-color: #FFB433; //顏色設定
+    color: #000000; //字體顏色
 }
 
 button[nz-button].btn-styles1 {
-    background-color: #FFB433;
-    color: #000000;
+    background-color: #FFB433; //顏色設定
+    color: #000000; //字體顏色
 }
 
 button[nz-button].btn-styles2 {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: #ffffff; //顏色設定
+    color: #000000; //字體顏色
 }
 
 button[nz-button].btn-styles3 {
     width: 40px;
-    background-color: #000000;
-    color: #ffffff;
+    background-color: #000000; //顏色設定
+    color: #ffffff; //字體顏色
 }
 
 button[nz-button].btn-styles4 {
-    //icon btn
-    background-color: #80CBC4;
-    color: #000000;
-    border: 2px solid #80CBC4;
-    width: 64px;
-    height: 64px;
+    width: 40px;
+    background-color: #27496D; //顏色設定
+    color: #ffffff; //字體顏色
+    border: 2px solid #27496D; 
+}
 
-    .big-icon {
-        font-size: 28px; // 控制 icon 大小
+
+
+.input-block {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4px;
+    width: 100%;
+
+    input[nz-input] {
+        border-radius: 10px;
+
+        width: 100%;
+    }
+
+    nz-input-group {
+        margin-top: 5px;
+        border-radius: 10px;
+        width: 100%;
+
+
+        .ant-input-wrapper {
+            border-radius: 10px;
+        }
     }
 }
 
+.trigger {
+        font-size: 18px;
+        line-height: 64px;
+        padding: 0 24px;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
 
 
+      .logo {
+        height: 32px;
+        background-color:#001529;
+        margin: 16px;
+        
+      }
 
-.blue-area {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    padding: 0 24px;
-    height: 140px;
-    width: 100%;
-
-}
-
-.title {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-    margin-top: auto; // 推到底部
-}
-
-.tabs-box {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-bottom: auto; // 推到頂部
+      nz-breadcrumb {
+        margin: 16px 0;
+      }
+.h2 {
+    color: #ffffff;
 }

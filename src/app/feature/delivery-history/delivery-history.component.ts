@@ -14,31 +14,34 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-personal-info',
+  selector: 'app-delivery-history',
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
-    NzRadioModule, NzModalModule, CommonModule,],
-  templateUrl: './personal-info.component.html',
-  styleUrl: './personal-info.component.scss'
+    NzRadioModule,],
+  templateUrl: './delivery-history.component.html',
+  styleUrl: './delivery-history.component.scss'
 })
-export class PersonalInfoComponent {
+export class DeliveryHistoryComponent {
   //連結
   constructor(private router: Router) { }
 
   GoLogIn() {
     this.router.navigate(['/log-in']);
   }
+  GoPersonalInfo() {
+    this.router.navigate(['/personal-info']);
+
+  }
   GoEquipment() {
     this.router.navigate(['/equipment']);
   }
-  GoEquipmentInformation(){
+  GoEquipmentInformation() {
     this.router.navigate(['/equipment-information']);
   }
+
   GoUserHistory() {
     this.router.navigate(['/user-history']);
   }
@@ -52,13 +55,11 @@ export class PersonalInfoComponent {
     this.router.navigate(['//delivery-history'])
   }
 
-
   //
   isCollapsed = false;
   toggleCollapsed(): void {
     this.isCollapsed = !this.isCollapsed;
   }
-
 
 
 }

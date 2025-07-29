@@ -11,6 +11,12 @@ import { EquipmentInformationComponent } from '../feature/equipment-information/
 import { UserHistoryComponent } from '../feature/user-history/user-history.component';
 import { AbnormalHistoryComponent } from '../feature/abnormal-history/abnormal-history.component';
 import { EquipmentHistoryComponent } from '../feature/equipment-history/equipment-history.component';
+import { DeliveryHistoryComponent } from '../feature/delivery-history/delivery-history.component';
+
+import { BackendManagementComponent } from '../feature/backend-management/backend-management.component';
+
+
+import { TestPageComponent } from '../share/test-page/test-page.component';
 
 
 export const routes: Routes = [
@@ -27,4 +33,7 @@ export const routes: Routes = [
     { path: "user-history", component:UserHistoryComponent},
     { path: "abnormal-history", component:AbnormalHistoryComponent},
     { path: "equipment-history", component:EquipmentHistoryComponent},
+    { path: "delivery-history", component:DeliveryHistoryComponent},
+
+    { path: "test-page", component:TestPageComponent}
 ];

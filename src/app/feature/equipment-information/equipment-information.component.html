@@ -1,16 +1,54 @@
 <nz-layout>
-    <nz-header>
-        <div class="blue-area">
-            <div class="title">
-                <button nz-button nzType="primary" nzShape="circle" class="btn-styles4" (click)="GoEquipment()">
-                    <span nz-icon nzType="left" nzTheme="outline"></span>
-                </button>
-                <h1 nz-typography>設備一詳細資料</h1>
-            </div>
+    <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+        <div class="logo">
+
         </div>
+        <ul nz-menu nzTheme="dark" nzMode="inline">
+            <li nz-submenu nzTitle="會員管理" nzIcon="user">
+                <ul>
+                    <li nz-menu-item (click)="GoPersonalInfo()">個人資料</li>
+                    <li nz-menu-item (click)="GoLogIn()">登出</li>
 
-    </nz-header>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="咖啡設備管理頁面" nzIcon="team">
+                <ul>
+                    <li nz-menu-item (click)="GoEquipment()">設備管理頁面</li>
+                    <li nz-menu-item (click)="GoEquipmentInformation()">設備詳細資料頁面</li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="歷史頁面" nzIcon="team">
+                <ul>
+                    <li nz-menu-item (click)="GoUserHistory()">使用者使用記錄</li>
+                    <li nz-menu-item (click)="GoAbnormalHistory()">設備異常紀錄</li>
+                    <li nz-menu-item (click)="GoEquipmentHistory()">設備操作紀錄</li>
+                    <li nz-menu-item (click)="GoDeliveryHistory()">咖啡派送紀錄</li>
+                </ul>
+            </li>
+            <li nz-submenu nzTitle="後台管理" nzIcon="team">
+                <ul>
+                    <li nz-menu-item>後台管理首頁</li>
+                    <li nz-submenu nzTitle="通知與記錄" nzIcon="team">
+                        <ul>
+                            <li nz-menu-item>點數異動紀錄</li>
+                            <li nz-menu-item>咖啡兌換紀錄</li>
+                            <li nz-menu-item>會員操作紀錄</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
 
-    <nz-content>
-    </nz-content>
+        </ul>
+    </nz-sider>
+    <nz-layout>
+        <nz-header>
+            <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
+                <span nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
+                    class="big-icon"></span>
+            </button>
+            <h2 nz-typography class="h2">設備詳細資料頁面</h2>
+        </nz-header>
+        <nz-content>各設備詳細資料</nz-content>
+
+    </nz-layout>
 </nz-layout>
