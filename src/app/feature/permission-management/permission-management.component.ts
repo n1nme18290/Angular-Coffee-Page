@@ -18,22 +18,21 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
 
 import { SidebarService } from '../../share/sidebar.service';
+
 @Component({
-  selector: 'app-backend-management',
+  selector: 'app-permission-management',
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
     NzRadioModule, NzModalModule, CommonModule,],
-  templateUrl: './backend-management.component.html',
-  styleUrl: './backend-management.component.scss'
+  templateUrl: './permission-management.component.html',
+  styleUrl: './permission-management.component.scss'
 })
-export class BackendManagementComponent {
-    constructor(public sidebarService: SidebarService) {}
-  
+export class PermissionManagementComponent {
+  constructor(public sidebarService: SidebarService) { }
+
   toggleCollapsed(): void {
-  this.sidebarService.toggleCollapsed();
-}
-
-
+    this.sidebarService.toggleCollapsed();
+  }
 
 }

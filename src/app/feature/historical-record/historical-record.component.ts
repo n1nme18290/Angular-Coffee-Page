@@ -17,22 +17,29 @@ import { Router } from '@angular/router';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
 
+
 import { SidebarService } from '../../share/sidebar.service';
+
 @Component({
-  selector: 'app-backend-management',
+  selector: 'app-historical-record',
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
     NzRadioModule, NzModalModule, CommonModule,],
-  templateUrl: './backend-management.component.html',
-  styleUrl: './backend-management.component.scss'
+  templateUrl: './historical-record.component.html',
+  styleUrl: './historical-record.component.scss'
 })
-export class BackendManagementComponent {
-    constructor(public sidebarService: SidebarService) {}
-  
+export class HistoricalRecordComponent {
+  constructor(public sidebarService: SidebarService) { }
+
   toggleCollapsed(): void {
-  this.sidebarService.toggleCollapsed();
-}
+    this.sidebarService.toggleCollapsed();
+  }
+
+  Title01 = '使用者使用紀錄';
+  Title02 = '異常歷史紀錄';
+  Title03 = '設備使用紀錄';
+  Title04 = '咖啡派送紀錄';
 
 
 

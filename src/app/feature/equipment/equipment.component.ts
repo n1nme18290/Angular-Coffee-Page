@@ -15,6 +15,8 @@ import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
 
+import { SidebarService } from '../../share/sidebar.service';
+
 @Component({
   selector: 'app-equipment',
   standalone: true,
@@ -25,41 +27,17 @@ import { Router } from '@angular/router';
   styleUrl: './equipment.component.scss'
 })
 export class EquipmentComponent {
+  constructor(public sidebarService: SidebarService, private router: Router) { }
+
+  toggleCollapsed(): void {
+    this.sidebarService.toggleCollapsed();
+  }
+
   //連結
-  constructor(private router: Router) { }
-
-  GoLogIn() {
-    this.router.navigate(['/log-in']);
-  }
-  GoPersonalInfo() {
-    this.router.navigate(['/personal-info']);
-
-  }
-  GoEquipment() {
-    this.router.navigate(['/equipment']);
-  }
-  GoEquipmentInformation() {
+  GoEquipmentInformation(){
     this.router.navigate(['/equipment-information']);
   }
 
-  GoUserHistory() {
-    this.router.navigate(['/user-history']);
-  }
-  GoAbnormalHistory() {
-    this.router.navigate(['/abnormal-history']);
-  }
-  GoEquipmentHistory() {
-    this.router.navigate(['/equipment-history']);
-  }
-    GoDeliveryHistory(){
-    this.router.navigate(['//delivery-history'])
-  }
-
-  //
-  isCollapsed = false;
-  toggleCollapsed(): void {
-    this.isCollapsed = !this.isCollapsed;
-  }
 
 
 }

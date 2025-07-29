@@ -19,21 +19,19 @@ import { CommonModule } from '@angular/common';
 
 import { SidebarService } from '../../share/sidebar.service';
 @Component({
-  selector: 'app-backend-management',
+  selector: 'app-point-information',
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
     NzRadioModule, NzModalModule, CommonModule,],
-  templateUrl: './backend-management.component.html',
-  styleUrl: './backend-management.component.scss'
+  templateUrl: './point-information.component.html',
+  styleUrl: './point-information.component.scss'
 })
-export class BackendManagementComponent {
-    constructor(public sidebarService: SidebarService) {}
+export class PointInformationComponent {
+  constructor(public sidebarService: SidebarService) {}
   
   toggleCollapsed(): void {
   this.sidebarService.toggleCollapsed();
 }
-
-
 
 }

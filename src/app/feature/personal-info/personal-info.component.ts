@@ -17,6 +17,8 @@ import { Router } from '@angular/router';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
 
+import { SidebarService } from '../../share/sidebar.service';
+
 @Component({
   selector: 'app-personal-info',
   standalone: true,
@@ -27,37 +29,12 @@ import { CommonModule } from '@angular/common';
   styleUrl: './personal-info.component.scss'
 })
 export class PersonalInfoComponent {
-  //連結
-  constructor(private router: Router) { }
-
-  GoLogIn() {
-    this.router.navigate(['/log-in']);
-  }
-  GoEquipment() {
-    this.router.navigate(['/equipment']);
-  }
-  GoEquipmentInformation(){
-    this.router.navigate(['/equipment-information']);
-  }
-  GoUserHistory() {
-    this.router.navigate(['/user-history']);
-  }
-  GoAbnormalHistory() {
-    this.router.navigate(['/abnormal-history']);
-  }
-  GoEquipmentHistory() {
-    this.router.navigate(['/equipment-history']);
-  }
-    GoDeliveryHistory(){
-    this.router.navigate(['//delivery-history'])
-  }
-
-
-  //
-  isCollapsed = false;
+  constructor(public sidebarService: SidebarService) {}
+  
   toggleCollapsed(): void {
-    this.isCollapsed = !this.isCollapsed;
-  }
+  this.sidebarService.toggleCollapsed();
+}
+
 
 
 
