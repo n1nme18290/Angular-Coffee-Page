@@ -26,13 +26,18 @@ button[nz-button].btn-styles3 {
     color: #ffffff; //字體顏色
 }
 
-button[nz-button].btn-styles4 {
-    width: 40px;
-    background-color: #27496D; //顏色設定
-    color: #ffffff; //字體顏色
+button[nz-button].btn-styles4 { //icon 圓形
+    //icon btn
+    background-color: #27496D;
+    color: #ffffff;
     border: 2px solid #27496D; 
-}
+    width: 64px;
+    height: 64px;
 
+    .big-icon {
+        font-size: 28px; // 控制 icon 大小
+    }
+}
 
 
 .input-block {

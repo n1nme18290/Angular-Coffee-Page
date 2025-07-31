@@ -1,33 +1,40 @@
 <nz-layout>
-    <nz-sider nzCollapsible [(nzCollapsed)]="sidebarService.isCollapsed" [nzTrigger]="null">
-        <div class="logo">
+  <nz-sider nzCollapsible [(nzCollapsed)]="sidebarService.isCollapsed" [nzTrigger]="null">
+    <div class="logo"></div>
 
-        </div>
-        <ul nz-menu nzTheme="dark" nzMode="inline">
-            <li nz-submenu nzTitle="會員管理" nzIcon="user">
-                <ul>
-                    <li nz-menu-item (click)="GoPersonalInfo()">個人資訊</li>
-                    <li nz-menu-item (click)="GoPointInformation()">點數資訊</li>
-                </ul>
-            </li>
-            
+    <div class="menu-container">
+      <ul nz-menu nzTheme="dark" nzMode="inline" class="main-menu">
+        <li nz-submenu nzTitle="會員管理" nzIcon="user" class="menu-item-large">
+          <ul>
+            <li nz-menu-item class="menu-item-large" (click)="GoPersonalInfo()">個人資訊</li>
+            <li nz-menu-item class="menu-item-large" (click)="GoPointInformation()">點數資訊</li>
+          </ul>
+        </li>
+        <li nz-submenu nzTitle="咖啡設備管理" nzIcon="coffee" class="menu-item-large">
+          <ul>
+            <li nz-menu-item class="menu-item-large" (click)="GoEquipment()">設備管理頁面</li>
+          </ul>
+        </li>
+        <li nz-submenu nzTitle="系統管理" nzIcon="setting" class="menu-item-large">
+          <ul>
+            <li nz-menu-item class="menu-item-large" (click)="GoBackendManagement()">系統管理首頁</li>
+            <li nz-menu-item class="menu-item-large" (click)="GoPermissionManagement()">角色權限管理</li>
+            <li nz-menu-item class="menu-item-large" (click)="GoHistoricalRecord()">歷史紀錄頁面</li>
+          </ul>
+        </li>
+      </ul>
+      
 
-            <li nz-submenu nzTitle="咖啡設備管理" nzIcon="coffee">
-                <ul>
-                    <li nz-menu-item (click)="GoEquipment()">設備管理頁面</li>
-                </ul>
-            </li>
-            <li nz-submenu nzTitle="系統管理" nzIcon="setting">
-                <ul>
-                    <li nz-menu-item (click)="GoBackendManagement()">系統管理首頁</li>
-                    <li nz-menu-item (click)="GoPermissionManagement()">角色權限管理</li>
-                    <li nz-menu-item (click)="GoHistoricalRecord()">歷史紀錄頁面</li>
-                </ul>
-            </li>
-
-        </ul>
-    </nz-sider>
-    <nz-layout>
-        <router-outlet></router-outlet>
-    </nz-layout>
+      <ul nz-menu nzTheme="dark" nzMode="inline" class="logout-menu">
+        <li nz-menu-item>
+          <span nz-icon nzType="logout"></span>
+          <span class="menu-item-large" (click)="GoLogIn()">登出</span>
+        </li>
+      </ul>
+    </div>
+  </nz-sider>
+  
+  <nz-layout>
+    <router-outlet></router-outlet>
+  </nz-layout>
 </nz-layout>

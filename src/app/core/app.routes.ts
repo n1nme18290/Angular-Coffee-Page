@@ -24,6 +24,7 @@ export const routes: Routes = [
   { path: 'log-in', component: LogInComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'equipment-information', component: EquipmentInformationComponent },
+  { path: 'demo-components', component: DemoComponentsComponent },
 
   {
     path: '',

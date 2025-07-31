@@ -1,15 +1,3 @@
-<button nz-button nzType="primary" (click)="open()" class="btn-styles4"><span nz-icon nzType="unordered-list"
-        nzTheme="outline"></span></button>
-<nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="left" nzTitle="Basic Drawer" (nzOnClose)="close()">
-    <ng-container *nzDrawerContent>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-    </ng-container>
-</nz-drawer>
-
-
-
 <button nz-button nzType="primary">一般隨著文字的大小變化按鈕</button>
 <br>
 <button nz-button nzType="primary" nzShape="circle" class="btn-styles3">
@@ -71,30 +59,7 @@
     <nz-switch nzSize="small" [ngModel]="true"></nz-switch>
 </div>
 
-<br>
 
-
-<div class="info">
-    <nz-avatar [nzSize]="64" nzIcon="user"
-        nzSrc="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5jYNdL7EfoBGgHMaYkwvlXLCCyHJ26Wf8Zw&s"></nz-avatar>
-
-    <div class="info-text">
-        <h3 nz-typography>使用者名稱</h3>
-        <h5 nz-typography>abcdefg</h5>
-    </div>
-</div>
-
-<br>
-<div class="title">
-
-    <button nz-button nzType="primary" nzShape="circle" class="btn-styles4">
-        <span nz-icon nzType="left" nzTheme="outline"></span>
-    </button>
-
-    <h1 nz-typography>這是一個大標題</h1>
-
-</div>
-<nz-page-header (nzBack)="onBack()" nzBackIcon nzTitle="Title" nzSubtitle=""></nz-page-header>
 
 
 <br>
@@ -111,13 +76,6 @@
 
 
 <br>
-
-<nz-tabset>
-    <nz-tab nzTitle="使用者使用紀錄"></nz-tab>
-    <nz-tab nzTitle="設備異常紀錄"></nz-tab>
-    <nz-tab nzTitle="設備操作紀錄"></nz-tab>
-</nz-tabset>
-
 
 
 

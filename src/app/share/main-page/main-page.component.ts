@@ -16,6 +16,8 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 
+
+
 import { Router } from '@angular/router';
 
 import { SidebarService } from '../sidebar.service';
@@ -50,18 +52,7 @@ export class MainPageComponent {
   GoEquipmentInformation() {
     this.router.navigate(['/equipment-information']);
   }
-  GoUserHistory() {
-    this.router.navigate(['/user-history']);
-  }
-  GoAbnormalHistory() {
-    this.router.navigate(['/abnormal-history']);
-  }
-  GoEquipmentHistory() {
-    this.router.navigate(['/equipment-history']);
-  }
-  GoDeliveryHistory() {
-    this.router.navigate(['/delivery-history'])
-  }
+
   GoBackendManagement() {
     this.router.navigate(['/backend-management'])
   }
