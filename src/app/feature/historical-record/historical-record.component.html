@@ -1,52 +1,26 @@
-<nz-tabset class="tabs">
+<nz-layout>
+    <!-- Header -->
+    <nz-header>
+        <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
+            <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
+                class="big-icon"></span>
+        </button>
+        <h2 nz-typography class="h2">{{ getCurrentTitle() }}</h2>
+    </nz-header>
 
-    <nz-tab nzTitle={{Title01}}><nz-header>
-            <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-                <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-                    class="big-icon"></span>
-            </button>
-            <h2 nz-typography class="h2">{{Title01}}</h2>
-        </nz-header>
-        <nz-content>
-
-        </nz-content>
-    </nz-tab>
-
-    <nz-tab nzTitle={{Title02}}><nz-header>
-            <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-                <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-                    class="big-icon"></span>
-            </button>
-            <h2 nz-typography class="h2">{{Title02}}</h2>
-        </nz-header>
-        <nz-content>
-
-        </nz-content>
-    </nz-tab>
-
-    <nz-tab nzTitle={{Title03}}><nz-header>
-            <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-                <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-                    class="big-icon"></span>
-            </button>
-            <h2 nz-typography class="h2">{{Title03}}</h2>
-        </nz-header>
-        <nz-content>
-
-        </nz-content>
-    </nz-tab>
-
-    <nz-tab nzTitle={{Title04}}><nz-header>
-            <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-                <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-                    class="big-icon"></span>
-            </button>
-            <h2 nz-typography class="h2">{{Title04}}</h2>
-        </nz-header>
-        <nz-content>
-
-        </nz-content>
-    </nz-tab>
-
-
-</nz-tabset>
+    <!-- Tabs -->
+    <nz-tabset class="tabs" [(nzSelectedIndex)]="selectedIndex">
+        <nz-tab [nzTitle]="Title01">
+            <nz-content></nz-content>
+        </nz-tab>
+        <nz-tab [nzTitle]="Title02">
+            <nz-content></nz-content>
+        </nz-tab>
+        <nz-tab [nzTitle]="Title03">
+            <nz-content></nz-content>
+        </nz-tab>
+        <nz-tab [nzTitle]="Title04">
+            <nz-content></nz-content>
+        </nz-tab>
+    </nz-tabset>
+</nz-layout>

@@ -10,11 +10,6 @@ import { PointInformationComponent } from '../feature/point-information/point-in
 import { EquipmentComponent } from '../feature/equipment/equipment.component';
 import { EquipmentInformationComponent } from '../feature/equipment-information/equipment-information.component';
 
-import { UserHistoryComponent } from '../feature/user-history/user-history.component';
-import { AbnormalHistoryComponent } from '../feature/abnormal-history/abnormal-history.component';
-import { EquipmentHistoryComponent } from '../feature/equipment-history/equipment-history.component';
-import { DeliveryHistoryComponent } from '../feature/delivery-history/delivery-history.component';
-
 import { BackendManagementComponent } from '../feature/backend-management/backend-management.component';
 import { HistoricalRecordComponent } from '../feature/historical-record/historical-record.component';
 import { PermissionManagementComponent } from '../feature/permission-management/permission-management.component';
@@ -37,10 +32,6 @@ export const routes: Routes = [
       { path: 'personal-info', component: PersonalInfoComponent },
       { path: 'point-information', component: PointInformationComponent },
       { path: 'equipment', component: EquipmentComponent },
-      { path: 'user-history', component: UserHistoryComponent },
-      { path: 'abnormal-history', component: AbnormalHistoryComponent },
-      { path: 'equipment-history', component: EquipmentHistoryComponent },
-      { path: 'delivery-history', component: DeliveryHistoryComponent },
       { path: 'backend-management', component: BackendManagementComponent },
       { path: 'historical-record', component: HistoricalRecordComponent },
       { path: 'permission-management', component: PermissionManagementComponent },

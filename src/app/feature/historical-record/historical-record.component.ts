@@ -36,10 +36,23 @@ export class HistoricalRecordComponent {
     this.sidebarService.toggleCollapsed();
   }
 
+
+  selectedIndex = 0;
   Title01 = '使用者使用紀錄';
   Title02 = '異常歷史紀錄';
   Title03 = '設備使用紀錄';
   Title04 = '咖啡派送紀錄';
+
+  getCurrentTitle(): string {
+    switch (this.selectedIndex) {
+      case 0: return this.Title01;
+      case 1: return this.Title02;
+      case 2: return this.Title03;
+      case 3: return this.Title04;
+      default: return '';
+    }
+  }
+
 
 
 
