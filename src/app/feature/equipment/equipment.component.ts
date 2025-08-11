@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common'; // 新增這個
+
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -13,16 +17,18 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { Router } from '@angular/router';
 
 import { SidebarService } from '../../share/sidebar.service';
 
 @Component({
   selector: 'app-equipment',
   standalone: true,
-  imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
-    , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
-    NzRadioModule,],
+  imports: [
+    RouterOutlet, CommonModule, // 新增 CommonModule
+    NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, 
+    NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule, 
+    NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzRadioModule
+  ],
   templateUrl: './equipment.component.html',
   styleUrl: './equipment.component.scss'
 })
@@ -35,7 +41,7 @@ export class EquipmentComponent {
 
   //連結
   GoEquipmentInformation(){
-    this.router.navigate(['/equipment-information']);
+    this.router.navigate(['/equipment/equipment-information']);
   }
 
 

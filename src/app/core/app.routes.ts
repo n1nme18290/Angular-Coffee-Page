@@ -19,12 +19,12 @@ import { MainPageComponent } from '../share/main-page/main-page.component';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/log-in', pathMatch: 'full' },
+  { path: '', redirectTo: '/personal-info', pathMatch: 'full' },
 
   { path: 'log-in', component: LogInComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'equipment-information', component: EquipmentInformationComponent },
   { path: 'demo-components', component: DemoComponentsComponent },
+  { path: 'equipment/equipment-information', component: EquipmentInformationComponent },
 
   {
     path: '',
@@ -32,7 +32,7 @@ export const routes: Routes = [
     children: [
       { path: 'personal-info', component: PersonalInfoComponent },
       { path: 'point-information', component: PointInformationComponent },
-      { path: 'equipment', component: EquipmentComponent },
+      { path: 'equipment',component: EquipmentComponent,},
       { path: 'backend-management', component: BackendManagementComponent },
       { path: 'historical-record', component: HistoricalRecordComponent },
       { path: 'permission-management', component: PermissionManagementComponent },

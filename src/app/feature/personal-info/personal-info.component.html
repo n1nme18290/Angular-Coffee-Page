@@ -4,4 +4,45 @@
     </button>
     <h2 nz-typography class="h2">使用者名稱</h2>
 </nz-header>
-<nz-content></nz-content>
+<nz-content>
+    <div nz-row class="row-style">
+        <div nz-col [nzSpan]="12" class="left-col">
+            <h2 nz-typography class="boxword">個人點數資訊</h2>
+            <br>
+            <div class="pointbox">
+                <h1 nz-typography class="boxword">我的點數</h1>
+                <p class="boxnum">{{userpoint}}</p>
+            </div>
+            <br>
+
+
+            <div>
+                <nz-carousel nzAutoPlay [nzDots]="false">
+                    @for (msg of carouselMessages; track msg) {
+                    <div nz-carousel-content>
+                        <h3>{{ msg }}</h3>
+                    </div>
+                    }
+                </nz-carousel>
+            </div>
+            <br>
+
+            <nz-divider></nz-divider>
+            
+        </div>
+        <div nz-col [nzSpan]="12" class="right-col">
+            <h2 nz-typography class="boxword">點數使用與規則說明</h2>
+            <br>
+            <div class="rulebox">
+                <h4 nz-typography class="boxword">● 100點可兌換一杯咖啡</h4>
+                <h4 nz-typography class="boxword">● 100點可兌換一杯咖啡</h4>
+                <h4 nz-typography class="boxword">● 100點可兌換一杯咖啡</h4>
+                <h4 nz-typography class="boxword">● 100點可兌換一杯咖啡</h4>
+            </div>
+            <nz-divider></nz-divider>
+            <h2 nz-typography class="boxword">點數異動紀錄</h2>
+            <br>
+
+        </div>
+    </div>
+</nz-content>

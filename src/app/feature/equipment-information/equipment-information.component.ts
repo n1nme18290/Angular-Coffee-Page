@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -25,10 +26,12 @@ import { Router } from '@angular/router';
   styleUrl: './equipment-information.component.scss'
 })
 export class EquipmentInformationComponent {
-    constructor(private router: Router) { }
+     constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {}
   
 
-    //連結
     GoEquipment(){
       this.router.navigate(['/equipment']);
     }
