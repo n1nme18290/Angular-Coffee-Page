@@ -90,13 +90,19 @@ nz-breadcrumb {
     color: #ffffff;
 }
 
-<<<<<<< HEAD
-=======
-.point-information-container{
+.point-information-container {
     margin: 16px;
     padding: 16px;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
->>>>>>> 667877c58115e0fefb9c8ead7357aa9fec09ac7d
+
+.send-request {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.send-request span {
+    margin-left: 8px;
+}

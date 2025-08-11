@@ -16,17 +16,11 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
-<<<<<<< HEAD
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzGridModule } from 'ng-zorro-antd/grid';
-
-import { NzCarouselModule } from 'ng-zorro-antd/carousel';
-=======
 import { PointService } from '../../share/service/service';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
->>>>>>> 667877c58115e0fefb9c8ead7357aa9fec09ac7d
 
 import { SidebarService } from '../../share/sidebar.service';
 import { Observable } from 'rxjs';
@@ -36,19 +30,11 @@ import { IApiResponsePoints } from '../../share/service/model';
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
-<<<<<<< HEAD
-    NzRadioModule, NzModalModule, CommonModule, NzGridModule, NzDividerModule, NzCarouselModule,
-  ],
-=======
-    NzRadioModule, NzModalModule, CommonModule, NzTableModule, NzDividerModule],
->>>>>>> 667877c58115e0fefb9c8ead7357aa9fec09ac7d
+    NzRadioModule, NzModalModule, CommonModule, NzTableModule, NzDividerModule, NzCheckboxModule],
   templateUrl: './point-information.component.html',
   styleUrl: './point-information.component.scss'
 })
 export class PointInformationComponent {
-<<<<<<< HEAD
-  constructor(public sidebarService: SidebarService) { }
-=======
   constructor() { }
 
   router = inject(Router);
@@ -56,34 +42,108 @@ export class PointInformationComponent {
   pointService = inject(PointService);
 
   pointsList: IApiResponsePoints[] = [];
+  checked = false;
+  loading = false;
+  indeterminate = false;
+  listOfCurrentPageData: readonly IApiResponsePoints[] = [];
+  setOfCheckedId = new Set<string>();
+
+  currentPage = 1;
+  pageSize = 5;
+  total = 0;
 
   ngOnInit() {
     // Initialization logic can go here
-    this.getAllPoints();
+    this.getPagePoints(1, 5);
   }
 
   ngAfterViewInit() {
     // Logic that needs to run after the view has been initialized can go here
   }
 
+  updateCheckedSet(id: string, checked: boolean): void {
+    if (checked) {
+      this.setOfCheckedId.add(id);
+    } else {
+      this.setOfCheckedId.delete(id);
+    }
+  }
+
+  onCurrentPageDataChange(listOfCurrentPageData: readonly IApiResponsePoints[]): void {
+    this.listOfCurrentPageData = listOfCurrentPageData;
+    this.refreshCheckedStatus();
+  }
+
+  refreshCheckedStatus(): void {
+    const listOfEnabledData = this.listOfCurrentPageData.filter(({ balance }) => balance >= 0);
+    this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
+    this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
+  }
+
+  onItemChecked(id: string, checked: boolean): void {
+    this.updateCheckedSet(id, checked);
+    this.refreshCheckedStatus();
+  }
+
+  onAllChecked(checked: boolean): void {
+    this.listOfCurrentPageData
+      .filter(({ balance }) => balance >= 0)
+      .forEach(({ id }) => this.updateCheckedSet(id, checked));
+    this.refreshCheckedStatus();
+  }
+  sendRequest(): void {
+    this.loading = true;
+    const requestData = this.pointsList.filter(data => this.setOfCheckedId.has(String(data.id)));
+    // console.log('Selected data:', requestData);
+    setTimeout(() => {
+      this.setOfCheckedId.clear();
+      this.refreshCheckedStatus();
+      this.loading = false;
+    }, 1000);
+  }
+
   // 取得所有點數
-  getAllPoints() {
-    this.pointService.getAllPoints().subscribe(
-      (res) => {
-        this.pointsList = res.data;
+  // getAllPoints() {
+  //   this.pointService.getAllPoints().subscribe(
+  //     (res) => {
+  //       this.pointsList = res.data;
+  //     },
+  //   );
+  // }
+  onPageIndexChange(pageIndex: number): void {
+    this.currentPage = pageIndex;
+    this.getPagePoints(this.currentPage, this.pageSize);
+  }
+  onPageSizeChange(pageSize: number): void {
+    this.pageSize = pageSize;
+    this.currentPage = 1; // 重置到第一頁
+    this.getPagePoints(this.currentPage, this.pageSize);
+  }
+  // 取得分頁點數
+  getPagePoints(page: number, perpage: number) {
+    this.loading = true;
+    this.pointService.getPagePoints(page, perpage).subscribe({
+      next: (res) => {
+        // console.log('API Response:', res);
+        if (res && res.data) {
+          this.pointsList = res.data.data || [];
+          this.total = res.data.total || 0;
+          // 清除當前頁的選取狀態
+          this.setOfCheckedId.clear();
+          this.refreshCheckedStatus();
+        }
+        this.loading = false;
       },
-    );
+      error: (error) => {
+        console.error('Error fetching page points:', error);
+        this.pointsList = [];
+        this.total = 0;
+        this.loading = false;
+      }
+    });
   }
 
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }
-
->>>>>>> 667877c58115e0fefb9c8ead7357aa9fec09ac7d
-
-  toggleCollapsed(): void {
-    this.sidebarService.toggleCollapsed();
-  }
-
-  
 }
