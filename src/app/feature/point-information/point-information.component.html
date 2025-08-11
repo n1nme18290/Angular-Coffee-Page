@@ -5,7 +5,36 @@
     </button>
     <h2 nz-typography class="h2">點數資訊</h2>
 </nz-header>
+<<<<<<< HEAD
 
 <nz-content>
     
 </nz-content>
+=======
+<nz-content></nz-content>
+
+<div class="point-information-container">
+    <div>
+        <nz-table #basicTable [nzData]="pointsList" [nzBordered]="true" [nzSize]="'middle'" [nzShowPagination]="false">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>會員ID</th>
+                    <th>點數數量</th>
+                    <th>上次登入時間</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (data of basicTable.data; track data.id) {
+                <tr>
+                    <td>{{ data.id }}</td>
+                    <td>{{ data.member_id }}</td>
+                    <td>{{ data.balance }}</td>
+                    <td>{{ data.updated_at }}</td>
+                </tr>
+                }
+            </tbody>
+        </nz-table>
+    </div>
+</div>
+>>>>>>> 667877c58115e0fefb9c8ead7357aa9fec09ac7d
