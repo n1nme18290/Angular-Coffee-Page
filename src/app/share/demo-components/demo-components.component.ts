@@ -13,7 +13,7 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule} from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
-import {NzTableModule} from 'ng-zorro-antd/table';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 interface Person {
   id: number;
