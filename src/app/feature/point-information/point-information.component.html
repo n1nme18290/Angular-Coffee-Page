@@ -5,29 +5,52 @@
     </button>
     <h2 nz-typography class="h2">點數資訊</h2>
 </nz-header>
-<nz-content></nz-content>
+<!-- <nz-content></nz-content> -->
 
 <div class="point-information-container">
-    <div>
-        <nz-table #basicTable [nzData]="pointsList" [nzBordered]="true" [nzSize]="'middle'" [nzShowPagination]="false">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>會員ID</th>
-                    <th>點數數量</th>
-                    <th>上次登入時間</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (data of basicTable.data; track data.id) {
-                <tr>
-                    <td>{{ data.id }}</td>
-                    <td>{{ data.member_id }}</td>
-                    <td>{{ data.balance }}</td>
-                    <td>{{ data.updated_at }}</td>
-                </tr>
-                }
-            </tbody>
-        </nz-table>
+    <div class="send-request">
+        <button nz-button nzType="primary" [disabled]="setOfCheckedId.size === 0" [nzLoading]="loading"
+            (click)="sendRequest()">
+            Send Request
+        </button>
+        <span>Selected {{ setOfCheckedId.size }} items</span>
     </div>
+    <nz-table #basicTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading" [nzShowPagination]="true" 
+        [nzFrontPagination]="false" [nzPageIndex]="currentPage" [nzPageSize]="pageSize" [nzTotal]="total"
+        [nzShowSizeChanger]="true" [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onPageIndexChange($event)"
+        (nzPageSizeChange)="onPageSizeChange($event)" (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
+        <thead>
+            <tr>
+                <th [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)">
+                    Select all</th>
+                <th>ID</th>
+                <th>會員ID</th>
+                <th>點數數量</th>
+                <th>上次登入時間</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (pointsList && pointsList.length > 0) {
+            @for (data of pointsList; track data.id) {
+            <tr>
+                <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
+                <td>{{ data.id }}</td>
+                <td>{{ data.member_id }}</td>
+                <td>{{ data.balance }}</td>
+                <td>{{ data.updated_at }}</td>
+            </tr>
+            }
+            } @else {
+            <tr>
+                <td colspan="5" class="text-center">
+                    @if (loading) {
+                    載入中...
+                    } @else {
+                    暫無資料
+                    }
+                </td>
+            </tr>
+            }
+        </tbody>
+    </nz-table>
 </div>
