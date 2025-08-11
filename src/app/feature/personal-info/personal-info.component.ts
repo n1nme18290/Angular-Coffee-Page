@@ -37,7 +37,7 @@ export class PersonalInfoComponent {
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }
-
+  username = 'User1'
   userpoint = 175
 
   get coffeeCount(): number {
