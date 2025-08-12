@@ -20,7 +20,7 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 
 import { Router } from '@angular/router';
 
-import { SidebarService } from '../sidebar.service';
+import { SidebarService } from '../service/sidebar.service';
 @Component({
   selector: 'app-main-page',
   standalone: true,

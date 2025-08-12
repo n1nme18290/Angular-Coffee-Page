@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
 
-import { SidebarService } from '../../share/sidebar.service';
+import { SidebarService } from '../../share/service/sidebar.service';
 @Component({
   selector: 'app-backend-management',
   standalone: true,

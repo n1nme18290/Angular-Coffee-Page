@@ -18,17 +18,17 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 
-import { SidebarService } from '../../share/sidebar.service';
+import { SidebarService } from '../../share/service/sidebar.service';
 
 @Component({
   selector: 'app-equipment',
   standalone: true,
   imports: [
-    RouterOutlet, CommonModule, // 新增 CommonModule
-    NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, 
-    NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule, 
+    CommonModule, // 新增 CommonModule
+    NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule,
+    NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule,
     NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzRadioModule
-  ],
+],
   templateUrl: './equipment.component.html',
   styleUrl: './equipment.component.scss'
 })

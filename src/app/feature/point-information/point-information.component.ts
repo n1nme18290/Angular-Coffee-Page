@@ -22,7 +22,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 
-import { SidebarService } from '../../share/sidebar.service';
+import { SidebarService } from '../../share/service/sidebar.service';
 import { Observable } from 'rxjs';
 import { IApiResponsePoints } from '../../share/service/model';
 @Component({
@@ -61,6 +61,7 @@ export class PointInformationComponent {
     // Logic that needs to run after the view has been initialized can go here
   }
 
+  // 更新選取的ID集合
   updateCheckedSet(id: string, checked: boolean): void {
     if (checked) {
       this.setOfCheckedId.add(id);
@@ -68,29 +69,30 @@ export class PointInformationComponent {
       this.setOfCheckedId.delete(id);
     }
   }
-
+  // 當前頁面數據變更時
   onCurrentPageDataChange(listOfCurrentPageData: readonly IApiResponsePoints[]): void {
     this.listOfCurrentPageData = listOfCurrentPageData;
     this.refreshCheckedStatus();
   }
-
+  // 刷新選取狀態
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData.filter(({ balance }) => balance >= 0);
     this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
     this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
   }
-
+  // 單項選取狀態變更時
   onItemChecked(id: string, checked: boolean): void {
     this.updateCheckedSet(id, checked);
     this.refreshCheckedStatus();
   }
-
+  // 全選狀態變更時
   onAllChecked(checked: boolean): void {
     this.listOfCurrentPageData
       .filter(({ balance }) => balance >= 0)
       .forEach(({ id }) => this.updateCheckedSet(id, checked));
     this.refreshCheckedStatus();
   }
+  // 發送請求，後續要修改為有用的功能或是拿掉
   sendRequest(): void {
     this.loading = true;
     const requestData = this.pointsList.filter(data => this.setOfCheckedId.has(String(data.id)));
@@ -101,19 +103,12 @@ export class PointInformationComponent {
       this.loading = false;
     }, 1000);
   }
-
-  // 取得所有點數
-  // getAllPoints() {
-  //   this.pointService.getAllPoints().subscribe(
-  //     (res) => {
-  //       this.pointsList = res.data;
-  //     },
-  //   );
-  // }
+  // 當前頁面數據變更時
   onPageIndexChange(pageIndex: number): void {
     this.currentPage = pageIndex;
     this.getPagePoints(this.currentPage, this.pageSize);
   }
+  // 一頁幾筆變更時，
   onPageSizeChange(pageSize: number): void {
     this.pageSize = pageSize;
     this.currentPage = 1; // 重置到第一頁
@@ -142,7 +137,7 @@ export class PointInformationComponent {
       }
     });
   }
-
+  // 切換側邊欄展開/收起狀態
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }

@@ -20,7 +20,10 @@ import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 
-import { SidebarService } from '../../share/sidebar.service';
+import { SidebarService } from '../../share/service/sidebar.service';
+import { Observable, of } from 'rxjs';
+import { IApiResponse, IApiResponsePoints } from '../../share/service/model';
+import { PointService } from '../../share/service/service';
 
 @Component({
   selector: 'app-personal-info',
@@ -32,7 +35,15 @@ import { SidebarService } from '../../share/sidebar.service';
   styleUrl: './personal-info.component.scss'
 })
 export class PersonalInfoComponent {
-  constructor(public sidebarService: SidebarService) { }
+  constructor(
+    public sidebarService: SidebarService,
+    public pointService: PointService
+  ) { }
+
+  ngOnInit(): void {
+    // this.getPointByMemberId("ea1b587d-f6db-4dcb-b555-0b8f98c02a75");
+    // this.addMemberpoints("ea1b587d-f6db-4dcb-b555-0b8f98c02a75", "e9a3c47b-be77-486f-beeb-0551518d6948", 10);
+  }
 
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
@@ -60,8 +71,32 @@ export class PersonalInfoComponent {
     return messages;
   }
 
+  // 透過 MemberId 取得點數
+  getPointByMemberId(memberId: string) {
+    this.pointService.getPointByMemberId(memberId).subscribe({
+      next: (response) => {
+        console.log('Point data:', response);
+        return response;
+      },
+      error: (error) => {
+        console.error('Error fetching point data:', error);
+        return of(null);
+      }
+    });
+  }
 
-
-
+  //增加點數或轉贈點數
+  addMemberpoints(memberId: string, targetMemberId: string, balance: number) {
+    this.pointService.addMemberpoints(memberId, targetMemberId, balance).subscribe({
+      next: (response) => {
+        console.log('Add member points response:', response);
+        return response;
+      },
+      error: (error) => {
+        console.error('Error adding member points:', error);
+        return of(null);
+      }
+    });
+  }
 
 }

@@ -18,7 +18,8 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
 
 
-import { SidebarService } from '../../share/sidebar.service';
+import { SidebarService } from '../../share/service/sidebar.service';
+import { PointService } from '../../share/service/service';
 
 @Component({
   selector: 'app-historical-record',
@@ -30,7 +31,11 @@ import { SidebarService } from '../../share/sidebar.service';
   styleUrl: './historical-record.component.scss'
 })
 export class HistoricalRecordComponent {
-  constructor(public sidebarService: SidebarService) { }
+  constructor(
+    public sidebarService: SidebarService,
+    public pointService: PointService
+  
+  ) { }
 
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
@@ -56,4 +61,21 @@ export class HistoricalRecordComponent {
 
 
 
+  // 查詢指定會員的點數異動紀錄
+  getMemberPointsHistory(memberId: string) {
+    this.pointService.getMemberLog(memberId, 1, 10).subscribe({
+      next: (response) => {
+        if (response.isSuccess) {
+          console.log('Member Points History:', response.data);
+          return response.data;
+        } else {
+          console.error('Error fetching member points history:', response.message);
+          return response.message;
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching member points history:', error);
+      }
+    });
+  }
 }
