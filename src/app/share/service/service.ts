@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { IApiResponse, IApiResponsePages, IApiResponsePointsHistory } from './model';
+import { IApiResponse, IApiResponsePages, IApiResponsePointsHistory, IApiResponseProduct } from './model';
 import { IApiResponsePoints } from './model';
 
 @Injectable({
@@ -13,6 +13,8 @@ export class PointService {
   http = inject(HttpClient);
   url = 'http://10.25.1.172:5054';
   PointsUrl = "/Points/Points/";
+  LogUrl = "/Logs/Log/";
+  ProductUrl = "/Product/Product/";
 
   // 取得所有點數
   // getAllPoints(): Observable<IApiResponse<IApiResponsePoints[]>> {
@@ -45,26 +47,53 @@ export class PointService {
     };
     return this.http.put<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
   }
+  // 兌換商品
+  exchangeProduct(memberId: string, productId: string): Observable<IApiResponse<IApiResponsePoints>> {
+    const apiUrl = `${this.url}${this.PointsUrl}exchange_product`;
+    const requestBody = {
+      memberId: memberId,
+      productId: productId
+    };
+    return this.http.put<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
+  }
 
 
   // Log 相關API
   // 查詢指定會員的點數異動紀錄
   getMemberLog(memberId: string, page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
-    const apiUrl = `${this.url}${this.PointsUrl}get_member_log?page=${page}&perPage=${perPage}`;
+    const apiUrl = `${this.url}${this.LogUrl}get_member_log?page=${page}&perPage=${perPage}`;
     const requestBody = {
       memberId: memberId,
     };
     return this.http.post<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl, requestBody);
   }
   getAllLog(): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
-    const apiUrl = `${this.url}${this.PointsUrl}get_all_log`;
+    const apiUrl = `${this.url}${this.LogUrl}get_all_log`;
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl);
   }
   // 分頁查詢點數異動紀錄
   getPageLog(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
-    const apiUrl = `${this.url}${this.PointsUrl}get_page_log?page=${page}&perPage=${perPage}`;
+    const apiUrl = `${this.url}${this.LogUrl}get_page_log?page=${page}&perPage=${perPage}`;
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl);
   }
 
 
+  // Product 相關Api
+  // 建立商品品項
+  createProduct(name: string, description: string, category: string, points_required: number, status: number): Observable<IApiResponse<IApiResponsePoints>> {
+    const apiUrl = `${this.url}${this.ProductUrl}create_product`;
+    const requestBody = {
+      name: name,
+      description: description,
+      category: category,
+      points_required: points_required,
+      status: status
+    };
+    return this.http.post<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
+  }
+  // 分頁查詢商品項目
+  getPageProduct(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseProduct>>> {
+    const apiUrl = `${this.url}${this.ProductUrl}get_page_product?page=${page}&perPage=${perPage}`;
+    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseProduct>>>(apiUrl);
+  }
 }
