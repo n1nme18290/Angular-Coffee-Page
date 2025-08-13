@@ -33,9 +33,6 @@ button[nz-button].btn-styles4 {
     border: 2px solid #27496D; 
 }
 
-
-
-
 .input-block {
     display: flex;
     flex-direction: column;
@@ -44,7 +41,6 @@ button[nz-button].btn-styles4 {
 
     input[nz-input] {
         border-radius: 10px;
-
         width: 100%;
     }
 
@@ -53,7 +49,6 @@ button[nz-button].btn-styles4 {
         border-radius: 10px;
         width: 100%;
 
-
         .ant-input-wrapper {
             border-radius: 10px;
         }
@@ -61,44 +56,66 @@ button[nz-button].btn-styles4 {
 }
 
 .trigger {
-        font-size: 18px;
-        line-height: 64px;
-        padding: 0 24px;
-        cursor: pointer;
-        transition: color 0.3s;
-      }
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
 
+.logo {
+    height: 32px;
+    background-color:#001529;
+    margin: 16px;
+}
 
-      .logo {
-        height: 32px;
-        background-color:#001529;
-        margin: 16px;
-      }
-
-      nz-breadcrumb {
-        margin: 16px 0;
-      }
+nz-breadcrumb {
+    margin: 16px 0;
+}
 
 .h2 {
     color: #ffffff;
 }
 
 .menu-item-large {
-  font-size: 24px; 
+    font-size: 24px; 
 }
 
-
 .menu-container {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 64px); //減去 logo高度 
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px); //減去 logo高度 
 }
 
 .main-menu {
-  flex: 1; // 佔據剩餘空間 
+    flex: 1; // 佔據剩餘空間 
 }
 
 .logout-menu {
-  margin-top: auto; //推到最底不
+    margin-top: auto; //推到最底不
 }
 
+nz-sider {   
+    position: fixed;   
+    left: 0;   
+    top: 0;   
+    bottom: 0;   
+    width: 300px;   
+    display: flex;   
+    flex-direction: column; 
+}
+
+/* 側欄 */
+nz-sider.ant-layout-sider-collapsed {
+    width: 80px;
+}
+
+nz-layout > nz-layout { //選nz-layout裡面的
+    margin-left: 300px;
+    transition: margin-left 0.2s; // 動畫
+}
+
+/*主內容區 */
+nz-sider.ant-layout-sider-collapsed + nz-layout { //選同時有 nz-sider   ant-layout-sider-collapsed
+    margin-left: 80px;
+}
