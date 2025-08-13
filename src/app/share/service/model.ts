@@ -1,4 +1,4 @@
-export interface IApiResponse <T> {
+export interface IApiResponse<T> {
     data: T;
     isSuccess: boolean;
     message: string;
@@ -29,3 +29,14 @@ export interface IApiResponsePointsHistory {
     description: string
     created_at: string
 }
+export interface IApiResponseProduct {
+    id: string
+    name: string
+    description: string
+    category: string
+    points_required: number
+    status: number
+    created_at: string
+    updated_at: string
+}
+
