@@ -50,6 +50,7 @@ export class PersonalInfoComponent {
   }
   username = 'User1'
   userpoint = 175
+  Date = '25/10/31'
 
   get coffeeCount(): number {
     return Math.floor(this.userpoint / 100);

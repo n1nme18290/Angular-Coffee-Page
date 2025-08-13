@@ -20,6 +20,7 @@ import { PointService } from '../../share/service/service';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 
 
 import { SidebarService } from '../../share/service/sidebar.service';
@@ -29,7 +30,7 @@ import { IApiResponsePoints } from '../../share/service/model';
   selector: 'app-point-information',
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
-    , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
+    , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,NzGridModule,
     NzRadioModule, NzModalModule, CommonModule, NzTableModule, NzDividerModule, NzCheckboxModule],
   templateUrl: './point-information.component.html',
   styleUrl: './point-information.component.scss'

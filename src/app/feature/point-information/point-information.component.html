@@ -5,7 +5,16 @@
     </button>
     <h2 nz-typography class="h2">點數資訊</h2>
 </nz-header>
-<!-- <nz-content></nz-content> -->
+<nz-content>
+        <div nz-row class="row-style">
+        <div nz-col [nzSpan]="12" class="left-col">
+        <h2 nz-typography class="boxword">點數資料庫</h2>
+    </div>
+    </div>
+
+</nz-content>
+
+
 
 <div class="point-information-container">
     <div class="send-request">
@@ -15,7 +24,7 @@
         </button>
         <span>Selected {{ setOfCheckedId.size }} items</span>
     </div>
-    <nz-table #basicTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading" [nzShowPagination]="true" 
+    <nz-table #basicTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading" [nzShowPagination]="true"
         [nzFrontPagination]="false" [nzPageIndex]="currentPage" [nzPageSize]="pageSize" [nzTotal]="total"
         [nzShowSizeChanger]="true" [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onPageIndexChange($event)"
         (nzPageSizeChange)="onPageSizeChange($event)" (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
