@@ -3,7 +3,7 @@ button[nz-button] {
     margin-bottom: 12px;
     height: 40px; //增加上下寬度
     border-radius: 100px; //圓角設定
-    border: 1.5px solid #ffffff; //邊框設定
+    border: 1.5px solid #27496D; //邊框設定
     font-weight: bold; //粗體
 
     background-color: #ffffff; //顏色設定
@@ -202,3 +202,8 @@ h3 {
     font-size: 16px;
     word-break: break-word;
 }
+
+//qr
+nz-qrcode {
+        margin-right: 12px;
+      }

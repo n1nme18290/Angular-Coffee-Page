@@ -14,11 +14,12 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
-import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 
 import { SidebarService } from '../../share/service/sidebar.service';
 import { Observable, of } from 'rxjs';
@@ -28,16 +29,20 @@ import { PointService } from '../../share/service/service';
 @Component({
   selector: 'app-personal-info',
   standalone: true,
-  imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
-    , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
-    NzRadioModule, NzModalModule, CommonModule, NzDividerModule,NzGridModule,NzCarouselModule],
+  imports: [
+    NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule,
+    NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule,
+    NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzRadioModule, NzModalModule,
+    CommonModule, NzDividerModule, NzGridModule, NzCarouselModule, NzQRCodeModule
+  ],
   templateUrl: './personal-info.component.html',
   styleUrl: './personal-info.component.scss'
 })
 export class PersonalInfoComponent {
   constructor(
     public sidebarService: SidebarService,
-    public pointService: PointService
+    public pointService: PointService,
+
   ) { }
 
   ngOnInit(): void {
@@ -48,10 +53,12 @@ export class PersonalInfoComponent {
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }
-  username = 'User1'
-  userpoint = 175
-  Date = '25/10/31'
 
+  username = 'User1';
+  userpoint = 10;
+  Date = '25/10/31';
+
+  // 輪換通知
   get coffeeCount(): number {
     return Math.floor(this.userpoint / 100);
   }
@@ -61,43 +68,113 @@ export class PersonalInfoComponent {
   get isExact(): boolean {
     return this.userpoint % 100 === 0;
   }
-
   get carouselMessages(): string[] {
-    const messages = [
+    return [
       `目前可兌換 ${this.coffeeCount} 杯咖啡`,
       `再 ${this.pointsToNextCoffee} 點即可再兌換一杯！`,
       '試試轉贈點數給朋友',
       '趕緊兌換咖啡吧！'
     ];
-    return messages;
   }
 
   // 透過 MemberId 取得點數
   getPointByMemberId(memberId: string) {
     this.pointService.getPointByMemberId(memberId).subscribe({
       next: (response) => {
+        this.userpoint = response.data.balance;
+        this.username = response.data.member_id;
         console.log('Point data:', response);
-        return response;
       },
       error: (error) => {
         console.error('Error fetching point data:', error);
-        return of(null);
       }
     });
   }
 
-  //增加點數或轉贈點數
+  // 增加點數或轉贈點數
   addMemberpoints(memberId: string, targetMemberId: string, balance: number) {
     this.pointService.addMemberpoints(memberId, targetMemberId, balance).subscribe({
       next: (response) => {
         console.log('Add member points response:', response);
-        return response;
+        alert('轉贈成功！');
       },
       error: (error) => {
         console.error('Error adding member points:', error);
-        return of(null);
+        alert('轉贈失敗，請稍後再試');
+        this.userpoint += balance;
       }
     });
   }
 
+  // 轉贈點數彈跳視窗
+  addpointisVisible = false;
+  addpointselectedValue: string | null = null;
+  pointvalue?: number;
+
+  addpointModal(): void {
+    this.addpointisVisible = true;
+  }
+
+  confirmAddPoint() {
+    if (!this.addpointselectedValue) {
+      alert('請選擇轉贈人');
+      return;
+    }
+
+    if (!this.pointvalue || this.pointvalue <= 0) {
+      alert('請輸入點數');
+      return;
+    }
+
+    if (this.userpoint < this.pointvalue) {
+      alert('點數不足');
+      return;
+    }
+
+    const currentUserId = 'user1';
+    const targetId = this.addpointselectedValue;
+    const balance = this.pointvalue;
+
+    // 扣前端畫面點數
+    this.userpoint -= balance;
+
+    //addMemberpoints API
+    this.addMemberpoints(currentUserId, targetId, balance);
+
+
+    this.addpointisVisible = false;
+  }
+
+  addpointhandleCancel(): void {
+    this.addpointisVisible = false;
+  }
+
+
+
+  // 兌換點數彈跳視窗
+  usepointisVisible = false;
+  usepointselectedValue: string | null = null;
+  capvalue?: number;
+
+  usepointModal(): void {
+    this.usepointisVisible = true;
+  }
+
+  usepointhandleOk(): void {
+    this.usepointisVisible = false;
+    this.qrcodeStatus = 'loading';
+  }
+
+  usepointhandleCancel(): void {
+    this.usepointisVisible = false;
+  }
+
+  //qrcode
+  qrcodeValue: string = '';
+  qrcodeStatus: 'active' | 'loading' | 'expired' = 'loading';
+
+  confirmExchange() {
+    this.qrcodeValue = 'https://ng.ant.design/111111';
+    this.qrcodeStatus = 'active'; // 變成正常 QRCode
+  }
 }
