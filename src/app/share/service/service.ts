@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { IApiResponse, IApiResponsePages, IApiResponsePointsHistory, IApiResponseProduct } from './model';
+import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseProduct } from './model';
 import { IApiResponsePoints } from './model';
 
 @Injectable({
@@ -15,19 +15,22 @@ export class PointService {
   PointsUrl = "/Points/Points/";
   LogUrl = "/Logs/Log/";
   ProductUrl = "/Product/Product/";
+  AdminUrl = "/Admin/Admin/";
+  AuthUrl = "/Auth/Auth/";
+  MemberUrl = "/Member/Member/";
+  DeviceUrl = "/Device/Device/";
 
+  // Points 相關API
   // 取得所有點數
-  // getAllPoints(): Observable<IApiResponse<IApiResponsePoints[]>> {
-  //   const apiUrl = `${this.url}${this.PointsUrl}get_all_points`;
-  //   return this.http.get<IApiResponse<IApiResponsePoints[]>>(apiUrl);
-  // }
-  
+  getAllPoints(): Observable<IApiResponse<IApiResponsePoints[]>> {
+    const apiUrl = `${this.url}${this.PointsUrl}get_all_points`;
+    return this.http.get<IApiResponse<IApiResponsePoints[]>>(apiUrl);
+  }
   // 取得分頁點數
   getPagePoints(page: number, perpage: number): Observable<IApiResponse<IApiResponsePages<IApiResponsePoints>>> {
     const apiUrl = `${this.url}${this.PointsUrl}get_page_points?page=${page}&per_page=${perpage}`;
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePoints>>>(apiUrl);
   }
-
   // 取得單一點數
   getPointByMemberId(memberId: string): Observable<IApiResponse<IApiResponsePoints>> {
     const apiUrl = `${this.url}${this.PointsUrl}get_member_points`;
@@ -36,7 +39,6 @@ export class PointService {
     };
     return this.http.post<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
   }
-
   // 轉贈點數
   addMemberpoints(memberId: string, targetMemberId: string, balance: number): Observable<IApiResponse<IApiResponsePoints>> {
     const apiUrl = `${this.url}${this.PointsUrl}add_member_points`;
@@ -57,7 +59,6 @@ export class PointService {
     return this.http.put<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
   }
 
-
   // Log 相關API
   // 查詢指定會員的點數異動紀錄
   getMemberLog(memberId: string, page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
@@ -67,6 +68,7 @@ export class PointService {
     };
     return this.http.post<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl, requestBody);
   }
+  // 查詢所有點數異動紀錄
   getAllLog(): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
     const apiUrl = `${this.url}${this.LogUrl}get_all_log`;
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl);
@@ -76,7 +78,6 @@ export class PointService {
     const apiUrl = `${this.url}${this.LogUrl}get_page_log?page=${page}&perPage=${perPage}`;
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl);
   }
-
 
   // Product 相關Api
   // 建立商品品項
@@ -95,5 +96,163 @@ export class PointService {
   getPageProduct(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseProduct>>> {
     const apiUrl = `${this.url}${this.ProductUrl}get_page_product?page=${page}&perPage=${perPage}`;
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponseProduct>>>(apiUrl);
+  }
+
+  // Admin 相關API
+  // 取得所有管理員
+  getAllAdmins(): Observable<IApiResponse<IApiResponseAdmin>> {
+    const apiUrl = `${this.url}${this.AdminUrl}get_all_admins`;
+    return this.http.get<IApiResponse<IApiResponseAdmin>>(apiUrl);
+  }
+  // 分頁取得管理員
+  getPageAdmins(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseAdmin>>> {
+    const apiUrl = `${this.url}${this.AdminUrl}get_page_admins?page=${page}&perPage=${perPage}`;
+    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseAdmin>>>(apiUrl);
+  }
+  // 依 id 查詢管理員
+  getAdmin(id: string): Observable<IApiResponse<IApiResponseAdmin>> {
+    const apiUrl = `${this.url}${this.AdminUrl}get_admin`;
+    const requestBody = {
+      id: id
+    };
+    return this.http.post<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
+  }
+  // 建立管理員
+  createAdmin(name: string, email: string, password: string, premission: number, status: string): Observable<IApiResponse<IApiResponseAdmin>> {
+    const apiUrl = `${this.url}${this.AdminUrl}create_admin`;
+    const requestBody = {
+      name: name,
+      email: email,
+      password: password,
+      premission: premission,
+      status: status
+    };
+    return this.http.post<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
+  }
+  // 更新管理員
+  updateAdmin(id: string, name: string, email: string, premission: number, status: string): Observable<IApiResponse<IApiResponseAdmin>> {
+    const apiUrl = `${this.url}${this.AdminUrl}update_admin`;
+    const requestBody = {
+      id: id,
+      name: name,
+      email: email,
+      premission: premission,
+      status: status
+    };
+    return this.http.put<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
+  }
+  // 變更密碼
+  changePassword(id: string, newPassword: string): Observable<IApiResponseNormal> {
+    const apiUrl = `${this.url}${this.AdminUrl}change_password`;
+    const requestBody = {
+      id: id,
+      newPassword: newPassword
+    };
+    return this.http.put<IApiResponseNormal>(apiUrl, requestBody);
+  }
+  // 設定帳號狀態（啟用/停用）
+  setAdminStatus(id: string, status: string): Observable<IApiResponse<IApiResponseAdmin>> {
+    const apiUrl = `${this.url}${this.AdminUrl}set_status`;
+    const requestBody = {
+      id: id,
+      status: status
+    };
+    return this.http.put<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
+  }
+
+  // Auth 相關API
+  // Admin 登入
+  // 帳：string 密：string
+  adminLogin(username: string, password: string): Observable<IApiResponse<IApiResponseAdminLogin>> {
+    const apiUrl = `${this.url}${this.AdminUrl}admin_login`;
+    const requestBody = {
+      email: username,
+      password: password
+    };
+    return this.http.post<IApiResponse<IApiResponseAdminLogin>>(apiUrl, requestBody);
+  }
+  
+  // Member 相關API
+  // 取得所有會員
+  getAllMembers(): Observable<IApiResponse<IApiResponsePages<IApiResponseMember>>> {
+    const apiUrl = `${this.url}${this.MemberUrl}get_all_members`;
+    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseMember>>>(apiUrl);
+  }
+  // 分頁取得會員
+  getPageMembers(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseMember>>> {
+    const apiUrl = `${this.url}${this.MemberUrl}get_page_members?page=${page}&perPage=${perPage}`;
+    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseMember>>>(apiUrl);
+  }
+  // 依 id 查詢會員
+  getMember(id: string): Observable<IApiResponse<IApiResponseMember>> {
+    const apiUrl = `${this.url}${this.MemberUrl}get_member`;
+    const requestBody = {
+      id: id
+    };
+    return this.http.post<IApiResponse<IApiResponseMember>>(apiUrl, requestBody);
+  }
+  // 建立會員 - 前端應該用不到
+  // createMember(student_id: string, card_id: string, title: string, identityLev: string, name: string, email: string, status: string): Observable<IApiResponse<IApiResponseMember>> {
+  //   const apiUrl = `${this.url}${this.MemberUrl}create_member`;
+  //   const requestBody = {
+  //     student_id: student_id,
+  //     card_id: card_id,
+  //     title: title,
+  //     identityLev: identityLev,
+  //     name: name,
+  //     email: email,
+  //     status: status
+  //   };
+  //   return this.http.post<IApiResponse<IApiResponseMember>>(apiUrl, requestBody);
+  // }
+  // 更新會員
+  updateMember(id: string, student_id: string, card_id: string, title: string, identityLev: string, name: string, email: string, status: string): Observable<IApiResponse<IApiResponseMember>> {
+    const apiUrl = `${this.url}${this.MemberUrl}update_member`;
+    const requestBody = {
+      id: id,
+      student_id: student_id,
+      card_id: card_id,
+      title: title,
+      identityLev: identityLev,
+      name: name,
+      email: email,
+      status: status
+    };
+    return this.http.put<IApiResponse<IApiResponseMember>>(apiUrl, requestBody);
+  }
+  setMemberStatus(id: string, status: string): Observable<IApiResponse<IApiResponseMember>> {
+    const apiUrl = `${this.url}${this.MemberUrl}set_status`;
+    const requestBody = {
+      id: id,
+      status: status
+    };
+    return this.http.put<IApiResponse<IApiResponseMember>>(apiUrl, requestBody);
+  }
+
+  // Device 相關API
+  // 創建新設備
+  createDevice(name: string, location: string, status: string, bean_level: number, water_level: number): Observable<IApiResponse<IApiResponseDevice>> {
+    const apiUrl = `${this.url}${this.DeviceUrl}create_device`;
+    const requestBody = {
+      name: name,
+      location: location,
+      status: status,
+      bean_level: bean_level,
+      water_level: water_level
+    };
+    return this.http.post<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
+  }
+  // 分頁查詢設備項目
+  getPageDevice(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseDevice>>> {
+    const apiUrl = `${this.url}${this.DeviceUrl}get_page_device?page=${page}&perPage=${perPage}`;
+    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseDevice>>>(apiUrl);
+  }
+  // 查詢單一設備狀態
+  getOneDevice(id: string): Observable<IApiResponse<IApiResponseDevice>> {
+    const apiUrl = `${this.url}${this.DeviceUrl}get_one_device`;
+    const requestBody = {
+      id: id
+    };
+    return this.http.post<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
   }
 }

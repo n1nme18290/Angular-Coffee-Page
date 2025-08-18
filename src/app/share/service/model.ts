@@ -3,6 +3,11 @@ export interface IApiResponse<T> {
     isSuccess: boolean;
     message: string;
 }
+export interface IApiResponseNormal {
+    data: boolean;
+    isSuccess: boolean;
+    message: string;
+}
 export interface IApiResponsePages<T> {
     data: T[];
     total: number;
@@ -40,3 +45,45 @@ export interface IApiResponseProduct {
     updated_at: string
 }
 
+export interface IApiResponseAdminLogin {
+    admin_id: string
+    name: string
+    email: string
+    premission: number
+    status: string
+    token: string
+}
+
+export interface IApiResponseDevice {
+    id: string
+    name: string
+    location: string
+    status: string
+    bean_level: number
+    water_level: number
+    created_at: string
+    updated_at: null
+}
+
+export interface IApiResponseAdmin {
+    id: string
+    name: string
+    email: string
+    premission: number
+    status: string
+    created_at: string
+    updated_at: string
+}
+
+export interface IApiResponseMember {
+    id: string
+    student_id: string
+    card_id: string
+    title: string
+    identityLev: number
+    name: string
+    email: string
+    status: string
+    created_at: string
+    updated_at: string
+}
