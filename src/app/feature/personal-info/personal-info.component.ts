@@ -24,7 +24,8 @@ import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 import { SidebarService } from '../../share/service/sidebar.service';
 import { Observable, of } from 'rxjs';
 import { IApiResponse, IApiResponsePoints ,IApiResponseMember,} from '../../share/service/model';
-import { PointService } from '../../share/service/service';
+import { PointService ,MemberService} from '../../share/service/service';
+
 
 @Component({
   selector: 'app-personal-info',
@@ -42,6 +43,7 @@ export class PersonalInfoComponent {
   constructor(
     public sidebarService: SidebarService,
     public pointService: PointService,
+    public memberService: MemberService
 
   ) { }
 
@@ -111,7 +113,7 @@ export class PersonalInfoComponent {
 
   getMember(id: string) {
     this.isLoadingMembers = true;
-    this.pointService.getMember(id).subscribe({
+    this.memberService.getMember(id).subscribe({
       next: (response) => {
         console.log('Member data:', response);
         if (response.data) {
