@@ -23,7 +23,7 @@ import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 
 import { SidebarService } from '../../share/service/sidebar.service';
 import { Observable, of } from 'rxjs';
-import { IApiResponse, IApiResponsePoints } from '../../share/service/model';
+import { IApiResponse, IApiResponsePoints ,IApiResponseMember,} from '../../share/service/model';
 import { PointService } from '../../share/service/service';
 
 @Component({
@@ -81,9 +81,8 @@ export class PersonalInfoComponent {
   getPointByMemberId(memberId: string) {
     this.pointService.getPointByMemberId(memberId).subscribe({
       next: (response) => {
-        this.userpoint = response.data.balance;
-        this.username = response.data.member_id;
         console.log('Point data:', response);
+        return response;
       },
       error: (error) => {
         console.error('Error fetching point data:', error);
@@ -106,6 +105,33 @@ export class PersonalInfoComponent {
     });
   }
 
+  //搜尋成員 依 id 查詢會員
+  members: IApiResponseMember[] = [];
+  isLoadingMembers = false;
+
+  getMember(id: string) {
+    this.isLoadingMembers = true;
+    this.pointService.getMember(id).subscribe({
+      next: (response) => {
+        console.log('Member data:', response);
+        if (response.data) {
+          this.members = [response.data]; 
+        }
+        this.isLoadingMembers = false;
+      },
+      error: (err) => {
+        console.error('Error fetching member:', err);
+        this.isLoadingMembers = false;
+      }
+    });
+  }
+
+  getMemberDisplayName(member: IApiResponseMember) {
+    return `${member.name} (${member.id})`; // 顯示名稱 ID
+  }
+
+
+
   // 轉贈點數彈跳視窗
   addpointisVisible = false;
   addpointselectedValue: string | null = null;
@@ -115,36 +141,11 @@ export class PersonalInfoComponent {
     this.addpointisVisible = true;
   }
 
-  confirmAddPoint() {
-    if (!this.addpointselectedValue) {
-      alert('請選擇轉贈人');
-      return;
-    }
-
-    if (!this.pointvalue || this.pointvalue <= 0) {
-      alert('請輸入點數');
-      return;
-    }
-
-    if (this.userpoint < this.pointvalue) {
-      alert('點數不足');
-      return;
-    }
-
-    const currentUserId = 'user1';
-    const targetId = this.addpointselectedValue;
-    const balance = this.pointvalue;
-
-    // 扣前端畫面點數
-    this.userpoint -= balance;
-
-    //addMemberpoints API
-    this.addMemberpoints(currentUserId, targetId, balance);
-
-
+    addpointhandleOk(): void {
     this.addpointisVisible = false;
   }
 
+  
   addpointhandleCancel(): void {
     this.addpointisVisible = false;
   }
@@ -169,6 +170,8 @@ export class PersonalInfoComponent {
     this.usepointisVisible = false;
   }
 
+
+  
   //qrcode
   qrcodeValue: string = '';
   qrcodeStatus: 'active' | 'loading' | 'expired' = 'loading';

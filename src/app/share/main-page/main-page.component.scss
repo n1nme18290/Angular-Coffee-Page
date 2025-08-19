@@ -105,7 +105,7 @@ nz-sider {
     flex-direction: column; 
 }
 
-/* 側欄 */
+//側欄 
 nz-sider.ant-layout-sider-collapsed {
     width: 80px;
 }
@@ -115,7 +115,7 @@ nz-layout > nz-layout { //選nz-layout裡面的
     transition: margin-left 0.2s; // 動畫
 }
 
-/*主內容區 */
+//主內容區 
 nz-sider.ant-layout-sider-collapsed + nz-layout { //選同時有 nz-sider   ant-layout-sider-collapsed
     margin-left: 80px;
 }
