@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -14,6 +14,9 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../share/service/service';
+
 
 
 @Component({
@@ -26,18 +29,33 @@ import { Router } from '@angular/router';
   styleUrl: './log-in.component.scss'
 })
 export class LogInComponent {
-  
 
+  email: string = '';
+  password: string = '';
   passwordVisible = false;
-  password?: string;
+  
+  constructor(private router: Router, private http: HttpClient, private authService: AuthService) {}
 
+  adminLogin() {
+    this.authService.adminLogin(this.email, this.password).subscribe({
+      next: (response) => {
+        // 處理成功登入的邏輯
+        console.log('登入成功', response.message);
+        // 登入成功導航到主頁面
+        this.router.navigate(['/personal-info']);
+      },
+      error: (error) => {
+        // 處理登入失敗的邏輯
+        console.error('登入失敗', error);
+      }
+    });
+  }
   //連結
-  constructor(private router: Router) {}
   GoRegister(){
     this.router.navigate(['/register']);
   }
-  GoPersonalInfo(){
-    this.router.navigate(['/personal-info']);
-  }
+  // GoPersonalInfo(){
+  //   this.router.navigate(['/personal-info']);
+  // }
 
 }

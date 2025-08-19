@@ -17,9 +17,8 @@ import { Router } from '@angular/router';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
 
-
 import { SidebarService } from '../../share/service/sidebar.service';
-import { PointService } from '../../share/service/service';
+import { LogService } from '../../share/service/service';
 
 @Component({
   selector: 'app-historical-record',
@@ -33,7 +32,7 @@ import { PointService } from '../../share/service/service';
 export class HistoricalRecordComponent {
   constructor(
     public sidebarService: SidebarService,
-    public pointService: PointService
+    public logService: LogService
   
   ) { }
 
@@ -63,7 +62,7 @@ export class HistoricalRecordComponent {
 
   // 查詢指定會員的點數異動紀錄
   getMemberPointsHistory(memberId: string) {
-    this.pointService.getMemberLog(memberId, 1, 10).subscribe({
+    this.logService.getMemberLog(memberId, 1, 10).subscribe({
       next: (response) => {
         if (response.isSuccess) {
           console.log('Member Points History:', response.data);

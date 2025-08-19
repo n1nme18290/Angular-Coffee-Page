@@ -7,20 +7,27 @@ import { IApiResponsePoints } from './model';
 @Injectable({
   providedIn: 'root'
 })
-export class PointService {
-  
+// 基底服務類別
+export abstract class BaseService {
+  protected http = inject(HttpClient);
+  protected readonly url = 'http://10.25.1.172:5054';
+  protected readonly PointsUrl = "/Points/Points/";
+  protected readonly LogUrl = "/Logs/Log/";
+  protected readonly ProductUrl = "/Product/Product/";
+  protected readonly AdminUrl = "/Admin/Admin/";
+  protected readonly AuthUrl = "/Auth/Auth/";
+  protected readonly MemberUrl = "/Member/Member/";
+  protected readonly DeviceUrl = "/Device/Device/";
   constructor() { }
-  http = inject(HttpClient);
-  url = 'http://10.25.1.172:5054';
-  PointsUrl = "/Points/Points/";
-  LogUrl = "/Logs/Log/";
-  ProductUrl = "/Product/Product/";
-  AdminUrl = "/Admin/Admin/";
-  AuthUrl = "/Auth/Auth/";
-  MemberUrl = "/Member/Member/";
-  DeviceUrl = "/Device/Device/";
-
-  // Points 相關API
+}
+// Points 相關API
+@Injectable({
+  providedIn: 'root'
+})
+export class PointService extends BaseService {
+  constructor() {
+    super();
+  }
   // 取得所有點數
   getAllPoints(): Observable<IApiResponse<IApiResponsePoints[]>> {
     const apiUrl = `${this.url}${this.PointsUrl}get_all_points`;
@@ -58,8 +65,16 @@ export class PointService {
     };
     return this.http.put<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
   }
+}
 
-  // Log 相關API
+// Log 相關API
+@Injectable({
+  providedIn: 'root'
+})
+export class LogService extends BaseService{
+    constructor() {
+    super();
+  }
   // 查詢指定會員的點數異動紀錄
   getMemberLog(memberId: string, page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
     const apiUrl = `${this.url}${this.LogUrl}get_member_log?page=${page}&perPage=${perPage}`;
@@ -78,8 +93,16 @@ export class PointService {
     const apiUrl = `${this.url}${this.LogUrl}get_page_log?page=${page}&perPage=${perPage}`;
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl);
   }
+}
 
-  // Product 相關Api
+// Product 相關Api
+@Injectable({
+  providedIn: 'root'
+})
+export class ProductService extends BaseService {
+    constructor() {
+    super();
+  }
   // 建立商品品項
   createProduct(name: string, description: string, category: string, points_required: number, status: number): Observable<IApiResponse<IApiResponsePoints>> {
     const apiUrl = `${this.url}${this.ProductUrl}create_product`;
@@ -97,8 +120,15 @@ export class PointService {
     const apiUrl = `${this.url}${this.ProductUrl}get_page_product?page=${page}&perPage=${perPage}`;
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponseProduct>>>(apiUrl);
   }
-
-  // Admin 相關API
+}
+// Admin 相關API
+@Injectable({
+  providedIn: 'root'
+})
+export class AdminService extends BaseService {
+    constructor() {
+    super();
+  }
   // 取得所有管理員
   getAllAdmins(): Observable<IApiResponse<IApiResponseAdmin>> {
     const apiUrl = `${this.url}${this.AdminUrl}get_all_admins`;
@@ -159,20 +189,34 @@ export class PointService {
     };
     return this.http.put<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
   }
-
-  // Auth 相關API
+}
+// Auth 相關API
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService extends BaseService {
+    constructor() {
+    super();
+  }
   // Admin 登入
   // 帳：string 密：string
-  adminLogin(username: string, password: string): Observable<IApiResponse<IApiResponseAdminLogin>> {
-    const apiUrl = `${this.url}${this.AdminUrl}admin_login`;
+  adminLogin(email: string, password: string): Observable<IApiResponse<IApiResponseAdminLogin>> {
+    const apiUrl = `${this.url}${this.AuthUrl}admin_login`;
     const requestBody = {
-      email: username,
+      email: email,
       password: password
     };
     return this.http.post<IApiResponse<IApiResponseAdminLogin>>(apiUrl, requestBody);
   }
-  
-  // Member 相關API
+}
+// Member 相關API
+@Injectable({
+  providedIn: 'root'
+})
+export class MemberService extends BaseService {
+  constructor() {
+    super();
+  }
   // 取得所有會員
   getAllMembers(): Observable<IApiResponse<IApiResponsePages<IApiResponseMember>>> {
     const apiUrl = `${this.url}${this.MemberUrl}get_all_members`;
@@ -228,8 +272,15 @@ export class PointService {
     };
     return this.http.put<IApiResponse<IApiResponseMember>>(apiUrl, requestBody);
   }
-
-  // Device 相關API
+}
+// Device 相關API
+@Injectable({
+  providedIn: 'root'
+})
+export class DeviceService extends BaseService {
+    constructor() {
+    super();
+  }
   // 創建新設備
   createDevice(name: string, location: string, status: string, bean_level: number, water_level: number): Observable<IApiResponse<IApiResponseDevice>> {
     const apiUrl = `${this.url}${this.DeviceUrl}create_device`;
