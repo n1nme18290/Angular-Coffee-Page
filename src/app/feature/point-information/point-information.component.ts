@@ -22,7 +22,6 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 
-
 import { SidebarService } from '../../share/service/sidebar.service';
 import { Observable } from 'rxjs';
 import { IApiResponsePoints } from '../../share/service/model';

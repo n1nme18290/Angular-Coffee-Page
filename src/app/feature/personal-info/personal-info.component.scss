@@ -158,9 +158,9 @@ nz-breadcrumb {
 
     display: flex;
     align-items: center;
-    /* 垂直置中 */
+
     justify-content: space-between;
-    /* 水平排列，並分散 */
+
 }
 
 .rulebox {
@@ -184,13 +184,15 @@ nz-breadcrumb {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 25px;   // 更小的高度
+    height: 25px;
+    min-height: 25px;  
     background: #FFD014;
     color: #ffffff;
     text-align: center;
     overflow: hidden;
     padding: 10px;
-    border-radius: 8px; 
+    border-radius: 8px;
+    box-sizing: border-box;
 }
 
 
@@ -203,7 +205,3 @@ h3 {
     word-break: break-word;
 }
 
-//qr
-nz-qrcode {
-        margin-right: 12px;
-      }

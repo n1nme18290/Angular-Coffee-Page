@@ -34,12 +34,12 @@
             <nz-divider></nz-divider>
             <button nz-button nzType="primary" nzBlock class="btn-styles2" (click)="addpointModal()"> <span nz-icon
                     nzType="swap" nzTheme="outline"></span>轉贈點數</button>
-            <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="null" nzWidth="520px" nzCentered>
+            <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="null" nzWidth="520px" nzCentered [nzClosable]="false">
                 <ng-container *nzModalContent>
                     <div>
                         <h5 nz-typography style="margin: 0;">選擇轉贈給:</h5>
                         <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇轉贈給" [(ngModel)]="addpointselectedValue"
-                            [nzLoading]="isLoadingMembers" style="width: 100%; margin-top: 10px;">
+                            [nzLoading]="isLoadingMembers"  style="width: 100%; margin-top: 10px;">
 
                             <nz-option *ngFor="let member of members" [nzLabel]="getMemberDisplayName(member)"
                                 [nzValue]="member.id">
@@ -69,20 +69,17 @@
             </button>
 
             <nz-modal [(nzVisible)]="usepointisVisible" nzTitle="兌換點數" [nzFooter]="usepointmodalFooter" nzWidth="520px"
-                nzCentered>
+                nzCentered [nzClosable]="false">
                 <ng-container *nzModalContent>
                     <div>
                         <h5 nz-typography style="margin: 0;">兌換杯數:</h5>
                         <input nz-input placeholder="輸入數量" [(ngModel)]="capvalue" type="number"
                             style="width: 100%; margin-top: 10px;" />
                         <br>
-                        <button nz-button style="width: 100%; margin-top: 10px;" class="btn-styles2"
-                            (click)="confirmExchange()">
-                            確認兌換
-                        </button>
+                        
                     </div>
                     <br>
-                    <nz-qrcode [nzValue]="qrcodeValue" [nzStatus]="qrcodeStatus"></nz-qrcode>
+                    
 
                 </ng-container>
 

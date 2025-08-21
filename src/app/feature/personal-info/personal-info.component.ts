@@ -165,7 +165,7 @@ export class PersonalInfoComponent {
 
   usepointhandleOk(): void {
     this.usepointisVisible = false;
-    this.qrcodeStatus = 'loading';
+
   }
 
   usepointhandleCancel(): void {
@@ -174,12 +174,5 @@ export class PersonalInfoComponent {
 
 
   
-  //qrcode
-  qrcodeValue: string = '';
-  qrcodeStatus: 'active' | 'loading' | 'expired' = 'loading';
 
-  confirmExchange() {
-    this.qrcodeValue = 'https://ng.ant.design/111111';
-    this.qrcodeStatus = 'active'; // 變成正常 QRCode
-  }
 }
