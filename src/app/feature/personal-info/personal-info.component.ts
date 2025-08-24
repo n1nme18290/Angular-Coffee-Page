@@ -23,8 +23,8 @@ import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 
 import { SidebarService } from '../../share/service/sidebar.service';
 import { Observable, of } from 'rxjs';
-import { IApiResponse, IApiResponsePoints ,IApiResponseMember,} from '../../share/service/model';
-import { PointService ,MemberService} from '../../share/service/service';
+import { IApiResponse, IApiResponsePoints, IApiResponseMember, } from '../../share/service/model';
+import { PointService, MemberService } from '../../share/service/service';
 
 
 @Component({
@@ -48,16 +48,18 @@ export class PersonalInfoComponent {
   ) { }
 
   ngOnInit(): void {
-    // this.getPointByMemberId("ea1b587d-f6db-4dcb-b555-0b8f98c02a75");
+    this.getPointByMemberId("ea1b587d-f6db-4dcb-b555-0b8f98c02a75");
+    this.getMember("272d8f6e-1578-4a4e-8848-62bf0e0755c1")
     // this.addMemberpoints("ea1b587d-f6db-4dcb-b555-0b8f98c02a75", "e9a3c47b-be77-486f-beeb-0551518d6948", 10);
   }
 
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
+
   }
 
-  username = 'User1';
-  userpoint = 10;
+  username: any;
+  userpoint: any;
   Date = '25/10/31';
 
   // 輪換通知
@@ -84,7 +86,8 @@ export class PersonalInfoComponent {
     this.pointService.getPointByMemberId(memberId).subscribe({
       next: (response) => {
         console.log('Point data:', response);
-        return response;
+        //return response;
+        this.userpoint = response.data.balance;
       },
       error: (error) => {
         console.error('Error fetching point data:', error);
@@ -107,31 +110,47 @@ export class PersonalInfoComponent {
     });
   }
 
-  //搜尋成員 依 id 查詢會員
+  // 依 id 查詢會員 / 顯示會員名稱
   members: IApiResponseMember[] = [];
-  isLoadingMembers = false;
+  isLoading = false;
+  selectedMember: string | null = null;
 
+    // 搜尋會員 (只更新下拉選單)
   getMember(id: string) {
-    this.isLoadingMembers = true;
+    if (!id) {
+      this.members = [];
+      return;
+    }
+    this.isLoading = true;
     this.memberService.getMember(id).subscribe({
       next: (response) => {
-        console.log('Member data:', response);
-        if (response.data) {
-          this.members = [response.data]; 
+        this.isLoading = false;
+        if (response && response.data) {
+          this.members = [response.data]; // 下拉選單的資料
+        } else {
+          this.members = [];
         }
-        this.isLoadingMembers = false;
       },
-      error: (err) => {
-        console.error('Error fetching member:', err);
-        this.isLoadingMembers = false;
+      error: () => {
+        this.isLoading = false;
+        this.members = [];
       }
     });
   }
 
-  getMemberDisplayName(member: IApiResponseMember) {
-    return `${member.name} (${member.id})`; // 顯示名稱 ID
+  //選重的會員
+  onSelectMember(memberId: string) {
+    this.memberService.getMember(memberId).subscribe({
+      next: (response) => {
+        if (response && response.data) {
+          this.username = response.data.name;
+        }
+      },
+      error: () => {
+        this.username = null;
+      }
+    });
   }
-
 
 
   // 轉贈點數彈跳視窗
@@ -143,11 +162,11 @@ export class PersonalInfoComponent {
     this.addpointisVisible = true;
   }
 
-    addpointhandleOk(): void {
+  addpointhandleOk(): void {
     this.addpointisVisible = false;
   }
 
-  
+
   addpointhandleCancel(): void {
     this.addpointisVisible = false;
   }
@@ -173,6 +192,6 @@ export class PersonalInfoComponent {
   }
 
 
-  
+
 
 }

@@ -34,18 +34,20 @@
             <nz-divider></nz-divider>
             <button nz-button nzType="primary" nzBlock class="btn-styles2" (click)="addpointModal()"> <span nz-icon
                     nzType="swap" nzTheme="outline"></span>轉贈點數</button>
-            <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="null" nzWidth="520px" nzCentered [nzClosable]="false">
+            <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="null" nzWidth="520px" nzCentered
+                [nzClosable]="false">
                 <ng-container *nzModalContent>
                     <div>
                         <h5 nz-typography style="margin: 0;">選擇轉贈給:</h5>
                         <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇轉贈給" [(ngModel)]="addpointselectedValue"
-                            [nzLoading]="isLoadingMembers"  style="width: 100%; margin-top: 10px;">
-
-                            <nz-option *ngFor="let member of members" [nzLabel]="getMemberDisplayName(member)"
-                                [nzValue]="member.id">
-                            </nz-option>
-
+                            [nzLoading]="isLoading" (nzOnSearch)="getMember($event)" 
+                            (ngModelChange)="onSelectMember($event)"  
+                            style="width: 100%; margin-top: 10px;"
+                            >
+                            <nz-option *ngFor="let member of members" [nzValue]="member.id"
+                                [nzLabel]="member.id + ' - ' + member.name"></nz-option>
                         </nz-select>
+
 
 
                     </div>
@@ -76,10 +78,10 @@
                         <input nz-input placeholder="輸入數量" [(ngModel)]="capvalue" type="number"
                             style="width: 100%; margin-top: 10px;" />
                         <br>
-                        
+
                     </div>
                     <br>
-                    
+
 
                 </ng-container>
 
