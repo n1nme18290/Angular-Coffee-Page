@@ -144,6 +144,7 @@ export class AdminService extends BaseService {
     const apiUrl = `${this.url}${this.AdminUrl}get_admin`;
     const requestBody = {
       id: id
+      
     };
     return this.http.post<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
   }

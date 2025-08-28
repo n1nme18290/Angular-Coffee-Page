@@ -21,6 +21,18 @@ button[nz-button].btn-styles2 {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+button[nz-button].btn-styles3 {
+    background-color: #F0F2F5;
+    color: #27496D;
+    box-shadow: none;
+    border: 0.1px solid #F0F2F5;
+    height: 40px;              /* 給高度 */
+    display: flex;
+    align-items: flex-end;     /* 文字靠下 */
+    justify-content: center;   /* 水平置中 */
+}
+
+
 
 button[nz-button].btn-styles4 { //不更動這是icon
     //icon 圓形
@@ -179,6 +191,14 @@ nz-breadcrumb {
     gap: 8px;
 }
 
+.titlebox {
+    width: 100%;
+    display: flex;
+    justify-content: left; /* 整體置中 */
+    align-items: center;     /* 垂直置中 */
+    gap: 10px;               /* 元素間距 */
+}
+
 //文字輪換框
 [nz-carousel-content] {
     display: flex;
@@ -203,5 +223,23 @@ h3 {
     line-height: 1.4;
     font-size: 16px;
     word-break: break-word;
+}
+
+//表格
+.point-information-container {
+    margin: 16px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.send-request {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.send-request span {
+    margin-left: 8px;
 }
 

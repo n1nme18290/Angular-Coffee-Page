@@ -20,11 +20,12 @@ import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 import { SidebarService } from '../../share/service/sidebar.service';
 import { Observable, of } from 'rxjs';
 import { IApiResponse, IApiResponsePoints, IApiResponseMember, } from '../../share/service/model';
-import { PointService, MemberService } from '../../share/service/service';
+import { PointService, MemberService ,AdminService,LogService} from '../../share/service/service';
 
 
 @Component({
@@ -34,7 +35,7 @@ import { PointService, MemberService } from '../../share/service/service';
     NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule,
     NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule,
     NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzRadioModule, NzModalModule,
-    CommonModule, NzDividerModule, NzGridModule, NzCarouselModule, NzQRCodeModule
+    CommonModule, NzDividerModule, NzGridModule, NzCarouselModule, NzQRCodeModule,NzTableModule
   ],
   templateUrl: './personal-info.component.html',
   styleUrl: './personal-info.component.scss'
@@ -43,13 +44,18 @@ export class PersonalInfoComponent {
   constructor(
     public sidebarService: SidebarService,
     public pointService: PointService,
-    public memberService: MemberService
+    public memberService: MemberService,
+    public adminservice: AdminService,
+    public logservice: LogService,
 
   ) { }
 
   ngOnInit(): void {
     this.getPointByMemberId("ea1b587d-f6db-4dcb-b555-0b8f98c02a75");
-    this.getMember("272d8f6e-1578-4a4e-8848-62bf0e0755c1")
+    this.getMember("819b2267-3c0b-432c-8d78-d5339de62dc6");
+    this.getAllMembers();
+    this.getMemberLog("ea1b587d-f6db-4dcb-b555-0b8f98c02a75",1,1);
+
     // this.addMemberpoints("ea1b587d-f6db-4dcb-b555-0b8f98c02a75", "e9a3c47b-be77-486f-beeb-0551518d6948", 10);
   }
 
@@ -85,7 +91,7 @@ export class PersonalInfoComponent {
   getPointByMemberId(memberId: string) {
     this.pointService.getPointByMemberId(memberId).subscribe({
       next: (response) => {
-        console.log('Point data:', response);
+        console.log('Point data get balance:', response);
         //return response;
         this.userpoint = response.data.balance;
       },
@@ -110,52 +116,50 @@ export class PersonalInfoComponent {
     });
   }
 
-  // 依 id 查詢會員 / 顯示會員名稱
-  members: IApiResponseMember[] = [];
-  isLoading = false;
-  selectedMember: string | null = null;
-
-    // 搜尋會員 (只更新下拉選單)
-  getMember(id: string) {
-    if (!id) {
-      this.members = [];
-      return;
-    }
-    this.isLoading = true;
+  
+  // 依 id 查詢會員名稱  
+  getMember(id: string ) {
     this.memberService.getMember(id).subscribe({
       next: (response) => {
-        this.isLoading = false;
-        if (response && response.data) {
-          this.members = [response.data]; // 下拉選單的資料
-        } else {
-          this.members = [];
-        }
+        console.log('Member data get ID:', response);
+        this.username = response.data.student_id;
       },
-      error: () => {
-        this.isLoading = false;
-        this.members = [];
+      error: (error) => {
+        console.error('Error fetching member:', error);
       }
     });
   }
 
-  //選重的會員
-  onSelectMember(memberId: string) {
-    this.memberService.getMember(memberId).subscribe({
-      next: (response) => {
-        if (response && response.data) {
-          this.username = response.data.name;
-        }
-      },
-      error: () => {
-        this.username = null;
-      }
-    });
-  }
+//取得所有成員
+members: IApiResponseMember[] = [];
+
+getAllMembers() {
+  this.memberService.getAllMembers().subscribe({
+    next: (response) => {
+      console.log("Member data:", response);
+      this.members = (response as any).data || []; 
+      
+    },
+    error: (error) => {
+      console.error("error get all member:", error);
+      this.members = [];
+    }
+  });
+}
+
+//點數異動紀錄 -- 查詢指定會員的點數異動紀錄
+getMemberLog(memberId: string, page: number, perPage: number){
+  this.logservice.getMemberLog(memberId,page,perPage).subscribe({
+
+  })
+
+}
+
 
 
   // 轉贈點數彈跳視窗
   addpointisVisible = false;
-  addpointselectedValue: string | null = null;
+  addpointselectedValue: string = '';
   pointvalue?: number;
 
   addpointModal(): void {
@@ -189,6 +193,25 @@ export class PersonalInfoComponent {
 
   usepointhandleCancel(): void {
     this.usepointisVisible = false;
+  }
+
+  //修改資料彈窗
+  reviseisVisible = false;
+  reviseselectedValue: string | null = null;
+  passwordvalue?: string;
+  namevalue?: string;
+
+  reviseModal(): void {
+    this.reviseisVisible = true;
+  }
+
+  revisehandleOk(): void {
+    this.reviseisVisible = false;
+
+  }
+
+  revisehandleCancel(): void {
+    this.reviseisVisible = false;
   }
 
 
