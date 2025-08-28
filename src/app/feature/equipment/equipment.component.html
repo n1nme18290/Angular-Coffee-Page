@@ -7,9 +7,62 @@
         <h2 nz-typography class="h2">設備管理頁面</h2>
     </nz-header>
     <nz-content>
-        <button (click)="GoEquipmentInformation()">暫時用 前往詳細資料頁面</button>
-
+        <div nz-row class="row-style">
+            <div nz-col [nzSpan]="12" class="left-col">
+                <h2 nz-typography class="boxword">設備清單</h2>
+            </div>
+        </div>
     </nz-content>
-    
 
+    <div class="devices-information-container">
+        <div class="send-request">
+            <button nz-button nzType="primary" [disabled]="setOfCheckedId.size === 0" [nzLoading]="loading"
+                (click)="sendRequest()">
+                Send Request
+            </button>
+            <span>Selected {{ setOfCheckedId.size }} items</span>
+        </div>
+        <nz-table #basicTable [nzData]="devicesList" [nzBordered]="true" [nzLoading]="loading" [nzShowPagination]="true"
+            [nzFrontPagination]="false" [nzPageIndex]="currentPage" [nzPageSize]="pageSize" [nzTotal]="total"
+            [nzShowSizeChanger]="true" [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onPageIndexChange($event)"
+            (nzPageSizeChange)="onPageSizeChange($event)" (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
+            <thead>
+                <tr>
+                    <th [nzChecked]="checked" [nzIndeterminate]="indeterminate"
+                        (nzCheckedChange)="onAllChecked($event)">
+                        Select all</th>
+                    <th>名稱</th>
+                    <th>地點</th>
+                    <th>狀態</th>
+                    <th>咖啡豆存量</th>
+                    <th>水位</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (devicesList && devicesList.length > 0) {
+                @for (data of devicesList; track data.id) {
+                <tr>
+                    <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)">
+                    </td>
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.location }}</td>
+                    <td>{{ data.status }}</td>
+                    <td>{{ data.bean_level }}</td>
+                    <td>{{ data.water_level }}</td>
+                </tr>
+                }
+                } @else {
+                <tr>
+                    <td colspan="5" class="text-center">
+                        @if (loading) {
+                        載入中...
+                        } @else {
+                        暫無資料
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </nz-table>
+    </div>
 </nz-layout>
