@@ -91,7 +91,7 @@ export class PersonalInfoComponent {
   getPointByMemberId(memberId: string) {
     this.pointService.getPointByMemberId(memberId).subscribe({
       next: (response) => {
-        console.log('Point data get balance:', response);
+        // console.log('Point data get balance:', response);
         //return response;
         this.userpoint = response.data.balance;
       },
@@ -121,7 +121,7 @@ export class PersonalInfoComponent {
   getMember(id: string ) {
     this.memberService.getMember(id).subscribe({
       next: (response) => {
-        console.log('Member data get ID:', response);
+        // console.log('Member data get ID:', response);
         this.username = response.data.student_id;
       },
       error: (error) => {
@@ -136,7 +136,7 @@ members: IApiResponseMember[] = [];
 getAllMembers() {
   this.memberService.getAllMembers().subscribe({
     next: (response) => {
-      console.log("Member data:", response);
+      // console.log("Member data:", response);
       this.members = (response as any).data || []; 
       
     },
