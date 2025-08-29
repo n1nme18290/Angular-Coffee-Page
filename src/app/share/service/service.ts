@@ -294,6 +294,18 @@ export class DeviceService extends BaseService {
     };
     return this.http.post<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
   }
+  updateDevice(device_id: string, name: string, location: string, status: string, bean_level: number, water_level: number): Observable<IApiResponse<IApiResponseDevice>> {
+    const apiUrl = `${this.url}${this.DeviceUrl}update_device`;
+    const requestBody = {
+      device_id: device_id,
+      name: name,
+      location: location,
+      status: status,
+      bean_level: bean_level,
+      water_level: water_level
+    };
+    return this.http.put<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
+  }
   // 分頁查詢設備項目
   getPageDevice(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseDevice>>> {
     const apiUrl = `${this.url}${this.DeviceUrl}get_page_device?page=${page}&perPage=${perPage}`;

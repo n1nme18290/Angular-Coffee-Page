@@ -1,6 +1,6 @@
 button[nz-button] {
     margin-right: 8px;
-    margin-bottom: 12px;
+    // margin-bottom: 12px;
     height: 40px; //增加上下寬度
     border-radius: 100px; //圓角設定
     border: 1px solid #27496D; //邊框設定
@@ -107,14 +107,6 @@ nz-breadcrumb {
     .right-col {
         padding: 16px;
     }
-
-    .left-col {
-        //background-color: #00aeff; 
-    }
-
-    .right-col {
-        //background-color: #ffeeab; 
-    }
 }
 
 
@@ -130,4 +122,9 @@ nz-breadcrumb {
     margin-top: 8px;
     margin-left: 8px;
     margin-bottom: 8px;
+}
+
+.createDeviceBtn {
+    margin-top: 16px;
+    margin-bottom: 16px;
 }

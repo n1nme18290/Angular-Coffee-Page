@@ -62,7 +62,7 @@ export interface IApiResponseDevice {
     bean_level: number
     water_level: number
     created_at: string
-    updated_at: null
+    updated_at: string
 }
 
 export interface IApiResponseAdmin {

@@ -56,6 +56,16 @@ export class EquipmentComponent {
   pageSize = 5;
   total = 0;
 
+
+  createDeviceVisible = false;
+  updateDeviceVisible = false;
+  editingDeviceId: string | null = null;
+  deviceName: string = '';
+  deviceLocation: string = '';
+  deviceStatus: string = '';
+  bean_level: number = 0;
+  water_level: number = 0;
+
   ngOnInit() {
     // Initialization logic can go here
     this.getPagePoints(1, 5);
@@ -65,6 +75,63 @@ export class EquipmentComponent {
     // Logic that needs to run after the view has been initialized can go here
   }
 
+  createDeviceModal() {
+    this.createDeviceVisible = true;
+  }
+  createDevice() {
+    this.deviceService.createDevice(this.deviceName, this.deviceLocation, this.deviceStatus, this.bean_level, this.water_level).subscribe({
+      next: (res) => {
+        // Handle successful creation
+        this.createDeviceVisible = false;
+        this.resetDeviceForm();
+        this.getPagePoints(this.currentPage, this.pageSize);
+      },
+      error: (error) => {
+        // Handle error
+        console.error('Error creating device:', error);
+      }
+    });
+  }
+
+  updateDeviceModal(device: IApiResponseDevice) {
+    this.editingDeviceId = device.id;
+    this.deviceName = device.name;
+    this.deviceLocation = device.location;
+    this.deviceStatus = device.status;
+    this.bean_level = device.bean_level;
+    this.water_level = device.water_level;
+    this.updateDeviceVisible = true;
+  }
+  updateDevice() {
+    if (!this.editingDeviceId) return;
+    this.deviceService.updateDevice(
+      this.editingDeviceId,
+      this.deviceName,
+      this.deviceLocation,
+      this.deviceStatus,
+      this.bean_level,
+      this.water_level
+    ).subscribe({
+      next: (res) => {
+        // Handle successful update
+        this.updateDeviceVisible = false;
+        this.resetDeviceForm();
+        this.getPagePoints(this.currentPage, this.pageSize);
+      },
+      error: (error) => {
+        // Handle error
+        this.resetDeviceForm();
+        console.error('Error updating device:', error);
+      }
+    });
+  }
+  resetDeviceForm() {
+    this.deviceName = '';
+    this.deviceLocation = '';
+    this.deviceStatus = '';
+    this.bean_level = 0;
+    this.water_level = 0;
+  }
   // 更新選取的ID集合
   updateCheckedSet(id: string, checked: boolean): void {
     if (checked) {
@@ -80,7 +147,9 @@ export class EquipmentComponent {
   }
   // 刷新選取狀態
   refreshCheckedStatus(): void {
-
+    const listOfEnabledData = this.listOfCurrentPageData.filter(({ id }) => id !== undefined);
+    this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
+    this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
   }
   // 單項選取狀態變更時
   onItemChecked(id: string, checked: boolean): void {
@@ -89,7 +158,10 @@ export class EquipmentComponent {
   }
   // 全選狀態變更時
   onAllChecked(checked: boolean): void {
-
+    this.listOfCurrentPageData
+      .filter(({ id }) => id !== undefined)
+      .forEach(({ id }) => this.updateCheckedSet(id, checked));
+    this.refreshCheckedStatus();
   }
   // 發送請求，後續要修改為有用的功能或是拿掉
   sendRequest(): void {
