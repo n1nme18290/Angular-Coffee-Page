@@ -22,8 +22,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzGridModule } from 'ng-zorro-antd/grid';
-import { IApiResponseAdmin } from '../../share/service/model';
-import { AdminService } from '../../share/service/service';
+import { IApiResponseAdmin, IApiResponseMember } from '../../share/service/model';
+import { AdminService, MemberService } from '../../share/service/service';
 
 @Component({
   selector: 'app-permission-management',
@@ -39,49 +39,52 @@ export class PermissionManagementComponent {
 
   router = inject(Router);
   sidebarService = inject(SidebarService);
+  memberService = inject(MemberService);
   adminService = inject(AdminService);
 
   adminList: IApiResponseAdmin[] = [];
-  listOfCurrentPageData: readonly IApiResponseAdmin[] = [];
+  listOfCurrentPageAdminData: readonly IApiResponseAdmin[] = [];
+  memberlist: IApiResponseMember[] = [];
+  listOfCurrentPageMemberData: readonly IApiResponseMember[] = [];
+
   checked = false;
   loading = false;
   indeterminate = false;
   setOfCheckedId = new Set<string>();
 
-  currentPage = 1;
-  pageSize = 5;
-  total = 0;
+  adminCurrentPage = 1;
+  adminPageSize = 5;
+  totalAdmin = 0;
+  memberCurrentPage = 1;
+  memberPageSize = 5;
+  totalMember = 0;
 
 
   ngOnInit() {
     // Initialization logic can go here
     this.getPageAdmin(1, 5);
+    this.getPageMember(1, 5);
   }
 
   ngAfterViewInit() {
     // Logic that needs to run after the view has been initialized can go here
   }
-  // 當前頁面數據變更時
-  onCurrentPageDataChange(listOfCurrentPageData: readonly IApiResponseAdmin[]): void {
-    this.listOfCurrentPageData = listOfCurrentPageData;
+
+  // Admin 頁面數據變更時
+  onCurrentPageAdminDataChange(listOfCurrentPageData: readonly IApiResponseAdmin[]): void {
+    this.listOfCurrentPageAdminData = listOfCurrentPageData;
     this.refreshCheckedStatus();
   }
-  // 刷新選取狀態
-  refreshCheckedStatus(): void {
-    const listOfEnabledData = this.listOfCurrentPageData.filter(({ id }) => id !== undefined);
-    this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
-    this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
+  // Admin 頁面數據變更時
+  onAdminPageIndexChange(pageIndex: number): void {
+    this.adminCurrentPage = pageIndex;
+    this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
   }
-  // 當前頁面數據變更時
-  onPageIndexChange(pageIndex: number): void {
-    this.currentPage = pageIndex;
-    this.getPageAdmin(this.currentPage, this.pageSize);
-  }
-  // 一頁幾筆變更時，
-  onPageSizeChange(pageSize: number): void {
-    this.pageSize = pageSize;
-    this.currentPage = 1; // 重置到第一頁
-    this.getPageAdmin(this.currentPage, this.pageSize);
+  // Admin 一頁幾筆變更時
+  onAdminPageSizeChange(pageSize: number): void {
+    this.adminPageSize = pageSize;
+    this.adminCurrentPage = 1; // 重置到第一頁
+    this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
   }
   // 取得分頁 Admin
   getPageAdmin(page: number, pageSize: number): void {
@@ -89,7 +92,7 @@ export class PermissionManagementComponent {
     this.adminService.getPageAdmins(page, pageSize).subscribe({
       next: (res) => {
         this.adminList = res.data.data || [];
-        this.total = res.data.total || 0;
+        this.totalAdmin = res.data.total || 0;
         this.loading = false;
       },
       error: () => {
@@ -98,6 +101,43 @@ export class PermissionManagementComponent {
     });
   }
 
+  // Member 頁面數據變更時
+  onCurrentPageMemberDataChange(listOfCurrentPageData: readonly IApiResponseMember[]): void {
+    this.listOfCurrentPageMemberData = listOfCurrentPageData;
+    this.refreshCheckedStatus();
+  }
+  // Member 頁面數據變更時
+  onMemberPageIndexChange(pageIndex: number): void {
+    this.memberCurrentPage = pageIndex;
+    this.getPageMember(this.memberCurrentPage, this.memberPageSize);
+  }
+  // Member 一頁幾筆變更時，
+  onMemberPageSizeChange(pageSize: number): void {
+    this.memberPageSize = pageSize;
+    this.memberCurrentPage = 1; // 重置到第一頁
+    this.getPageMember(this.memberCurrentPage, this.memberPageSize);
+  }
+  // 取得分頁 Member
+  getPageMember(page: number, pageSize: number): void {
+    this.loading = true;
+    this.memberService.getPageMembers(page, pageSize).subscribe({
+      next: (res) => {
+        this.memberlist = res.data.data || [];
+        this.totalMember = res.data.total || 0;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      }
+    });
+  }
+  
+  // 刷新選取狀態
+  refreshCheckedStatus(): void {
+    const listOfEnabledData = this.listOfCurrentPageAdminData.filter(({ id }) => id !== undefined);
+    this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
+    this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
+  }
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }
