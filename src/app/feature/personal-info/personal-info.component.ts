@@ -21,11 +21,12 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzCardModule } from 'ng-zorro-antd/card';
 
 import { SidebarService } from '../../share/service/sidebar.service';
 import { Observable, of } from 'rxjs';
-import { IApiResponse, IApiResponsePoints, IApiResponseMember, IApiResponsePointsHistory } from '../../share/service/model';
-import { PointService, MemberService, AdminService, LogService, } from '../../share/service/service';
+import { IApiResponse, IApiResponsePoints, IApiResponseMember, IApiResponsePointsHistory, IApiResponseGetPageProduct } from '../../share/service/model';
+import { PointService, MemberService, AdminService, LogService, ProductService, } from '../../share/service/service';
 
 
 @Component({
@@ -34,7 +35,7 @@ import { PointService, MemberService, AdminService, LogService, } from '../../sh
   imports: [
     NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule,
     NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule,
-    NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzRadioModule, NzModalModule,
+    NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzRadioModule, NzModalModule,NzCardModule,
     CommonModule, NzDividerModule, NzGridModule, NzCarouselModule, NzQRCodeModule, NzTableModule
   ],
   templateUrl: './personal-info.component.html',
@@ -47,7 +48,7 @@ export class PersonalInfoComponent {
     public memberService: MemberService,
     public adminservice: AdminService,
     public logservice: LogService,
-
+    public productService: ProductService
   ) { }
 
   ngOnInit(): void {
@@ -55,7 +56,8 @@ export class PersonalInfoComponent {
     this.getMember("819b2267-3c0b-432c-8d78-d5339de62dc6");
     this.getAllMembers();
     this.getMemberLog("ea1b587d-f6db-4dcb-b555-0b8f98c02a75", 1, 10); // ✨ 修改: 調整為取得更多筆資料
-
+    // 載入商品清單
+    this.loadProducts(); 
     // this.addMemberpoints("ea1b587d-f6db-4dcb-b555-0b8f98c02a75", "e9a3c47b-be77-486f-beeb-0551518d6948", 10);
   }
 
@@ -68,6 +70,7 @@ export class PersonalInfoComponent {
   userpoint: any;
   Date = '25/10/31';
 
+  productList: IApiResponseGetPageProduct[] = [];
 
 
 
@@ -119,7 +122,6 @@ export class PersonalInfoComponent {
     });
   }
 
-
   // 依 id 查詢會員名稱  
   getMember(id: string) {
     this.memberService.getMember(id).subscribe({
@@ -154,6 +156,7 @@ export class PersonalInfoComponent {
   memberPointsHistoryList: IApiResponsePointsHistory[] = [];
   memberHistoryLoading = false;
 
+  // 取得會員點數異動紀錄
   getMemberLog(memberId: string, page: number, perPage: number): void {
     this.memberHistoryLoading = true;
     this.logservice.getMemberLog(memberId, page, perPage).subscribe({
@@ -194,8 +197,6 @@ export class PersonalInfoComponent {
     this.addpointisVisible = false;
   }
 
-
-
   // 兌換點數彈跳視窗
   usepointisVisible = false;
   usepointselectedValue: string | null = null;
@@ -233,6 +234,35 @@ export class PersonalInfoComponent {
     this.reviseisVisible = false;
   }
 
+  // 載入商品清單
+  loadProducts(): void {
+    this.productService.getPageProduct(1, 5).subscribe({
+      next: (response) => {
+        if (response && response.data && response.data.data) {
+          this.productList = response.data.data;
+        }
+      },
+      error: (error) => {
+        console.error('載入商品失敗:', error);
+        this.productList = [];
+      }
+    });
+  }
+  // 取得商品列表
+  getPageProduct(): void {
+    this.productService.getPageProduct(1, 5).subscribe({
+      next: (response) => {
+        this.productList = response.data.data || [];
+      },
+      error: (error) => {
+        console.error('Error fetching product data:', error);
+      }
+    });
+  }
+  // 點擊飲品卡片
+  onDrinkSelect(productName: string): void {
+    console.log('你點擊了:', productName);
+  }
 
 
 

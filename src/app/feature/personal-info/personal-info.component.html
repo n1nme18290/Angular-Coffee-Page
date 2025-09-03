@@ -55,7 +55,7 @@
             <p class="boxnum">{{userpoint}}</p>
         </div>
         <nz-divider></nz-divider>
-        <!-- 轉贈點數和兌換點數按鈕組，尚未置中 -->
+        <!-- 轉贈點數和兌換商品券按鈕組，尚未水平置中 -->
         <div nz-row [nzGutter]="16" class="button-group">
             <div nz-col [nzSpan]="12">
                 <button nz-button nzType="primary" nzBlock class="btn-styles2" (click)="addpointModal()">
@@ -64,7 +64,7 @@
             </div>
             <div nz-col [nzSpan]="12">
                 <button nz-button nzType="primary" nzBlock class="btn-styles2" (click)="usepointModal()">
-                    <span nz-icon nzType="coffee" nzTheme="outline"></span>兌換點數
+                    <span nz-icon nzType="coffee" nzTheme="outline"></span>兌換商品券
                 </button>
             </div>
         </div>
@@ -93,17 +93,33 @@
                 </div>
             </ng-container>
         </nz-modal>
-        <!-- 兌換點數 Modal -->
+        <!-- 兌換商品券 Modal ，商品似乎可以改成用 dictionary -->
         <nz-modal [(nzVisible)]="usepointisVisible" nzTitle="兌換點數" [nzFooter]="usepointmodalFooter" nzWidth="520px"
             nzCentered [nzClosable]="false">
             <ng-container *nzModalContent>
                 <div>
-                    <h5 nz-typography style="margin: 0;">兌換杯數:</h5>
+                    <div nz-row [nzGutter]="8">
+                        @if (productList && productList.length > 0) {
+                        @for (product of productList; track product.id) {
+                        <div nz-col [nzSpan]="8">
+                            <nz-card nzHoverable [nzTitle]="product.category + ' - ' + product.name" (click)="onDrinkSelect(product.description)">
+                                <nz-card-meta [nzTitle]="product.description" [nzDescription]="product.points_required + '點'">
+                                </nz-card-meta>
+                            </nz-card>
+                        </div>
+                        }
+                        } @else {
+                        <div nz-col [nzSpan]="24">
+                            <nz-card>
+                                <nz-card-meta nzTitle="暫無商品" nzDescription="目前沒有可兌換的商品"></nz-card-meta>
+                            </nz-card>
+                        </div>
+                        }
+                    </div>
+                    <!-- <h5 nz-typography style="margin: 0;">兌換杯數:</h5>
                     <input nz-input placeholder="輸入數量" [(ngModel)]="capvalue" type="number"
-                        style="width: 100%; margin-top: 10px;" />
-                    <br>
+                        style="width: 100%; margin-top: 10px;" /> -->
                 </div>
-                <br>
             </ng-container>
             <ng-template #usepointmodalFooter>
                 <button nz-button (click)="usepointhandleCancel()">取消兌換</button>
