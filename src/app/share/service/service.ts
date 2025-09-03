@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseProduct } from './model';
+import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseExchangeProduct, IApiResponseGetProduct } from './model';
 import { IApiResponsePoints } from './model';
 
 @Injectable({
@@ -57,11 +57,12 @@ export class PointService extends BaseService {
     return this.http.put<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
   }
   // 兌換商品
-  exchangeProduct(memberId: string, productId: string): Observable<IApiResponse<IApiResponsePoints>> {
+  exchangeProduct(memberId: string, productId: string, quantity: number): Observable<IApiResponse<IApiResponsePoints>> {
     const apiUrl = `${this.url}${this.PointsUrl}exchange_product`;
     const requestBody = {
       memberId: memberId,
-      productId: productId
+      productId: productId,
+      quantity: quantity
     };
     return this.http.put<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
   }
@@ -116,9 +117,9 @@ export class ProductService extends BaseService {
     return this.http.post<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
   }
   // 分頁查詢商品項目
-  getPageProduct(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseProduct>>> {
+  getPageProduct(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseExchangeProduct>>> {
     const apiUrl = `${this.url}${this.ProductUrl}get_page_product?page=${page}&perPage=${perPage}`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseProduct>>>(apiUrl);
+    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseExchangeProduct>>>(apiUrl);
   }
 }
 // Admin 相關API
@@ -318,5 +319,13 @@ export class DeviceService extends BaseService {
       id: id
     };
     return this.http.post<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
+  }
+  // Product 相關API
+  getMemPageProduct(page: number, perPage: number, memberId: string): Observable<IApiResponse<IApiResponsePages<IApiResponseGetProduct>>> {
+    const apiUrl = `${this.url}${this.ProductUrl}get_mem_page_product?page=${page}&perPage=${perPage}`;
+    const requestBody = {
+      id: memberId
+    };
+    return this.http.post<IApiResponse<IApiResponsePages<IApiResponseGetProduct>>>(apiUrl, requestBody);
   }
 }

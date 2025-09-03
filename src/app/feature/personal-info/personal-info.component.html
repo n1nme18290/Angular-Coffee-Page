@@ -12,7 +12,11 @@
         <!-- <h5 nz-typography class="pointdate"><span nz-icon nzType="exclamation-circle" nzTheme="outline"></span> 點數將於
                 {{Date}} 日到期，請盡快使用</h5>
             <br> -->
+<<<<<<< HEAD
         <!-- 文字輪換 -->
+=======
+        <!-- 文字輪換，可以根據狀態顯示滾動條如：狀態為畢業則顯示要趕快用完等訊息 -->
+>>>>>>> e13fbfbdd44084548e11ef8c44eb47158ade1dc3
         <div>
             <nz-carousel nzAutoPlay [nzDots]="false">
                 @for (msg of carouselMessages; track msg) {
@@ -118,6 +122,7 @@
             <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
             <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
             <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
+<<<<<<< HEAD
         </div>
         <nz-divider></nz-divider>
         <!-- 點數異動紀錄（需要改成彈窗嗎 先這個樣子看一下） -->
@@ -162,5 +167,29 @@
                 </tbody>
             </nz-table>
         </div>
+=======
+        </div>
+        <nz-divider></nz-divider>
+        <!-- 點數異動紀錄（改成彈窗？） -->
+        <div class="point-information-container">
+            <h2 nz-typography class="boxword">點數異動紀錄</h2>
+            <nz-table #basicTable>
+                <thead>
+                    <tr>
+                        <th>異動事件</th>
+                        <th>點數異動情況</th>
+                        <th>異動時間</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+>>>>>>> e13fbfbdd44084548e11ef8c44eb47158ade1dc3
     </div>
 </nz-content>

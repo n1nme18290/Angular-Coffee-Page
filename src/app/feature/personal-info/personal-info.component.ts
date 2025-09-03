@@ -136,11 +136,27 @@ export class PersonalInfoComponent {
   //取得所有成員
   members: IApiResponseMember[] = [];
 
+<<<<<<< HEAD
   getAllMembers() {
     this.memberService.getAllMembers().subscribe({
       next: (response) => {
         // console.log("Member data:", response);
         this.members = (response as any).data || [];
+=======
+getAllMembers() {
+  this.memberService.getAllMembers().subscribe({
+    next: (response) => {
+      // console.log("Member data:", response);
+      this.members = (response as any).data || []; 
+      
+    },
+    error: (error) => {
+      console.error("error get all member:", error);
+      this.members = [];
+    }
+  });
+}
+>>>>>>> e13fbfbdd44084548e11ef8c44eb47158ade1dc3
 
       },
       error: (error) => {

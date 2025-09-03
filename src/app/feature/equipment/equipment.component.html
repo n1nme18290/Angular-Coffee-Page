@@ -69,6 +69,10 @@
                     <!-- <th [nzChecked]="checked" [nzIndeterminate]="indeterminate"
                         (nzCheckedChange)="onAllChecked($event)">
                         Select all</th> -->
+<<<<<<< HEAD
+=======
+                    <th>序號</th> <!-- 流水號欄位 -->
+>>>>>>> e13fbfbdd44084548e11ef8c44eb47158ade1dc3
                     <th>名稱</th>
                     <th>地點</th>
                     <th>狀態</th>
@@ -79,10 +83,18 @@
             </thead>
             <tbody>
                 @if (devicesList && devicesList.length > 0) {
+<<<<<<< HEAD
                 @for (data of devicesList; track data.id) {
                 <tr>
                     <!-- <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)">
                     </td> -->
+=======
+                @for (data of devicesList; track data.id; let i = $index) {
+                <tr>
+                    <!-- <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)">
+                    </td> -->
+                    <td>{{ getSerialNumber(i) }}</td> <!-- 顯示流水號 -->
+>>>>>>> e13fbfbdd44084548e11ef8c44eb47158ade1dc3
                     <td>{{ data.name }}</td>
                     <td>{{ data.location }}</td>
                     <td>{{ data.status }}</td>
@@ -106,6 +118,10 @@
                                         style="width: 100%; margin-top: 10px;" />
                                 </div>
                                 <div>
+<<<<<<< HEAD
+=======
+                                    <!-- 使用更醒目的方式呈現如：紅色圖示與綠色圖示等 -->
+>>>>>>> e13fbfbdd44084548e11ef8c44eb47158ade1dc3
                                     <h5 nz-typography style="margin: 0;">狀態:</h5>
                                     <input nz-input placeholder="輸入設備狀態" [(ngModel)]="deviceStatus"
                                         style="width: 100%; margin-top: 10px;" />
