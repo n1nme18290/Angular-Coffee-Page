@@ -87,7 +87,16 @@ export interface IApiResponseMember {
     created_at: string
     updated_at: string
 }
-
+export interface IApiResponseGetPageProduct {
+    id: string
+    name: string
+    description: string
+    category: string
+    points_required: number
+    status: number
+    created_at: string
+    updated_at: string
+}
 export interface IApiResponseGetProduct {
     id: string
     member_id: string
