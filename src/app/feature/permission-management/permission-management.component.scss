@@ -69,24 +69,63 @@ button[nz-button].btn-styles4 { //icon 圓形
 }
 
 .trigger {
-        font-size: 18px;
-        line-height: 64px;
-        padding: 0 24px;
-        cursor: pointer;
-        transition: color 0.3s;
-      }
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
 
 
-      .logo {
-        height: 32px;
-        background-color:#001529;
-        margin: 16px;
-        
-      }
+.logo {
+    height: 32px;
+    background-color: #001529;
+    margin: 16px;
 
-      nz-breadcrumb {
-        margin: 16px 0;
-      }
+}
+
+nz-breadcrumb {
+    margin: 16px 0;
+}
+
 .h2 {
     color: #ffffff;
+}
+
+.boxword {
+    color: #27496D;
+    margin: 0;
+    //background-color: #FFB433;
+
+
+}
+
+.row-style {
+    width: 100%;
+    margin: 0;
+
+    .left-col,
+    .right-col {
+        padding: 16px;
+    }
+}
+
+
+.admin-information-container {
+    margin: 16px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.send-request {
+    margin-top: 8px;
+    margin-left: 8px;
+    margin-bottom: 8px;
+}
+
+.createDeviceBtn {
+    margin-top: 16px;
+    margin-bottom: 16px;
 }

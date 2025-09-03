@@ -1,7 +1,79 @@
-<nz-header>
-    <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-        <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline" class="big-icon"></span>
-    </button>
-    <h2 nz-typography class="h2">角色權限管理</h2>
-</nz-header>
-<nz-content></nz-content>
+<nz-layout>
+    <nz-header>
+        <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
+            <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
+                class="big-icon"></span>
+        </button>
+        <h2 nz-typography class="h2">角色權限管理</h2>
+    </nz-header>
+    <nz-content>
+        <div nz-row class="row-style">
+            <div nz-col [nzSpan]="12" class="left-col">
+                <h2 nz-typography class="boxword">管理員清單</h2>
+            </div>
+        </div>
+    </nz-content>
+
+    <div class="admin-information-container">
+        <div class="send-request">
+            <nz-table #basicTable [nzData]="adminList" [nzBordered]="true" [nzLoading]="loading"
+                [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage"
+                [nzPageSize]="pageSize" [nzTotal]="total" [nzShowSizeChanger]="true" [nzPageSizeOptions]="[5, 10, 20]"
+                (nzPageIndexChange)="onPageIndexChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+                (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
+                <thead>
+                    <tr>
+                        <!-- <th [nzChecked]="checked" [nzIndeterminate]="indeterminate"
+                        (nzCheckedChange)="onAllChecked($event)">
+                        Select all</th> -->
+                        <th>名稱</th>
+                        <th>授權</th>
+                        <th>狀態</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (adminList && adminList.length > 0) {
+                    @for (data of adminList; track data.id) {
+                    <tr>
+                        <!-- <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)">
+                    </td> -->
+                        <td>{{ data.name }}</td>
+                        <td>{{ data.premission }}</td>
+                        <td>{{ data.status }}</td>
+                        <!-- 編輯設備 --><!-- 編輯設備 Modal -->
+                        <!-- <td>
+                            <button nz-button nzType="link" (click)="updateDeviceModal(data)">編輯</button>
+                            <nz-modal [(nzVisible)]="updateAdminVisible" nzTitle="編輯設備" [nzFooter]="updateDeviceFooter"
+                                nzWidth="520px" nzCentered [nzClosable]="false">
+                                <ng-container *nzModalContent>
+                                    <div>
+                                        <h5 nz-typography style="margin: 0;">設備名稱:</h5>
+                                        <input nz-input placeholder="輸入設備名稱" [(ngModel)]="deviceName"
+                                            style="width: 100%; margin-top: 10px;" />
+                                    </div>
+                                </ng-container>
+                                <ng-template #updateDeviceFooter>
+                                    <button nz-button (click)="updateDeviceVisible=false">取消</button>
+                                    <button nz-button nzType="primary" class="btn-styles2"
+                                        (click)="updateDevice()">完成</button>
+                                </ng-template>
+                            </nz-modal>
+                        </td> -->
+                    </tr>
+                    }
+                    } @else {
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            @if (loading) {
+                            載入中...
+                            } @else {
+                            暫無資料
+                            }
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+</nz-layout>

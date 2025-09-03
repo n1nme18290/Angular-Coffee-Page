@@ -12,7 +12,7 @@
         <!-- <h5 nz-typography class="pointdate"><span nz-icon nzType="exclamation-circle" nzTheme="outline"></span> 點數將於
                 {{Date}} 日到期，請盡快使用</h5>
             <br> -->
-        <!-- 文字輪換 -->
+        <!-- 文字輪換，可以根據狀態顯示滾動條如：狀態為畢業則顯示要趕快用完等訊息 -->
         <div>
             <nz-carousel nzAutoPlay [nzDots]="false">
                 @for (msg of carouselMessages; track msg) {

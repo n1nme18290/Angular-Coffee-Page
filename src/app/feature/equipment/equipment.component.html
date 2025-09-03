@@ -69,6 +69,7 @@
                     <!-- <th [nzChecked]="checked" [nzIndeterminate]="indeterminate"
                         (nzCheckedChange)="onAllChecked($event)">
                         Select all</th> -->
+                    <th>序號</th> <!-- 流水號欄位 -->
                     <th>名稱</th>
                     <th>地點</th>
                     <th>狀態</th>
@@ -79,10 +80,11 @@
             </thead>
             <tbody>
                 @if (devicesList && devicesList.length > 0) {
-                @for (data of devicesList; track data.id) {
+                @for (data of devicesList; track data.id; let i = $index) {
                 <tr>
                     <!-- <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)">
                     </td> -->
+                    <td>{{ getSerialNumber(i) }}</td> <!-- 顯示流水號 -->
                     <td>{{ data.name }}</td>
                     <td>{{ data.location }}</td>
                     <td>{{ data.status }}</td>
@@ -106,6 +108,7 @@
                                         style="width: 100%; margin-top: 10px;" />
                                 </div>
                                 <div>
+                                    <!-- 使用更醒目的方式呈現如：紅色圖示與綠色圖示等 -->
                                     <h5 nz-typography style="margin: 0;">狀態:</h5>
                                     <input nz-input placeholder="輸入設備狀態" [(ngModel)]="deviceStatus"
                                         style="width: 100%; margin-top: 10px;" />

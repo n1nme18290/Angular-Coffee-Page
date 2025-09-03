@@ -34,7 +34,7 @@ export interface IApiResponsePointsHistory {
     description: string
     created_at: string
 }
-export interface IApiResponseProduct {
+export interface IApiResponseExchangeProduct {
     id: string
     name: string
     description: string
@@ -85,5 +85,14 @@ export interface IApiResponseMember {
     email: string
     status: string
     created_at: string
+    updated_at: string
+}
+
+export interface IApiResponseGetProduct {
+    id: string
+    member_id: string
+    product_id: string
+    product_name: string
+    quantity: number
     updated_at: string
 }

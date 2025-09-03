@@ -75,6 +75,10 @@ export class EquipmentComponent {
     // Logic that needs to run after the view has been initialized can go here
   }
 
+  // 計算流水號的方法
+  getSerialNumber(index: number): number {
+    return (this.currentPage - 1) * this.pageSize + index + 1;
+  }
   createDeviceModal() {
     this.createDeviceVisible = true;
   }
@@ -92,7 +96,6 @@ export class EquipmentComponent {
       }
     });
   }
-
   updateDeviceModal(device: IApiResponseDevice) {
     this.editingDeviceId = device.id;
     this.deviceName = device.name;
