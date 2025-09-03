@@ -17,7 +17,6 @@ import { Router } from '@angular/router';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
 
-
 import { PointService } from '../../share/service/service';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -26,7 +25,8 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import { SidebarService } from '../../share/service/sidebar.service';
 import { LogService } from '../../share/service/service';
-import { IApiResponsePoints } from '../../share/service/model';
+// ✨ 新增: 引入點數歷史紀錄的介面
+import { IApiResponsePoints, IApiResponsePointsHistory } from '../../share/service/model';
 
 @Component({
   selector: 'app-historical-record',
@@ -47,7 +47,6 @@ export class HistoricalRecordComponent {
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }
-
 
   selectedIndex = 0;
   Title01 = '使用者使用紀錄';
@@ -85,7 +84,7 @@ export class HistoricalRecordComponent {
     });
   }
 
-  //點數資訊
+  //點數資訊 (原有功能)
   router = inject(Router);
   sidebarService = inject(SidebarService);
   pointService = inject(PointService);
@@ -101,14 +100,26 @@ export class HistoricalRecordComponent {
   pageSize = 5;
   total = 0;
 
+  // ✨ 新增: 點數歷史紀錄相關屬性
+  pointsHistoryList: IApiResponsePointsHistory[] = [];
+  historyLoading = false;
+  historyChecked = false;
+  historyIndeterminate = false;
+  historyListOfCurrentPageData: readonly IApiResponsePointsHistory[] = [];
+  historySetOfCheckedId = new Set<string>();
+
   ngOnInit() {
     // Initialization logic can go here
     this.getPagePoints(1, 5);
+    // ✨ 新增: 初始化點數歷史紀錄
+    this.getAllPointsHistory();
   }
 
   ngAfterViewInit() {
     // Logic that needs to run after the view has been initialized can go here
   }
+
+  // 原有點數資訊功能 ---
   // 更新選取的ID集合
   updateCheckedSet(id: string, checked: boolean): void {
     if (checked) {
@@ -117,22 +128,26 @@ export class HistoricalRecordComponent {
       this.setOfCheckedId.delete(id);
     }
   }
+  
   // 當前頁面數據變更時
   onCurrentPageDataChange(listOfCurrentPageData: readonly IApiResponsePoints[]): void {
     this.listOfCurrentPageData = listOfCurrentPageData;
     this.refreshCheckedStatus();
   }
+  
   // 刷新選取狀態
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData.filter(({ balance }) => balance >= 0);
     this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
     this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
   }
+  
   // 單項選取狀態變更時
   onItemChecked(id: string, checked: boolean): void {
     this.updateCheckedSet(id, checked);
     this.refreshCheckedStatus();
   }
+  
   // 全選狀態變更時
   onAllChecked(checked: boolean): void {
     this.listOfCurrentPageData
@@ -140,6 +155,7 @@ export class HistoricalRecordComponent {
       .forEach(({ id }) => this.updateCheckedSet(id, checked));
     this.refreshCheckedStatus();
   }
+  
   // 發送請求，後續要修改為有用的功能或是拿掉
   sendRequest(): void {
     this.loading = true;
@@ -151,17 +167,20 @@ export class HistoricalRecordComponent {
       this.loading = false;
     }, 1000);
   }
+  
   // 當前頁面數據變更時
   onPageIndexChange(pageIndex: number): void {
     this.currentPage = pageIndex;
     this.getPagePoints(this.currentPage, this.pageSize);
   }
+  
   // 一頁幾筆變更時，
   onPageSizeChange(pageSize: number): void {
     this.pageSize = pageSize;
     this.currentPage = 1; // 重置到第一頁
     this.getPagePoints(this.currentPage, this.pageSize);
   }
+  
   // 取得分頁點數
   getPagePoints(page: number, perpage: number) {
     this.loading = true;
@@ -186,10 +205,73 @@ export class HistoricalRecordComponent {
     });
   }
 
+  // ✨ 新增: 點數歷史紀錄功能 ---
+  // 取得所有點數歷史紀錄
+  getAllPointsHistory(): void {
+    this.historyLoading = true;
+    this.logService.getAllLog().subscribe({
+      next: (res) => {
+        console.log('Points History API Response:', res);
+        if (res && res.data) {
+          this.pointsHistoryList = res.data.data || [];
+          // 清除選取狀態
+          this.historySetOfCheckedId.clear();
+          this.refreshHistoryCheckedStatus();
+        }
+        this.historyLoading = false;
+      },
+      error: (error) => {
+        console.error('Error fetching points history:', error);
+        this.pointsHistoryList = [];
+        this.historyLoading = false;
+      }
+    });
+  }
 
+  // 更新歷史紀錄選取的ID集合
+  updateHistoryCheckedSet(id: string, checked: boolean): void {
+    if (checked) {
+      this.historySetOfCheckedId.add(id);
+    } else {
+      this.historySetOfCheckedId.delete(id);
+    }
+  }
 
+  // 當前頁面歷史紀錄數據變更時
+  onHistoryCurrentPageDataChange(listOfCurrentPageData: readonly IApiResponsePointsHistory[]): void {
+    this.historyListOfCurrentPageData = listOfCurrentPageData;
+    this.refreshHistoryCheckedStatus();
+  }
 
+  // 刷新歷史紀錄選取狀態
+  refreshHistoryCheckedStatus(): void {
+    const listOfEnabledData = this.historyListOfCurrentPageData;
+    this.historyChecked = listOfEnabledData.every(({ id }) => this.historySetOfCheckedId.has(id));
+    this.historyIndeterminate = listOfEnabledData.some(({ id }) => this.historySetOfCheckedId.has(id)) && !this.historyChecked;
+  }
 
+  // 歷史紀錄單項選取狀態變更時
+  onHistoryItemChecked(id: string, checked: boolean): void {
+    this.updateHistoryCheckedSet(id, checked);
+    this.refreshHistoryCheckedStatus();
+  }
 
+  // 歷史紀錄全選狀態變更時
+  onHistoryAllChecked(checked: boolean): void {
+    this.historyListOfCurrentPageData
+      .forEach(({ id }) => this.updateHistoryCheckedSet(id, checked));
+    this.refreshHistoryCheckedStatus();
+  }
 
+  // 發送歷史紀錄請求
+  sendHistoryRequest(): void {
+    this.historyLoading = true;
+    const requestData = this.pointsHistoryList.filter(data => this.historySetOfCheckedId.has(String(data.id)));
+    console.log('Selected history data:', requestData);
+    setTimeout(() => {
+      this.historySetOfCheckedId.clear();
+      this.refreshHistoryCheckedStatus();
+      this.historyLoading = false;
+    }, 1000);
+  }
 }

@@ -26,15 +26,19 @@ button[nz-button].btn-styles3 {
     color: #27496D;
     box-shadow: none;
     border: 0.1px solid #F0F2F5;
-    height: 40px;              /* 給高度 */
+    height: 40px;
+    /* 給高度 */
     display: flex;
-    align-items: flex-end;     /* 文字靠下 */
-    justify-content: center;   /* 水平置中 */
+    align-items: flex-end;
+    /* 文字靠下 */
+    justify-content: center;
+    /* 水平置中 */
 }
 
 
 
-button[nz-button].btn-styles4 { //不更動這是icon
+button[nz-button].btn-styles4 {
+    //不更動這是icon
     //icon 圓形
     //icon btn
     background-color: #27496D;
@@ -98,7 +102,7 @@ nz-breadcrumb {
     color: #ffffff;
 }
 
-.pointdate{
+.pointdate {
     color: #d67070;
     margin: 0;
 
@@ -141,21 +145,7 @@ nz-breadcrumb {
     width: 100%;
     margin: 0;
 
-    .left-col,
-    .right-col {
-        padding: 16px;
-    }
-
-    .left-col {
-        //background-color: #00aeff; 
-    }
-
-    .right-col {
-        //background-color: #ffeeab; 
-    }
 }
-
-
 
 //框
 .pointbox {
@@ -163,7 +153,7 @@ nz-breadcrumb {
     height: 150px;
     background-color: white;
     //border: 1px solid #27496D;
-     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 16px 32px 16px 16px;
     border-radius: 8px;
     box-sizing: border-box;
@@ -179,7 +169,7 @@ nz-breadcrumb {
     width: 100%;
     background-color: #ffffff;
     //border: 1px solid #27496D;
-     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 16px 32px 16px 16px;
     border-radius: 8px;
     box-sizing: border-box;
@@ -194,9 +184,12 @@ nz-breadcrumb {
 .titlebox {
     width: 100%;
     display: flex;
-    justify-content: left; /* 整體置中 */
-    align-items: center;     /* 垂直置中 */
-    gap: 10px;               /* 元素間距 */
+    justify-content: left;
+    /* 整體置中 */
+    align-items: center;
+    /* 垂直置中 */
+    gap: 10px;
+    /* 元素間距 */
 }
 
 //文字輪換框
@@ -205,7 +198,7 @@ nz-breadcrumb {
     align-items: center;
     justify-content: center;
     height: 25px;
-    min-height: 25px;  
+    min-height: 25px;
     background: #FFD014;
     color: #ffffff;
     text-align: center;
@@ -214,7 +207,6 @@ nz-breadcrumb {
     border-radius: 8px;
     box-sizing: border-box;
 }
-
 
 h3 {
     color: #ffffff;
@@ -227,19 +219,14 @@ h3 {
 
 //表格
 .point-information-container {
-    margin: 16px;
+    // margin: 16px;
     padding: 16px;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.send-request {
-    margin-top: 8px;
-    margin-bottom: 8px;
+.button-group {
+    margin-top: 16px;
+    margin-bottom: 16px;
 }
-
-.send-request span {
-    margin-left: 8px;
-}
-

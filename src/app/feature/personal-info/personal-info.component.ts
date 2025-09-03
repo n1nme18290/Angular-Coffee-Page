@@ -24,8 +24,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 
 import { SidebarService } from '../../share/service/sidebar.service';
 import { Observable, of } from 'rxjs';
-import { IApiResponse, IApiResponsePoints, IApiResponseMember, } from '../../share/service/model';
-import { PointService, MemberService ,AdminService,LogService} from '../../share/service/service';
+import { IApiResponse, IApiResponsePoints, IApiResponseMember, IApiResponsePointsHistory } from '../../share/service/model';
+import { PointService, MemberService, AdminService, LogService, } from '../../share/service/service';
 
 
 @Component({
@@ -35,7 +35,7 @@ import { PointService, MemberService ,AdminService,LogService} from '../../share
     NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule,
     NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule,
     NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzRadioModule, NzModalModule,
-    CommonModule, NzDividerModule, NzGridModule, NzCarouselModule, NzQRCodeModule,NzTableModule
+    CommonModule, NzDividerModule, NzGridModule, NzCarouselModule, NzQRCodeModule, NzTableModule
   ],
   templateUrl: './personal-info.component.html',
   styleUrl: './personal-info.component.scss'
@@ -54,7 +54,7 @@ export class PersonalInfoComponent {
     this.getPointByMemberId("ea1b587d-f6db-4dcb-b555-0b8f98c02a75");
     this.getMember("819b2267-3c0b-432c-8d78-d5339de62dc6");
     this.getAllMembers();
-    this.getMemberLog("ea1b587d-f6db-4dcb-b555-0b8f98c02a75",1,1);
+    this.getMemberLog("ea1b587d-f6db-4dcb-b555-0b8f98c02a75", 1, 10); // ✨ 修改: 調整為取得更多筆資料
 
     // this.addMemberpoints("ea1b587d-f6db-4dcb-b555-0b8f98c02a75", "e9a3c47b-be77-486f-beeb-0551518d6948", 10);
   }
@@ -67,6 +67,9 @@ export class PersonalInfoComponent {
   username: any;
   userpoint: any;
   Date = '25/10/31';
+
+
+
 
   // 輪換通知
   get coffeeCount(): number {
@@ -91,7 +94,7 @@ export class PersonalInfoComponent {
   getPointByMemberId(memberId: string) {
     this.pointService.getPointByMemberId(memberId).subscribe({
       next: (response) => {
-        console.log('Point data get balance:', response);
+        // console.log('Point data get balance:', response);
         //return response;
         this.userpoint = response.data.balance;
       },
@@ -116,12 +119,12 @@ export class PersonalInfoComponent {
     });
   }
 
-  
+
   // 依 id 查詢會員名稱  
-  getMember(id: string ) {
+  getMember(id: string) {
     this.memberService.getMember(id).subscribe({
       next: (response) => {
-        console.log('Member data get ID:', response);
+        // console.log('Member data get ID:', response);
         this.username = response.data.student_id;
       },
       error: (error) => {
@@ -130,32 +133,49 @@ export class PersonalInfoComponent {
     });
   }
 
-//取得所有成員
-members: IApiResponseMember[] = [];
+  //取得所有成員
+  members: IApiResponseMember[] = [];
 
-getAllMembers() {
-  this.memberService.getAllMembers().subscribe({
-    next: (response) => {
-      console.log("Member data:", response);
-      this.members = (response as any).data || []; 
-      
-    },
-    error: (error) => {
-      console.error("error get all member:", error);
-      this.members = [];
-    }
-  });
-}
+  getAllMembers() {
+    this.memberService.getAllMembers().subscribe({
+      next: (response) => {
+        // console.log("Member data:", response);
+        this.members = (response as any).data || [];
 
-//點數異動紀錄 -- 查詢指定會員的點數異動紀錄
-getMemberLog(memberId: string, page: number, perPage: number){
-  this.logservice.getMemberLog(memberId,page,perPage).subscribe({
+      },
+      error: (error) => {
+        console.error("error get all member:", error);
+        this.members = [];
+      }
+    });
+  }
 
-  })
+  //點數異動紀錄 -- 查詢指定會員的點數異動紀錄
 
-}
+  memberPointsHistoryList: IApiResponsePointsHistory[] = [];
+  memberHistoryLoading = false;
 
-
+  getMemberLog(memberId: string, page: number, perPage: number): void {
+    this.memberHistoryLoading = true;
+    this.logservice.getMemberLog(memberId, page, perPage).subscribe({
+      next: (response) => {
+        console.log('Member Log API Response:', response);
+        if (response.isSuccess && response.data) {
+          this.memberPointsHistoryList = response.data.data || [];
+          console.log('Member points history loaded:', this.memberPointsHistoryList);
+        } else {
+          console.error('Error fetching member log:', response.message);
+          this.memberPointsHistoryList = [];
+        }
+        this.memberHistoryLoading = false;
+      },
+      error: (error) => {
+        console.error('Error fetching member log:', error);
+        this.memberPointsHistoryList = [];
+        this.memberHistoryLoading = false;
+      }
+    });
+  }
 
   // 轉贈點數彈跳視窗
   addpointisVisible = false;

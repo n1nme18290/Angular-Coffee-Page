@@ -5,174 +5,162 @@
     </button>
     <h2 nz-typography class="h2">{{username}}</h2>
 </nz-header>
+
 <nz-content>
-    <div nz-row class="row-style">
-        <div nz-col [nzSpan]="12" class="left-col">
-            <div class="titlebox">
-                <h2 nz-typography class="boxword">個人資訊</h2>
-                <button nz-button nzType="primary" class="btn-styles3" (click)="reviseModal()"><span nz-icon
-                        nzType="edit" nzTheme="outline"></span></button>
-
-                <nz-modal [(nzVisible)]="reviseisVisible" nzTitle="修改個人資料" [nzFooter]="revisemodalFooter"
-                    nzWidth="520px" nzCentered [nzClosable]="false">
-                    <ng-container *nzModalContent>
-
-                        <div>
-
-                            <h5 nz-typography style="margin: 0;">更改使用者名稱:</h5>
-                            <input nz-input placeholder="輸入新使用者名稱" [(ngModel)]="namevalue"
-                                style="width: 100%; margin-top: 10px;" />
-
-
-                        </div>
-                        <br>
-                        <div>
-                            <h5 nz-typography style="margin: 0;">更改密碼:</h5>
-                            <input nz-input placeholder="輸入新密碼" [(ngModel)]="passwordvalue"
-                                style="width: 100%; margin-top: 10px;" />
-                        </div>
-
-
-
-
-                    </ng-container>
-
-                    <ng-template #revisemodalFooter>
-                        <button nz-button (click)="revisehandleCancel()">取消</button>
-                        <button nz-button nzType="primary" class="btn-styles2" (click)="revisehandleOk()">完成</button>
-                    </ng-template>
-                </nz-modal>
-            </div>
-            <br>
-            <div class="pointbox">
-                <h1 nz-typography class="boxword">我的點數</h1>
-                <p class="boxnum">{{userpoint}}</p>
-            </div>
-            <br>
-            <h5 nz-typography class="pointdate"><span nz-icon nzType="exclamation-circle" nzTheme="outline"></span> 點數將於
+    <div nz-col [nzSpan]="12">
+        <!-- 點數到期提醒，（不確定需求先不放） -->
+        <!-- <h5 nz-typography class="pointdate"><span nz-icon nzType="exclamation-circle" nzTheme="outline"></span> 點數將於
                 {{Date}} 日到期，請盡快使用</h5>
-            <br>
-
-
-            <div>
-                <nz-carousel nzAutoPlay [nzDots]="false">
-                    @for (msg of carouselMessages; track msg) {
-                    <div nz-carousel-content>
-                        <h3>{{ msg }}</h3>
-                    </div>
-                    }
-                </nz-carousel>
-            </div>
-
-
-            <nz-divider></nz-divider>
-
-            <button nz-button nzType="primary" nzBlock class="btn-styles2" (click)="addpointModal()"> <span nz-icon
-                    nzType="swap" nzTheme="outline"></span>轉贈點數</button>
-            <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="null" nzWidth="520px" nzCentered
-                [nzClosable]="false">
-                <ng-container *nzModalContent>
-                    <div>
-                        <h5 nz-typography style="margin: 0;">選擇轉贈給:</h5>
-
-
-
-                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇轉贈給" [(ngModel)]="addpointselectedValue"
-                            style="width: 100%; margin-top: 10px;">
-                            <nz-option *ngFor="let member of members" [nzValue]="member.id" [nzLabel]="member.name">
-                            </nz-option>
-                        </nz-select>
-
-
-
-
-
-                    </div>
-                    <br>
-                    <div>
-                        <h5 nz-typography style="margin: 0;">轉贈點數數量:</h5>
-                        <input nz-input placeholder="輸入數量" [(ngModel)]="pointvalue" type="number"
-                            style="width: 100%; margin-top: 10px;" />
-                    </div>
-                    <br>
-                    <div style="text-align: right;">
-                        <button nz-button nzType="default" (click)="addpointisVisible=false">取消</button>
-                        <button nz-button nzType="primary" class="btn-styles2">確認轉贈</button>
-                    </div>
-                </ng-container>
-            </nz-modal>
-
-
-            <button nz-button nzType="primary" nzBlock class="btn-styles2" (click)="usepointModal()">
-                <span nz-icon nzType="coffee" nzTheme="outline"></span>兌換點數
-            </button>
-
-            <nz-modal [(nzVisible)]="usepointisVisible" nzTitle="兌換點數" [nzFooter]="usepointmodalFooter" nzWidth="520px"
+            <br> -->
+        <!-- 文字輪換 -->
+        <div>
+            <nz-carousel nzAutoPlay [nzDots]="false">
+                @for (msg of carouselMessages; track msg) {
+                <div nz-carousel-content>
+                    <h3>{{ msg }}</h3>
+                </div>
+                }
+            </nz-carousel>
+        </div>
+        <nz-divider></nz-divider>
+        <!-- 個人資訊 -->
+        <div class="titlebox">
+            <h2 nz-typography class="boxword">個人資訊</h2>
+            <button nz-button nzType="primary" class="btn-styles3" (click)="reviseModal()"><span nz-icon nzType="edit"
+                    nzTheme="outline"></span></button>
+            <nz-modal [(nzVisible)]="reviseisVisible" nzTitle="修改個人資料" [nzFooter]="revisemodalFooter" nzWidth="520px"
                 nzCentered [nzClosable]="false">
                 <ng-container *nzModalContent>
                     <div>
-                        <h5 nz-typography style="margin: 0;">兌換杯數:</h5>
-                        <input nz-input placeholder="輸入數量" [(ngModel)]="capvalue" type="number"
+                        <h5 nz-typography style="margin: 0;">更改使用者名稱:</h5>
+                        <input nz-input placeholder="輸入新使用者名稱" [(ngModel)]="namevalue"
                             style="width: 100%; margin-top: 10px;" />
-                        <br>
-
                     </div>
                     <br>
-
-
+                    <div>
+                        <h5 nz-typography style="margin: 0;">更改密碼:</h5>
+                        <input nz-input placeholder="輸入新密碼" [(ngModel)]="passwordvalue"
+                            style="width: 100%; margin-top: 10px;" />
+                    </div>
                 </ng-container>
-
-                <ng-template #usepointmodalFooter>
-                    <button nz-button (click)="usepointhandleCancel()">取消兌換</button>
-                    <button nz-button nzType="primary" class="btn-styles2" (click)="usepointhandleOk()">兌換完成</button>
+                <ng-template #revisemodalFooter>
+                    <button nz-button (click)="revisehandleCancel()">取消</button>
+                    <button nz-button nzType="primary" class="btn-styles2" (click)="revisehandleOk()">完成</button>
                 </ng-template>
             </nz-modal>
-
         </div>
-        <div nz-col [nzSpan]="12" class="right-col">
-            <h2 nz-typography class="boxword">點數使用與規則說明</h2>
-            <br>
-            <div class="rulebox">
-                <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
-                <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
-                <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
-                <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
+        <!-- 我的點數 -->
+        <div class="pointbox">
+            <h1 nz-typography class="boxword">我的點數</h1>
+            <p class="boxnum">{{userpoint}}</p>
+        </div>
+        <nz-divider></nz-divider>
+        <!-- 轉贈點數和兌換點數按鈕組，尚未置中 -->
+        <div nz-row [nzGutter]="16" class="button-group">
+            <div nz-col [nzSpan]="12">
+                <button nz-button nzType="primary" nzBlock class="btn-styles2" (click)="addpointModal()">
+                    <span nz-icon nzType="swap" nzTheme="outline"></span>轉贈點數
+                </button>
             </div>
-            <nz-divider></nz-divider>
-            <h2 nz-typography class="boxword">點數異動紀錄</h2>
-            <br>
-
-            <!---------------------------------------------------------------------------------->
-
-            <div class=".point-information-container">
-                <div class="send-request">
-                    
-
+            <div nz-col [nzSpan]="12">
+                <button nz-button nzType="primary" nzBlock class="btn-styles2" (click)="usepointModal()">
+                    <span nz-icon nzType="coffee" nzTheme="outline"></span>兌換點數
+                </button>
+            </div>
+        </div>
+        <!-- 轉贈點數 Modal -->
+        <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="null" nzWidth="520px" nzCentered
+            [nzClosable]="false">
+            <ng-container *nzModalContent>
+                <div>
+                    <h5 nz-typography style="margin: 0;">選擇轉贈給:</h5>
+                    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="選擇轉贈給" [(ngModel)]="addpointselectedValue"
+                        style="width: 100%; margin-top: 10px;">
+                        <nz-option *ngFor="let member of members" [nzValue]="member.id" [nzLabel]="member.name">
+                        </nz-option>
+                    </nz-select>
                 </div>
-                <nz-table #basicTable>
-                    <thead>
-                        <tr>
-                            <th>異動事件</th>
-                            <th>點數異動情況</th>
-                            <th>異動時間</th>
-                            
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-
-                        </tr>
-
-                    </tbody>
-                </nz-table>
-
-            </div>
-
+                <br>
+                <div>
+                    <h5 nz-typography style="margin: 0;">轉贈點數數量:</h5>
+                    <input nz-input placeholder="輸入數量" [(ngModel)]="pointvalue" type="number"
+                        style="width: 100%; margin-top: 10px;" />
+                </div>
+                <br>
+                <div style="text-align: right;">
+                    <button nz-button nzType="default" (click)="addpointisVisible=false">取消</button>
+                    <button nz-button nzType="primary" class="btn-styles2">確認轉贈</button>
+                </div>
+            </ng-container>
+        </nz-modal>
+        <!-- 兌換點數 Modal -->
+        <nz-modal [(nzVisible)]="usepointisVisible" nzTitle="兌換點數" [nzFooter]="usepointmodalFooter" nzWidth="520px"
+            nzCentered [nzClosable]="false">
+            <ng-container *nzModalContent>
+                <div>
+                    <h5 nz-typography style="margin: 0;">兌換杯數:</h5>
+                    <input nz-input placeholder="輸入數量" [(ngModel)]="capvalue" type="number"
+                        style="width: 100%; margin-top: 10px;" />
+                    <br>
+                </div>
+                <br>
+            </ng-container>
+            <ng-template #usepointmodalFooter>
+                <button nz-button (click)="usepointhandleCancel()">取消兌換</button>
+                <button nz-button nzType="primary" class="btn-styles2" (click)="usepointhandleOk()">兌換完成</button>
+            </ng-template>
+        </nz-modal>
+        <nz-divider></nz-divider>
+        <!-- 點數使用與規則說明 -->
+        <div class="rulebox">
+            <h2 nz-typography class="boxword">點數使用與規則說明</h2>
+            <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
+            <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
+            <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
+            <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
         </div>
+        <nz-divider></nz-divider>
+        <!-- 點數異動紀錄（需要改成彈窗嗎 先這個樣子看一下） -->
 
+        <div class="point-information-container">
+            <h2 nz-typography class="boxword">點數異動紀錄</h2>
+
+            <nz-table #memberHistoryTable [nzData]="memberPointsHistoryList" [nzLoading]="memberHistoryLoading"
+                [nzBordered]="true" [nzShowPagination]="true" [nzPageSize]="10" [nzHideOnSinglePage]="false">
+                <thead>
+                    <tr>
+                        <th>異動事件</th>
+                        <th>點數異動情況</th>
+                        <th>異動時間</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (memberPointsHistoryList && memberPointsHistoryList.length > 0) {
+                    @for (data of memberPointsHistoryList; track data.id) {
+                    <tr>
+                        <td>{{ data.description || data.type }}</td>
+                        <td>
+                            <span [ngClass]="data.amount >= 0 ? 'text-green' : 'text-red'">
+                                {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
+                            </span>
+                            ({{ data.before_balance }} → {{ data.after_balance }})
+                        </td>
+                        <td>{{ data.created_at }}</td>
+                    </tr>
+                    }
+                    } @else {
+                    <tr>
+                        <td colspan="3" class="text-center">
+                            @if (memberHistoryLoading) {
+                            載入中...
+                            } @else {
+                            暫無資料
+                            }
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </nz-table>
+        </div>
     </div>
 </nz-content>
