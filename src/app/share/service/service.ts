@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseExchangeProduct, IApiResponseGetProduct, IApiResponseGetPageProduct } from './model';
+import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct } from './model';
 import { IApiResponsePoints } from './model';
 
 @Injectable({
@@ -117,9 +117,17 @@ export class ProductService extends BaseService {
     return this.http.post<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
   }
   // 分頁查詢商品項目
-  getPageProduct(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseExchangeProduct>>> {
+  getPageProduct(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseGetPageProduct>>> {
     const apiUrl = `${this.url}${this.ProductUrl}get_page_product?page=${page}&perPage=${perPage}`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseExchangeProduct>>>(apiUrl);
+    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageProduct>>>(apiUrl);
+  }
+  // 分頁查詢會員所有商品數量
+  getMemPageProduct(page: number, perPage: number, memberId: string): Observable<IApiResponse<IApiResponsePages<IApiResponseGetProduct>>> {
+    const apiUrl = `${this.url}${this.ProductUrl}get_mem_page_product?page=${page}&perPage=${perPage}`;
+    const requestBody = {
+      id: memberId
+    };
+    return this.http.post<IApiResponse<IApiResponsePages<IApiResponseGetProduct>>>(apiUrl, requestBody);
   }
 }
 // Admin 相關API
@@ -320,19 +328,4 @@ export class DeviceService extends BaseService {
     };
     return this.http.post<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
   }
-  // Product 相關API
-  // 分頁查詢商品項目
-  getPageProduct(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseGetPageProduct>>> {
-    const apiUrl = `${this.url}${this.ProductUrl}get_page_product?page=${page}&perPage=${perPage}`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageProduct>>>(apiUrl);
-  }
-  // 分頁查詢會員所有商品數量
-  getMemPageProduct(page: number, perPage: number, memberId: string): Observable<IApiResponse<IApiResponsePages<IApiResponseGetProduct>>> {
-    const apiUrl = `${this.url}${this.ProductUrl}get_mem_page_product?page=${page}&perPage=${perPage}`;
-    const requestBody = {
-      id: memberId
-    };
-    return this.http.post<IApiResponse<IApiResponsePages<IApiResponseGetProduct>>>(apiUrl, requestBody);
-  }
-
 }

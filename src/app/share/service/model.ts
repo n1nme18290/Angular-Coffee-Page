@@ -34,16 +34,6 @@ export interface IApiResponsePointsHistory {
     description: string
     created_at: string
 }
-export interface IApiResponseExchangeProduct {
-    id: string
-    name: string
-    description: string
-    category: string
-    points_required: number
-    status: number
-    created_at: string
-    updated_at: string
-}
 
 export interface IApiResponseAdminLogin {
     admin_id: string

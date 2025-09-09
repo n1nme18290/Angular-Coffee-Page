@@ -230,3 +230,74 @@ h3 {
     margin-top: 16px;
     margin-bottom: 16px;
 }
+
+.exchange-confirm {
+    .product-info {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f0f0f0;
+
+        h4 {
+            margin-bottom: 8px;
+            color: #1890ff;
+        }
+    }
+
+    .quantity-section {
+        margin-bottom: 20px;
+
+        h5 {
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .quantity-info {
+            font-size: 12px;
+            color: #999;
+            margin: 0;
+        }
+    }
+
+    .points-info {
+        .points-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+
+            &.total {
+                font-weight: 600;
+                color: #1890ff;
+                border-top: 1px solid #f0f0f0;
+                padding-top: 8px;
+                margin-top: 8px;
+            }
+
+            &.remaining {
+                font-weight: 600;
+                color: #52c41a;
+            }
+        }
+
+        .points-required,
+        .points-total {
+            color: #ff4d4f;
+            font-weight: 600;
+        }
+
+        .points-current {
+            color: #1890ff;
+            font-weight: 600;
+        }
+
+        .points-remaining {
+            color: #52c41a;
+            font-weight: 600;
+        }
+    }
+}
