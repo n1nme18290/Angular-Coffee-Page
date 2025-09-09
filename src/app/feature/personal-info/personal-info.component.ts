@@ -182,7 +182,7 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
 
     this.memberService.getMember(targetId).subscribe({
       next: (response) => {
-        this.username = response.data.student_id;
+        this.username = response.data.name;
       },
       error: (error) => {
         console.error('Error fetching member:', error);
@@ -395,7 +395,7 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
     this.currentMemberId = '9aa162f8-5ceb-4783-be85-274fed2ecb8e'; // 測試用
     this.productService.getMemPageProduct(1, 5, this.currentMemberId).subscribe({
       next: (response) => {
-        this.memberProductList = response.data.data || [];
+        this.memberProductList = response.data || [];
         console.log('會員商品列表:', this.memberProductList);
       },
       error: (error) => {

@@ -95,3 +95,8 @@ export interface IApiResponseGetProduct {
     quantity: number
     updated_at: string
 }
+export interface IApiResponseProductList {
+    data: IApiResponseGetProduct[];
+    isSuccess: boolean;
+    message: string;
+}

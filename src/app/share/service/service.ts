@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct } from './model';
+import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList } from './model';
 import { IApiResponsePoints } from './model';
 
 @Injectable({
@@ -72,8 +72,8 @@ export class PointService extends BaseService {
 @Injectable({
   providedIn: 'root'
 })
-export class LogService extends BaseService{
-    constructor() {
+export class LogService extends BaseService {
+  constructor() {
     super();
   }
   // 查詢指定會員的點數異動紀錄
@@ -101,7 +101,7 @@ export class LogService extends BaseService{
   providedIn: 'root'
 })
 export class ProductService extends BaseService {
-    constructor() {
+  constructor() {
     super();
   }
   // 建立商品品項
@@ -122,12 +122,17 @@ export class ProductService extends BaseService {
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageProduct>>>(apiUrl);
   }
   // 分頁查詢會員所有商品數量
-  getMemPageProduct(page: number, perPage: number, memberId: string): Observable<IApiResponse<IApiResponsePages<IApiResponseGetProduct>>> {
+  getMemPageProduct(page: number, perPage: number, memberId: string): Observable<IApiResponseProductList> {
     const apiUrl = `${this.url}${this.ProductUrl}get_mem_page_product?page=${page}&perPage=${perPage}`;
-    const requestBody = {
-      id: memberId
-    };
-    return this.http.post<IApiResponse<IApiResponsePages<IApiResponseGetProduct>>>(apiUrl, requestBody);
+    return this.http.post<IApiResponseProductList>(
+      apiUrl,
+      `"${memberId}"`,  // 直接傳送 JSON 字串格式
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
   }
 }
 // Admin 相關API
@@ -135,7 +140,7 @@ export class ProductService extends BaseService {
   providedIn: 'root'
 })
 export class AdminService extends BaseService {
-    constructor() {
+  constructor() {
     super();
   }
   // 取得所有管理員
@@ -153,7 +158,7 @@ export class AdminService extends BaseService {
     const apiUrl = `${this.url}${this.AdminUrl}get_admin`;
     const requestBody = {
       id: id
-      
+
     };
     return this.http.post<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
   }
@@ -205,7 +210,7 @@ export class AdminService extends BaseService {
   providedIn: 'root'
 })
 export class AuthService extends BaseService {
-    constructor() {
+  constructor() {
     super();
   }
   // Admin 登入
@@ -288,7 +293,7 @@ export class MemberService extends BaseService {
   providedIn: 'root'
 })
 export class DeviceService extends BaseService {
-    constructor() {
+  constructor() {
     super();
   }
   // 創建新設備

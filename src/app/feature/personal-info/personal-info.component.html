@@ -54,6 +54,13 @@
             <h1 nz-typography class="boxword">我的點數</h1>
             <p class="boxnum">{{userpoint}}</p>
         </div>
+        <!-- 我的商品券 -->
+        <div class="pointbox">
+            <h1 nz-typography class="boxword">我的商品券</h1>
+            <div *ngFor="let product of memberProductList">
+                <p style="margin-bottom: 0;">{{ product.product_name }} - {{ product.quantity }} 張</p>
+            </div>
+        </div>
         <nz-divider></nz-divider>
         <!-- 轉贈點數和兌換商品券按鈕組，尚未水平置中 -->
         <div nz-row [nzGutter]="16" class="button-group">
@@ -94,10 +101,16 @@
             </ng-container>
         </nz-modal>
         <!-- 兌換商品券 Modal，商品似乎可以改成用 dictionary -->
-        <nz-modal [(nzVisible)]="usepointisVisible" nzTitle="兌換點數" [nzFooter]="usepointmodalFooter" nzWidth="520px"
+        <nz-modal [(nzVisible)]="usepointisVisible" nzTitle="兌換商品券" [nzFooter]="usepointmodalFooter" nzWidth="520px"
             nzCentered [nzClosable]="false">
             <ng-container *nzModalContent>
                 <div>
+                    <div class="pointbox" style="margin: 0px 0px 16px 0px;">
+                        <h1 nz-typography class="boxword">我的商品券</h1>
+                        <div *ngFor="let product of memberProductList">
+                            <p style="margin-bottom: 0;">{{ product.product_name }} - {{ product.quantity }} 張</p>
+                        </div>
+                    </div>
                     <div nz-row [nzGutter]="8">
                         @if (productList && productList.length > 0) {
                         @for (product of productList; track product.id) {
