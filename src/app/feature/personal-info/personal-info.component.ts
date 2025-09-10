@@ -27,7 +27,7 @@ import { SidebarService } from '../../share/service/sidebar.service';
 import { Observable, of, Subscription } from 'rxjs';
 import { IApiResponse, IApiResponsePoints, IApiResponseMember, IApiResponsePointsHistory, IApiResponseGetPageProduct, IApiResponseGetProduct } from '../../share/service/model';
 import { PointService, MemberService, AdminService, LogService, ProductService, } from '../../share/service/service';
-import { AuthTokenService } from '../../share/service/auth.service';
+//import { AuthTokenService } from '../../share/service/auth.service';
 
 
 @Component({
@@ -55,7 +55,7 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
     public adminservice: AdminService,
     public logservice: LogService,
     public productService: ProductService,
-    public authTokenService: AuthTokenService
+    //public authTokenService: AuthTokenService
   ) { }
 
   // 訂閱
