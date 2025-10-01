@@ -4,20 +4,16 @@
 
     <div class="menu-container">
       <ul nz-menu nzTheme="dark" nzMode="inline" class="main-menu">
-        <li nz-submenu nzTitle="會員管理" nzIcon="user" class="menu-item-large">
-          <ul>
-            <li nz-menu-item class="menu-item-large" (click)="GoPersonalInfo()">個人資訊</li>
-            <!----<li nz-menu-item class="menu-item-large" (click)="GoPointInformation()">點數資訊</li>--->
-          </ul>
-        </li>
-        <li nz-submenu nzTitle="咖啡設備管理" nzIcon="coffee" class="menu-item-large">
-          <ul>
-            <li nz-menu-item class="menu-item-large" (click)="GoEquipment()">設備管理頁面</li>
-          </ul>
-        </li>
+
+         <li nz-menu-item >
+            <span nz-icon nzType="user"></span>
+            <span class="menu-item-large" (click)="GoPersonalInfo()">個人資訊</span>
+          </li>
+
         <li nz-submenu nzTitle="系統管理" nzIcon="setting" class="menu-item-large">
           <ul>
-            <li nz-menu-item class="menu-item-large" (click)="GoBackendManagement()">系統管理首頁</li>
+            <li nz-menu-item class="menu-item-large" (click)="GoBackendManagement()">兌換資料分析頁面</li>
+            <li nz-menu-item class="menu-item-large" (click)="GoEquipment()">設備管理頁面</li>
             <li nz-menu-item class="menu-item-large" (click)="GoPermissionManagement()">角色權限管理</li>
             <li nz-menu-item class="menu-item-large" (click)="GoHistoricalRecord()">歷史紀錄頁面</li>
           </ul>

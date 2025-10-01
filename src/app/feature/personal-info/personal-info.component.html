@@ -220,57 +220,87 @@
                 </button>
             </ng-template>
         </nz-modal>
-        
+
         <!-- 點數使用與規則說明 -->
-        <div class="rulebox">
-            <h2 nz-typography class="boxword">點數使用與規則說明</h2>
-            <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
-            <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
-            <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
-            <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
-        </div>
-        <nz-divider></nz-divider>
+        <nz-collapse [nzBordered]="false">
+            @for (panel of rulepanels; track panel) {
+            <nz-collapse-panel [nzHeader]="headerTemplate" [nzActive]="panel.active" [nzShowArrow]="false">
+                <ng-template #headerTemplate>
+                    <div class="headerbox">
+                        <span nz-icon nzType="caret-down" nzTheme="outline" style="color:#27496D ;"></span>
+                        <h2 nz-typography class="headerword" style="margin: 0;">{{ panel.name }}</h2>
+                    </div>
+                </ng-template>
+
+                <!-- 內容 -->
+                <div class="rulebox">
+
+                    <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
+                    <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
+                    <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
+                    <h3 nz-typography class="boxword">● 100點可兌換一杯咖啡</h3>
+                </div>
+
+
+            </nz-collapse-panel>
+            }
+        </nz-collapse>
+
         <!-- 點數異動紀錄（需要改成彈窗嗎 先這個樣子看一下） -->
+        <nz-collapse [nzBordered]="false">
+            @for (panel of pointpanels; track panel) {
+            <nz-collapse-panel [nzHeader]="headerTemplate" [nzActive]="panel.active" [nzShowArrow]="false">
+                <ng-template #headerTemplate>
+                    <div class="headerbox">
+                        <span nz-icon nzType="caret-down" nzTheme="outline" style="color:#27496D ;"></span>
+                        <h2 nz-typography class="headerword" style="margin: 0;">{{ panel.name }}</h2>
+                    </div>
+                </ng-template>
 
-        <div class="point-information-container">
-            <h2 nz-typography class="boxword">點數異動紀錄</h2>
-
-            <nz-table #memberHistoryTable [nzData]="memberPointsHistoryList" [nzLoading]="memberHistoryLoading"
-                [nzBordered]="true" [nzShowPagination]="true" [nzPageSize]="10" [nzHideOnSinglePage]="false">
-                <thead>
-                    <tr>
-                        <th>異動事件</th>
-                        <th>點數異動情況</th>
-                        <th>異動時間</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (memberPointsHistoryList && memberPointsHistoryList.length > 0) {
-                    @for (data of memberPointsHistoryList; track data.id) {
-                    <tr>
-                        <td>{{ data.description || data.type }}</td>
-                        <td>
-                            <span [ngClass]="data.amount >= 0 ? 'text-green' : 'text-red'">
-                                {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
-                            </span>
-                            ({{ data.before_balance }} → {{ data.after_balance }})
-                        </td>
-                        <td>{{ data.created_at }}</td>
-                    </tr>
-                    }
-                    } @else {
-                    <tr>
-                        <td colspan="3" class="text-center">
-                            @if (memberHistoryLoading) {
-                            載入中...
-                            } @else {
-                            暫無資料
+                <!-- 內容 -->
+                <div class="point-information-container">
+                    <nz-table #memberHistoryTable [nzData]="memberPointsHistoryList" [nzLoading]="memberHistoryLoading"
+                        [nzBordered]="true" [nzShowPagination]="true" [nzPageSize]="10" [nzHideOnSinglePage]="false">
+                        <thead>
+                            <tr>
+                                <th>異動事件</th>
+                                <th>點數異動情況</th>
+                                <th>異動時間</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (memberPointsHistoryList && memberPointsHistoryList.length > 0) {
+                            @for (data of memberPointsHistoryList; track data.id) {
+                            <tr>
+                                <td>{{ data.description || data.type }}</td>
+                                <td>
+                                    <span [ngClass]="data.amount >= 0 ? 'text-green' : 'text-red'">
+                                        {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
+                                    </span>
+                                    ({{ data.before_balance }} → {{ data.after_balance }})
+                                </td>
+                                <td>{{ data.created_at }}</td>
+                            </tr>
                             }
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-            </nz-table>
-        </div>
+                            } @else {
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    @if (memberHistoryLoading) {
+                                    載入中...
+                                    } @else {
+                                    暫無資料
+                                    }
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </nz-table>
+                </div>
+
+            </nz-collapse-panel>
+            }
+        </nz-collapse>
+
+
     </div>
 </nz-content>

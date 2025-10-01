@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
@@ -37,7 +38,7 @@ import { PointService, MemberService, AdminService, LogService, ProductService, 
     NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule,
     NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule, NzInputNumberModule,
     NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzRadioModule, NzModalModule, NzCardModule,
-    CommonModule, NzDividerModule, NzGridModule, NzCarouselModule, NzQRCodeModule, NzTableModule
+    CommonModule, NzDividerModule, NzGridModule, NzCarouselModule, NzQRCodeModule, NzTableModule,NzCollapseModule
   ],
   templateUrl: './personal-info.component.html',
   styleUrl: './personal-info.component.scss'
@@ -403,4 +404,20 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  //異動折疊
+  pointpanels = [
+    {
+      active: true,
+      name: '點數異動紀錄',
+      disabled: false
+    }
+    ]
+    rulepanels = [
+    {
+      active: true,
+      name: '點數使用與規則說明',
+      disabled: false
+    }
+    ]
 }

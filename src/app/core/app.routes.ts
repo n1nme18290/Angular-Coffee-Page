@@ -21,8 +21,6 @@ import { MainPageComponent } from '../share/main-page/main-page.component';
 export const routes: Routes = [
   { path: '', redirectTo: '/personal-info', pathMatch: 'full' },
 
-  { path: 'log-in', component: LogInComponent },
-  { path: 'register', component: RegisterComponent },
   { path: 'demo-components', component: DemoComponentsComponent },
   { path: 'equipment/equipment-information', component: EquipmentInformationComponent },
 

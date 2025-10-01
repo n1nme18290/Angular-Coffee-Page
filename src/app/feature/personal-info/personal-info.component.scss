@@ -376,3 +376,17 @@ h3 {
     font-weight: 600;
     color: #27496D;
 }
+
+//摺疊
+.headerword{
+    font-weight: bold; //粗體
+    color: #27496D; //字體顏色
+}
+.headerbox{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 12px; 
+    
+
+}
