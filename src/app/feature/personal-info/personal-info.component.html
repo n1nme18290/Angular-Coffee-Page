@@ -3,7 +3,7 @@
         <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
             class="big-icon"></span>
     </button>
-    <h2 nz-typography class="h2">{{username}}</h2>
+    <h1 nz-typography class="h2">{{username}}</h1>
 </nz-header>
 
 <nz-content>
@@ -25,7 +25,7 @@
         <nz-divider></nz-divider>
         <!-- 個人資訊 -->
         <div class="titlebox">
-            <h2 nz-typography class="boxword">個人資訊</h2>
+            <h1 nz-typography class="boxword">個人資訊</h1>
             <!-- <button nz-button nzType="primary" class="btn-styles3" (click)="reviseModal()"><span nz-icon nzType="edit"
                     nzTheme="outline"></span></button> -->
             <nz-modal [(nzVisible)]="reviseisVisible" nzTitle="修改個人資料" [nzFooter]="revisemodalFooter" nzWidth="520px"
@@ -71,15 +71,16 @@
         <div nz-row [nzGutter]="16" class="button-group">
             <div nz-col [nzSpan]="12">
                 <button nz-button nzType="primary" nzBlock class="btn-styles2" (click)="addpointModal()">
-                    <span nz-icon nzType="swap" nzTheme="outline"></span>轉贈點數
+                    <h3 nz-typography><span nz-icon nzType="swap" nzTheme="outline"></span>轉贈點數</h3>
                 </button>
             </div>
             <div nz-col [nzSpan]="12">
                 <button nz-button nzType="primary" nzBlock class="btn-styles2" (click)="usepointModal()">
-                    <span nz-icon nzType="coffee" nzTheme="outline"></span>兌換商品券
+                    <h3 nz-typography><span nz-icon nzType="coffee" nzTheme="outline"></span>兌換商品券</h3>
                 </button>
             </div>
         </div>
+
         <nz-divider></nz-divider>
         <!-- 轉贈點數 Modal -->
         <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="null" nzWidth="520px" nzCentered
@@ -228,7 +229,7 @@
                 <ng-template #headerTemplate>
                     <div class="headerbox">
                         <span nz-icon nzType="caret-down" nzTheme="outline" style="color:#27496D ;"></span>
-                        <h2 nz-typography class="headerword" style="margin: 0;">{{ panel.name }}</h2>
+                        <h1 nz-typography class="headerword" style="margin: 0;">{{ panel.name }}</h1>
                     </div>
                 </ng-template>
 
@@ -253,7 +254,7 @@
                 <ng-template #headerTemplate>
                     <div class="headerbox">
                         <span nz-icon nzType="caret-down" nzTheme="outline" style="color:#27496D ;"></span>
-                        <h2 nz-typography class="headerword" style="margin: 0;">{{ panel.name }}</h2>
+                        <h1 nz-typography class="headerword" style="margin: 0;">{{ panel.name }}</h1>
                     </div>
                 </ng-template>
 
