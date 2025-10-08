@@ -38,7 +38,7 @@ import { PointService, MemberService, AdminService, LogService, ProductService, 
     NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule,
     NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule, NzInputNumberModule,
     NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzRadioModule, NzModalModule, NzCardModule,
-    CommonModule, NzDividerModule, NzGridModule, NzCarouselModule, NzQRCodeModule, NzTableModule,NzCollapseModule
+    CommonModule, NzDividerModule, NzGridModule, NzCarouselModule, NzQRCodeModule, NzTableModule, NzCollapseModule
   ],
   templateUrl: './personal-info.component.html',
   styleUrl: './personal-info.component.scss'
@@ -319,19 +319,19 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
   exchangeQuantity: number = 1;
   // 點擊飲品卡片
   onDrinkSelect(product: IApiResponseGetPageProduct): void {
-  console.log('你點擊了:', product);
-  this.selectedProduct = product;
-  this.exchangeQuantity = 1;
-  
-  // 檢查點數是否足夠
-  if (this.userpoint < product.points_required) {
-    alert(`點數不足！需要 ${product.points_required} 點，您目前有 ${this.userpoint} 點`);
-    return;
+    console.log('你點擊了:', product);
+    this.selectedProduct = product;
+    this.exchangeQuantity = 1;
+
+    // 檢查點數是否足夠
+    if (this.userpoint < product.points_required) {
+      alert(`點數不足！需要 ${product.points_required} 點，您目前有 ${this.userpoint} 點`);
+      return;
+    }
+
+    // 顯示兌換確認彈窗
+    this.exchangeConfirmVisible = true;
   }
-  
-  // 顯示兌換確認彈窗
-  this.exchangeConfirmVisible = true;
-}
   // 增加數量
   increaseQuantity(): void {
     if (!this.selectedProduct) return;
@@ -412,12 +412,12 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
       name: '點數異動紀錄',
       disabled: false
     }
-    ]
-    rulepanels = [
+  ]
+  rulepanels = [
     {
       active: true,
       name: '點數使用與規則說明',
       disabled: false
     }
-    ]
+  ]
 }
