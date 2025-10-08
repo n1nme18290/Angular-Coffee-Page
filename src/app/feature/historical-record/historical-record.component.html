@@ -7,14 +7,13 @@
         </button>
         <h2 nz-typography class="h2">{{ getCurrentTitle() }}</h2>
     </nz-header>
-
     <!-- Tabs -->
     <nz-tabset [(nzSelectedIndex)]="selectedIndex" class="tabs">
         <nz-tab [nzTitle]="Title01"><!--使用者使用紀錄-->
             <nz-content>
                 <div nz-row class="row-style">
                     <div nz-col [nzSpan]="12" class="left-col">
-                        <h2 nz-typography class="boxword">使用者使用紀錄資料庫</h2>
+                        <h2 nz-typography class="boxword">使用者使用紀錄</h2>
                     </div>
                 </div>
             </nz-content>
@@ -28,73 +27,64 @@
                     <span>Selected {{ historySetOfCheckedId.size }} items</span>
                 </div>
 
-                <nz-table #historyTable [nzData]="pointsHistoryList" [nzBordered]="true" [nzLoading]="historyLoading"
-                    [nzShowPagination]="true" (nzCurrentPageDataChange)="onHistoryCurrentPageDataChange($event)">
-                    <thead>
-                        <tr>
-                            <th [nzChecked]="historyChecked" [nzIndeterminate]="historyIndeterminate"
-                                (nzCheckedChange)="onHistoryAllChecked($event)">Select all</th>
-                            <th>ID</th>
-                            <th>會員ID</th>
-                            <th>異動前點數</th>
-                            <th>異動後點數</th>
-                            <th>異動時間</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (pointsHistoryList && pointsHistoryList.length > 0) {
-                        @for (data of pointsHistoryList; track data.id) {
-                        <tr>
-                            <td [nzChecked]="historySetOfCheckedId.has(data.id)"
-                                (nzCheckedChange)="onHistoryItemChecked(data.id, $event)"></td>
-                            <td>{{ data.id }}</td>
-                            <td>{{ data.member_id }}</td>
-                            <td>{{ data.before_balance }}</td>
-                            <td>{{ data.after_balance }}</td>
-                            <td>{{ data.created_at }}</td>
-                        </tr>
-                        }
-                        } @else {
-                        <tr>
-                            <td colspan="6" class="text-center">
-                                @if (historyLoading) {
-                                載入中...
-                                } @else {
-                                暫無資料
-                                }
-                            </td>
-                        </tr>
-                        }
-                    </tbody>
-                </nz-table>
+                <!-- 點數異動紀錄 -->
+                <nz-collapse [nzBordered]="false">
+                    @for (panel of memberPanels; track panel) {
+                    <nz-collapse-panel [nzActive]="panel.active" [nzShowArrow]="false">
+                        <!-- 內容 -->
+                        <div class="point-information-container">
+                            <nz-table #memberHistoryTable [nzData]="pointsHistoryList" [nzLoading]="historyLoading"
+                                [nzBordered]="true" [nzShowPagination]="true" [nzPageSize]="10"
+                                [nzHideOnSinglePage]="false">
+                                <thead>
+                                    <tr>
+                                        <th>異動事件</th>
+                                        <th>點數異動情況</th>
+                                        <th>異動時間</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (pointsHistoryList && pointsHistoryList.length > 0) {
+                                    @for (data of pointsHistoryList; track data.id) {
+                                    <tr>
+                                        <td>{{ data.type }}</td>
+                                        <td>
+                                            <span [ngClass]="data.amount >= 0 ? 'text-green' : 'text-red'">
+                                                {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
+                                            </span>
+                                            ({{ data.before_balance }} → {{ data.after_balance }})
+                                        </td>
+                                        <td>{{ data.created_at }}</td>
+                                    </tr>
+                                    }
+                                    } @else {
+                                    <tr>
+                                        <td colspan="3" class="text-center">
+                                            @if (historyLoading) {
+                                            載入中...
+                                            } @else {
+                                            暫無資料
+                                            }
+                                        </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </nz-table>
+                        </div>
+
+                    </nz-collapse-panel>
+                    }
+                </nz-collapse>
             </div>
-
-
-
-
-
-        </nz-tab>
-        <nz-tab [nzTitle]="Title02"><!--異常歷史紀錄-->
-            <nz-content></nz-content>
         </nz-tab>
         <nz-tab [nzTitle]="Title03"><!--設備使用紀錄-->
             <nz-content></nz-content>
-        </nz-tab>
-        <nz-tab [nzTitle]="Title04"><!--咖啡派送紀錄-->
-            <nz-content>
-                <div nz-row class="row-style">
-                    <div nz-col [nzSpan]="12" class="left-col">
-                        <h2 nz-typography class="boxword">派送紀錄資料庫</h2>
-                    </div>
-                </div>
-
-            </nz-content>
         </nz-tab>
         <nz-tab [nzTitle]="Title05"> <!--點數資訊-->
             <nz-content>
                 <div nz-row class="row-style">
                     <div nz-col [nzSpan]="12" class="left-col">
-                        <h2 nz-typography class="boxword">點數資料庫</h2>
+                        <h2 nz-typography class="boxword">點數使用紀錄</h2>
                     </div>
                 </div>
 
@@ -122,7 +112,7 @@
                             <th>ID</th>
                             <th>會員ID</th>
                             <th>點數數量</th>
-                            <th>上次登入時間</th>
+                            <th>上次變動時間</th>
                         </tr>
                     </thead>
                     <tbody>

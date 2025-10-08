@@ -25,8 +25,9 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import { SidebarService } from '../../share/service/sidebar.service';
 import { LogService } from '../../share/service/service';
-// ✨ 新增: 引入點數歷史紀錄的介面
 import { IApiResponsePoints, IApiResponsePointsHistory } from '../../share/service/model';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+
 
 @Component({
   selector: 'app-historical-record',
@@ -34,7 +35,7 @@ import { IApiResponsePoints, IApiResponsePointsHistory } from '../../share/servi
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
     NzRadioModule, NzModalModule, CommonModule,
-    NzTableModule, NzDividerModule, NzCheckboxModule, NzGridModule],
+    NzTableModule, NzDividerModule, NzCheckboxModule, NzGridModule, NzCollapseModule],
   templateUrl: './historical-record.component.html',
   styleUrl: './historical-record.component.scss'
 })
@@ -111,8 +112,7 @@ export class HistoricalRecordComponent {
   ngOnInit() {
     // Initialization logic can go here
     this.getPagePoints(1, 5);
-    // ✨ 新增: 初始化點數歷史紀錄
-    this.getAllPointsHistory();
+    this.getPagePointsHistory(1, 5);
   }
 
   ngAfterViewInit() {
@@ -205,11 +205,10 @@ export class HistoricalRecordComponent {
     });
   }
 
-  // ✨ 新增: 點數歷史紀錄功能 ---
-  // 取得所有點數歷史紀錄
-  getAllPointsHistory(): void {
+  // 取得分頁點數異動紀錄
+  getPagePointsHistory(page: number, perpage: number): void {
     this.historyLoading = true;
-    this.logService.getAllLog().subscribe({
+    this.logService.getPageLog(page, perpage).subscribe({
       next: (res) => {
         console.log('Points History API Response:', res);
         if (res && res.data) {
@@ -274,4 +273,13 @@ export class HistoricalRecordComponent {
       this.historyLoading = false;
     }, 1000);
   }
+
+  //異動折疊
+  memberPanels = [
+    {
+      active: true,
+      name: '點數異動紀錄',
+      disabled: false
+    }
+  ]
 }
