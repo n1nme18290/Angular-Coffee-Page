@@ -131,6 +131,12 @@ export class PermissionManagementComponent {
       }
     });
   }
+  // 編輯一般管理員
+  editNormalAdmin(): void {
+  }
+  // 發送點數給會員
+  sendPoints(): void {
+  }
   
   // 刷新選取狀態
   refreshCheckedStatus(): void {
