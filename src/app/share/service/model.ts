@@ -100,3 +100,12 @@ export interface IApiResponseProductList {
     isSuccess: boolean;
     message: string;
 }
+export interface IApiResponseGetPageDeviceLog {
+    id: string
+    device_id: string
+    member_id: string
+    operation_type: string
+    operation: string
+    amount: number
+    created_at: string
+}

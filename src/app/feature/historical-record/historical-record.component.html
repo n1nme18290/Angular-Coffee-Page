@@ -27,7 +27,7 @@
                     <span>Selected {{ historySetOfCheckedId.size }} items</span>
                 </div>
 
-                <!-- 點數異動紀錄 -->
+                <!-- 使用者使用紀錄 -->
                 <nz-collapse [nzBordered]="false">
                     @for (panel of memberPanels; track panel) {
                     <nz-collapse-panel [nzActive]="panel.active" [nzShowArrow]="false">
@@ -77,10 +77,72 @@
                 </nz-collapse>
             </div>
         </nz-tab>
-        <nz-tab [nzTitle]="Title03"><!--設備使用紀錄-->
-            <nz-content></nz-content>
+        <nz-tab [nzTitle]="Title02"><!--設備使用紀錄-->
+            <nz-content>
+                <div nz-row class="row-style">
+                    <div nz-col [nzSpan]="12" class="left-col">
+                        <h2 nz-typography class="boxword">設備使用紀錄</h2>
+                    </div>
+                </div>
+            </nz-content>
+            <div class="point-information-container">
+                <nz-table #deviceLogTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading"
+                    [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage"
+                    [nzPageSize]="pageSize" [nzTotal]="total" [nzShowSizeChanger]="true"
+                    [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onPageIndexChange($event)"
+                    (nzPageSizeChange)="onPageSizeChange($event)"
+                    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
+                    <thead>
+                        <tr>
+                            <th>序號</th>
+                            <!-- <th
+                                nzShowFilter
+                                [nzFilters]="deviceLogSortColumns[0].listOfFilter"
+                                [nzFilterFn]="deviceLogSortColumns[0].filterFn"
+                            >
+                                {{ deviceLogSortColumns[0].name }}
+                            </th>
+                            <th
+                                nzShowFilter
+                                [nzFilters]="deviceLogSortColumns[1].listOfFilter"
+                                [nzFilterFn]="deviceLogSortColumns[1].filterFn"
+                            >
+                                {{ deviceLogSortColumns[1].name }}
+                            </th> -->
+                            <th>操作類型</th>
+                            <th>操作內容</th>
+                            <th>操作時間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (deviceLogList && deviceLogList.length > 0) {
+                        @for (data of deviceLogList; track data.id; let i = $index) {
+                        <tr>
+                            <!-- <td>{{ data.id }}</td>
+                            <td>{{ data.device_id }}</td>
+                            <td>{{ data.member_id }}</td> -->
+                            <td>{{ getSerialNumber(i) }}</td> <!-- 顯示流水號 -->
+                            <td>{{ data.operation_type }}</td>
+                            <td>{{ data.operation }}</td>
+                            <td>{{ data.created_at }}</td>
+                        </tr>
+                        }
+                        } @else {
+                        <tr>
+                            <td colspan="5" class="text-center">
+                                @if (loading) {
+                                載入中...
+                                } @else {
+                                暫無資料
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </nz-table>
+            </div>
         </nz-tab>
-        <nz-tab [nzTitle]="Title05"> <!--點數資訊-->
+        <nz-tab [nzTitle]="Title03"> <!--點數使用紀錄-->
             <nz-content>
                 <div nz-row class="row-style">
                     <div nz-col [nzSpan]="12" class="left-col">
@@ -98,7 +160,7 @@
                     </button>
                     <span>Selected {{ setOfCheckedId.size }} items</span>
                 </div>
-                <nz-table #basicTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading"
+                <nz-table #pointsTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading"
                     [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage"
                     [nzPageSize]="pageSize" [nzTotal]="total" [nzShowSizeChanger]="true"
                     [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onPageIndexChange($event)"

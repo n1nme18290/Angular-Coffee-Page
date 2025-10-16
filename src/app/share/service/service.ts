@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList } from './model';
+import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog } from './model';
 import { IApiResponsePoints } from './model';
 
 @Injectable({
@@ -94,6 +94,21 @@ export class LogService extends BaseService {
     const apiUrl = `${this.url}${this.LogUrl}get_page_log?page=${page}&perPage=${perPage}`;
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl);
   }
+  // 分頁查詢設備操作紀錄
+  getPageDeviceLog(page: number, perpage: number, deviceName?: string | null, sortField?: string | null, sortOrder?: 'asc'|'desc'|null) {
+    const params = new URLSearchParams();
+    params.set('page', String(page));
+    params.set('perPage', String(perpage));
+    if (deviceName) params.set('deviceName', deviceName);
+    if (sortField) params.set('sortField', sortField);
+    if (sortOrder) params.set('sortOrder', sortOrder);
+    const apiUrl = `${this.url}${this.LogUrl}get_device_log?${params.toString()}`;
+    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageDeviceLog>>>(apiUrl);
+  }
+  // getPageDeviceLog(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseGetPageDeviceLog>>> {
+  //   const apiUrl = `${this.url}${this.LogUrl}get_device_log?page=${page}&perPage=${perPage}`;
+  //   return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageDeviceLog>>>(apiUrl);
+  // }
 }
 
 // Product 相關Api
