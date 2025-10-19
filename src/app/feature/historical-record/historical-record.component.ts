@@ -65,23 +65,33 @@ export class HistoricalRecordComponent {
   historyIndeterminate = false;
   historyListOfCurrentPageData: readonly IApiResponsePointsHistory[] = [];
   historySetOfCheckedId = new Set<string>();
+  // 使用者使用紀錄分頁屬性
+  historyPageIndex = 1;
+  historyPageSize = 5;
+  historyTotal = 0;
+
   // 設備操作紀錄相關屬性
   deviceLogList: IApiResponseGetPageDeviceLog[] = [];
   deviceLogLoading = false;
   deviceLogChecked = false;
   deviceLogIndeterminate = false;
-  
+  // 設備分頁屬性
+  devicePageIndex = 1;
+  devicePageSize = 5;
+  deviceTotal = 0;
+
   // Tab切換相關屬性
   selectedIndex = 0;
   Title01 = '使用者使用紀錄';
   Title02 = '設備使用紀錄';
-  Title03 = '點數資訊';
+  Title03 = '點數使用紀錄';
 
   ngOnInit() {
     // Initialization logic can go here
-    this.getPagePoints(1, 5);
-    this.getPagePointsHistory(1, 5);
-    this.getPageDeviceLog(1, 5);
+    // 使用各自的 page/index 初始值
+    this.getPagePoints(this.currentPage, this.pageSize);
+    this.getPagePointsHistory(this.historyPageIndex, this.historyPageSize);
+    this.getPageDeviceLog(this.devicePageIndex, this.devicePageSize);
   }
   ngAfterViewInit() {
     // Logic that needs to run after the view has been initialized can go here
@@ -99,9 +109,12 @@ export class HistoricalRecordComponent {
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }
-  // 計算流水號的方法
+  // 計算流水號的方法（支援點數頁與設備頁）
   getSerialNumber(index: number): number {
-    return (this.currentPage - 1) * this.pageSize + index + 1;
+    const isDeviceTab = this.selectedIndex === 1;
+    const page = isDeviceTab ? this.devicePageIndex : this.currentPage;
+    const size = isDeviceTab ? this.devicePageSize : this.pageSize;
+    return (page - 1) * size + index + 1;
   }
   // 查詢指定會員的點數異動紀錄
   getMemberPointsHistory(memberId: string) {
@@ -163,12 +176,12 @@ export class HistoricalRecordComponent {
       this.loading = false;
     }, 1000);
   }
-  // 當前頁面數據變更時
+  // 當前頁面數據變更時（點數分頁）
   onPageIndexChange(pageIndex: number): void {
     this.currentPage = pageIndex;
     this.getPagePoints(this.currentPage, this.pageSize);
   }
-  // 一頁幾筆變更時，
+  // 一頁幾筆變更時（點數分頁）
   onPageSizeChange(pageSize: number): void {
     this.pageSize = pageSize;
     this.currentPage = 1; // 重置到第一頁
@@ -197,7 +210,8 @@ export class HistoricalRecordComponent {
       }
     });
   }
-  // 取得分頁點數異動紀錄
+
+  // 取得分頁點數異動紀錄（修改：回傳 total，使用 history 分頁屬性）
   getPagePointsHistory(page: number, perpage: number): void {
     this.historyLoading = true;
     this.logService.getPageLog(page, perpage).subscribe({
@@ -205,6 +219,7 @@ export class HistoricalRecordComponent {
         console.log('Points History API Response:', res);
         if (res && res.data) {
           this.pointsHistoryList = res.data.data || [];
+          this.historyTotal = res.data.total || 0;
           // 清除選取狀態
           this.historySetOfCheckedId.clear();
           this.refreshHistoryCheckedStatus();
@@ -214,43 +229,25 @@ export class HistoricalRecordComponent {
       error: (error) => {
         console.error('Error fetching points history:', error);
         this.pointsHistoryList = [];
+        this.historyTotal = 0;
         this.historyLoading = false;
       }
     });
   }
-  // 設備操作紀錄
-  // 分頁取得設備操作紀錄
-  getPageDeviceLog(page: number, perpage: number): void {
-    this.deviceLogLoading = true;
-    this.logService.getPageDeviceLog(page, perpage).subscribe({
-      next: (res) => {
-        console.log('Device Log API Response:', res);
-        if (res && res.data) {
-          this.deviceLogList = res.data.data || [];
-        }
-        this.deviceLogLoading = false;
-      },
-      error: (error) => {
-        console.error('Error fetching device log:', error);
-        this.deviceLogList = [];
-        this.deviceLogLoading = false;
-      }
-    });
+
+  // 使用者使用紀錄 - 當前頁面歷史紀錄數據變更時
+  onHistoryCurrentPageDataChange(listOfCurrentPageData: readonly IApiResponsePointsHistory[]): void {
+    this.historyListOfCurrentPageData = listOfCurrentPageData;
+    this.refreshHistoryCheckedStatus();
   }
-  // 使用者使用紀錄
-  // 更新歷史紀錄選取的ID集合
+
+  // 使用者使用紀錄更新歷史紀錄選取的ID集合
   updateHistoryCheckedSet(id: string, checked: boolean): void {
     if (checked) {
       this.historySetOfCheckedId.add(id);
     } else {
       this.historySetOfCheckedId.delete(id);
     }
-  }
-
-  // 當前頁面歷史紀錄數據變更時
-  onHistoryCurrentPageDataChange(listOfCurrentPageData: readonly IApiResponsePointsHistory[]): void {
-    this.historyListOfCurrentPageData = listOfCurrentPageData;
-    this.refreshHistoryCheckedStatus();
   }
 
   // 刷新歷史紀錄選取狀態
@@ -283,6 +280,52 @@ export class HistoricalRecordComponent {
       this.refreshHistoryCheckedStatus();
       this.historyLoading = false;
     }, 1000);
+  }
+
+  // 使用者分頁事件
+  onHistoryPageIndexChange(pageIndex: number): void {
+    this.historyPageIndex = pageIndex;
+    this.getPagePointsHistory(this.historyPageIndex, this.historyPageSize);
+  }
+
+  onHistoryPageSizeChange(pageSize: number): void {
+    this.historyPageSize = pageSize;
+    this.historyPageIndex = 1;
+    this.getPagePointsHistory(this.historyPageIndex, this.historyPageSize);
+  }
+
+  // 設備操作紀錄
+  // 分頁取得設備操作紀錄（修改：回傳 total，使用 device 分頁屬性）
+  getPageDeviceLog(page: number, perpage: number): void {
+    this.deviceLogLoading = true;
+    this.logService.getPageDeviceLog(page, perpage).subscribe({
+      next: (res) => {
+        console.log('Device Log API Response:', res);
+        if (res && res.data) {
+          this.deviceLogList = res.data.data || [];
+          this.deviceTotal = res.data.total || 0;
+        }
+        this.deviceLogLoading = false;
+      },
+      error: (error) => {
+        console.error('Error fetching device log:', error);
+        this.deviceLogList = [];
+        this.deviceTotal = 0;
+        this.deviceLogLoading = false;
+      }
+    });
+  }
+
+  // 設備分頁事件
+  onDevicePageIndexChange(pageIndex: number): void {
+    this.devicePageIndex = pageIndex;
+    this.getPageDeviceLog(this.devicePageIndex, this.devicePageSize);
+  }
+
+  onDevicePageSizeChange(pageSize: number): void {
+    this.devicePageSize = pageSize;
+    this.devicePageIndex = 1;
+    this.getPageDeviceLog(this.devicePageIndex, this.devicePageSize);
   }
 
   //異動折疊

@@ -7,6 +7,7 @@
         </button>
         <h2 nz-typography class="h2">{{ getCurrentTitle() }}</h2>
     </nz-header>
+
     <!-- Tabs -->
     <nz-tabset [(nzSelectedIndex)]="selectedIndex" class="tabs">
         <nz-tab [nzTitle]="Title01"><!--使用者使用紀錄-->
@@ -19,118 +20,33 @@
             </nz-content>
 
             <div class="point-information-container">
-                <div class="send-request">
-                    <button nz-button nzType="primary" [disabled]="historySetOfCheckedId.size === 0"
-                        [nzLoading]="historyLoading" (click)="sendHistoryRequest()">
-                        Send History Request
-                    </button>
-                    <span>Selected {{ historySetOfCheckedId.size }} items</span>
-                </div>
-
-                <!-- 使用者使用紀錄 -->
-                <nz-collapse [nzBordered]="false">
-                    @for (panel of memberPanels; track panel) {
-                    <nz-collapse-panel [nzActive]="panel.active" [nzShowArrow]="false">
-                        <!-- 內容 -->
-                        <div class="point-information-container">
-                            <nz-table #memberHistoryTable [nzData]="pointsHistoryList" [nzLoading]="historyLoading"
-                                [nzBordered]="true" [nzShowPagination]="true" [nzPageSize]="10"
-                                [nzHideOnSinglePage]="false">
-                                <thead>
-                                    <tr>
-                                        <th>異動事件</th>
-                                        <th>點數異動情況</th>
-                                        <th>異動時間</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (pointsHistoryList && pointsHistoryList.length > 0) {
-                                    @for (data of pointsHistoryList; track data.id) {
-                                    <tr>
-                                        <td>{{ data.type }}</td>
-                                        <td>
-                                            <span [ngClass]="data.amount >= 0 ? 'text-green' : 'text-red'">
-                                                {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
-                                            </span>
-                                            ({{ data.before_balance }} → {{ data.after_balance }})
-                                        </td>
-                                        <td>{{ data.created_at }}</td>
-                                    </tr>
-                                    }
-                                    } @else {
-                                    <tr>
-                                        <td colspan="3" class="text-center">
-                                            @if (historyLoading) {
-                                            載入中...
-                                            } @else {
-                                            暫無資料
-                                            }
-                                        </td>
-                                    </tr>
-                                    }
-                                </tbody>
-                            </nz-table>
-                        </div>
-
-                    </nz-collapse-panel>
-                    }
-                </nz-collapse>
-            </div>
-        </nz-tab>
-        <nz-tab [nzTitle]="Title02"><!--設備使用紀錄-->
-            <nz-content>
-                <div nz-row class="row-style">
-                    <div nz-col [nzSpan]="12" class="left-col">
-                        <h2 nz-typography class="boxword">設備使用紀錄</h2>
-                    </div>
-                </div>
-            </nz-content>
-            <div class="point-information-container">
-                <nz-table #deviceLogTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading"
-                    [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage"
-                    [nzPageSize]="pageSize" [nzTotal]="total" [nzShowSizeChanger]="true"
-                    [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onPageIndexChange($event)"
-                    (nzPageSizeChange)="onPageSizeChange($event)"
-                    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
+                <nz-table #memberHistoryTable [nzData]="pointsHistoryList" [nzLoading]="historyLoading"
+                    [nzBordered]="true" [nzShowPagination]="true" [nzFrontPagination]="false"
+                    [nzPageIndex]="historyPageIndex" [nzPageSize]="historyPageSize" [nzTotal]="historyTotal"
+                    [nzShowSizeChanger]="true" [nzPageSizeOptions]="[5, 10, 20]"
+                    (nzPageIndexChange)="onHistoryPageIndexChange($event)"
+                    (nzPageSizeChange)="onHistoryPageSizeChange($event)"
+                    (nzCurrentPageDataChange)="onHistoryCurrentPageDataChange($event)">
                     <thead>
                         <tr>
-                            <th>序號</th>
-                            <!-- <th
-                                nzShowFilter
-                                [nzFilters]="deviceLogSortColumns[0].listOfFilter"
-                                [nzFilterFn]="deviceLogSortColumns[0].filterFn"
-                            >
-                                {{ deviceLogSortColumns[0].name }}
-                            </th>
-                            <th
-                                nzShowFilter
-                                [nzFilters]="deviceLogSortColumns[1].listOfFilter"
-                                [nzFilterFn]="deviceLogSortColumns[1].filterFn"
-                            >
-                                {{ deviceLogSortColumns[1].name }}
-                            </th> -->
-                            <th>操作類型</th>
-                            <th>操作內容</th>
-                            <th>操作時間</th>
+                            <th>異動事件</th>
+                            <th>點數異動情況</th>
+                            <th>異動時間</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (deviceLogList && deviceLogList.length > 0) {
-                        @for (data of deviceLogList; track data.id; let i = $index) {
+                        @if (pointsHistoryList && pointsHistoryList.length > 0) {
+                        @for (data of pointsHistoryList; track data.id) {
                         <tr>
-                            <!-- <td>{{ data.id }}</td>
-                            <td>{{ data.device_id }}</td>
-                            <td>{{ data.member_id }}</td> -->
-                            <td>{{ getSerialNumber(i) }}</td> <!-- 顯示流水號 -->
-                            <td>{{ data.operation_type }}</td>
-                            <td>{{ data.operation }}</td>
+                            <td>{{ data.type }}</td>
+                            <td>{{ data.amount >= 0 ? '+' : '' }}{{ data.amount }} ({{ data.before_balance }} → {{ data.after_balance }})</td>
                             <td>{{ data.created_at }}</td>
                         </tr>
                         }
                         } @else {
                         <tr>
-                            <td colspan="5" class="text-center">
-                                @if (loading) {
+                            <td colspan="3" class="text-center">
+                                @if (historyLoading) {
                                 載入中...
                                 } @else {
                                 暫無資料
@@ -142,24 +58,66 @@
                 </nz-table>
             </div>
         </nz-tab>
-        <nz-tab [nzTitle]="Title03"> <!--點數使用紀錄-->
+
+        <nz-tab [nzTitle]="Title02"><!--設備使用紀錄-->
+            <nz-content>
+                <div nz-row class="row-style">
+                    <div nz-col [nzSpan]="12" class="left-col">
+                        <h2 nz-typography class="boxword">設備使用紀錄</h2>
+                    </div>
+                </div>
+            </nz-content>
+
+            <div class="point-information-container">
+                <nz-table #deviceLogTable [nzData]="deviceLogList" [nzBordered]="true" [nzLoading]="deviceLogLoading"
+                    [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="devicePageIndex"
+                    [nzPageSize]="devicePageSize" [nzTotal]="deviceTotal" [nzShowSizeChanger]="true"
+                    [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onDevicePageIndexChange($event)"
+                    (nzPageSizeChange)="onDevicePageSizeChange($event)">
+                    <thead>
+                        <tr>
+                            <th>序號</th>
+                            <th>操作類型</th>
+                            <th>操作內容</th>
+                            <th>操作時間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (deviceLogList && deviceLogList.length > 0) {
+                        @for (data of deviceLogList; track data.id; let i = $index) {
+                        <tr>
+                            <td>{{ getSerialNumber(i) }}</td>
+                            <td>{{ data.operation_type }}</td>
+                            <td>{{ data.operation }}</td>
+                            <td>{{ data.created_at }}</td>
+                        </tr>
+                        }
+                        } @else {
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                @if (deviceLogLoading) {
+                                載入中...
+                                } @else {
+                                暫無資料
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </nz-table>
+            </div>
+        </nz-tab>
+
+        <nz-tab [nzTitle]="Title03"><!--點數使用紀錄-->
             <nz-content>
                 <div nz-row class="row-style">
                     <div nz-col [nzSpan]="12" class="left-col">
                         <h2 nz-typography class="boxword">點數使用紀錄</h2>
                     </div>
                 </div>
-
             </nz-content>
 
             <div class="point-information-container">
-                <div class="send-request">
-                    <button nz-button nzType="primary" [disabled]="setOfCheckedId.size === 0" [nzLoading]="loading"
-                        (click)="sendRequest()">
-                        Send Request
-                    </button>
-                    <span>Selected {{ setOfCheckedId.size }} items</span>
-                </div>
                 <nz-table #pointsTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading"
                     [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage"
                     [nzPageSize]="pageSize" [nzTotal]="total" [nzShowSizeChanger]="true"
@@ -168,9 +126,6 @@
                     (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
                     <thead>
                         <tr>
-                            <th [nzChecked]="checked" [nzIndeterminate]="indeterminate"
-                                (nzCheckedChange)="onAllChecked($event)">
-                                Select all</th>
                             <th>ID</th>
                             <th>會員ID</th>
                             <th>點數數量</th>
@@ -181,8 +136,6 @@
                         @if (pointsList && pointsList.length > 0) {
                         @for (data of pointsList; track data.id) {
                         <tr>
-                            <td [nzChecked]="setOfCheckedId.has(data.id)"
-                                (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
                             <td>{{ data.id }}</td>
                             <td>{{ data.member_id }}</td>
                             <td>{{ data.balance }}</td>
@@ -191,7 +144,7 @@
                         }
                         } @else {
                         <tr>
-                            <td colspan="5" class="text-center">
+                            <td colspan="4" class="text-center">
                                 @if (loading) {
                                 載入中...
                                 } @else {
