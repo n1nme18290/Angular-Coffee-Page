@@ -31,7 +31,25 @@
                         <tr>
                             <th>異動事件</th>
                             <th>點數異動情況</th>
-                            <th>異動時間</th>
+                            <th>
+                                異動時間
+                                <nz-filter-trigger
+                                    [(nzVisible)]="historyFilterVisible"
+                                    [nzActive]="!!historySelectedDate"
+                                    [nzDropdownMenu]="historyMenu">
+                                    <span nz-icon nzType="calendar"></span>
+                                </nz-filter-trigger>
+
+                                <nz-dropdown-menu #historyMenu="nzDropdownMenu">
+                                    <div style="padding: 8px; width: 220px;">
+                                        <nz-date-picker nzFormat="yyyy-MM-dd" [(ngModel)]="historySelectedDate"></nz-date-picker>
+                                        <div style="margin-top: 8px; text-align: right;">
+                                            <button nz-button nzSize="small" (click)="filterHistoryByDate()" class="btn-styles2">確定</button>
+                                            <button nz-button nzSize="small" (click)="resetHistoryDate()" class="btn-styles2">清除</button>
+                                        </div>
+                                    </div>
+                                </nz-dropdown-menu>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,7 +97,25 @@
                             <th>序號</th>
                             <th>操作類型</th>
                             <th>操作內容</th>
-                            <th>操作時間</th>
+                            <th>
+                                操作時間
+                                <nz-filter-trigger
+                                    [(nzVisible)]="deviceFilterVisible"
+                                    [nzActive]="!!deviceSelectedDate"
+                                    [nzDropdownMenu]="deviceMenu">
+                                    <span nz-icon nzType="calendar"></span>
+                                </nz-filter-trigger>
+
+                                <nz-dropdown-menu #deviceMenu="nzDropdownMenu">
+                                    <div style="padding: 8px; width: 220px;">
+                                        <nz-date-picker nzFormat="yyyy-MM-dd" [(ngModel)]="deviceSelectedDate"></nz-date-picker>
+                                        <div style="margin-top: 8px; text-align: right;">
+                                            <button nz-button nzSize="small" (click)="filterDeviceByDate()" class="btn-styles2">確定</button>
+                                            <button nz-button nzSize="small" (click)="resetDeviceDate()" class="btn-styles2">清除</button>
+                                        </div>
+                                    </div>
+                                </nz-dropdown-menu>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -129,7 +165,25 @@
                             <th>ID</th>
                             <th>會員ID</th>
                             <th>點數數量</th>
-                            <th>上次變動時間</th>
+                            <th>
+                                上次變動時間
+                                <nz-filter-trigger
+                                    [(nzVisible)]="pointsFilterVisible"
+                                    [nzActive]="!!pointsSelectedDate"
+                                    [nzDropdownMenu]="pointsMenu">
+                                    <span nz-icon nzType="calendar"></span>
+                                </nz-filter-trigger>
+
+                                <nz-dropdown-menu #pointsMenu="nzDropdownMenu">
+                                    <div style="padding: 8px; width: 220px;">
+                                        <nz-date-picker nzFormat="yyyy-MM-dd" [(ngModel)]="pointsSelectedDate"></nz-date-picker>
+                                        <div style="margin-top: 8px; text-align: right;">
+                                            <button nz-button nzSize="small" (click)="filterPointsByDate()" class="btn-styles2">確定</button>
+                                            <button nz-button nzSize="small" (click)="resetPointsDate()" class="btn-styles2">清除</button>
+                                        </div>
+                                    </div>
+                                </nz-dropdown-menu>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
