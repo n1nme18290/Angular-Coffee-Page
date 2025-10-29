@@ -67,20 +67,7 @@ export class BackendManagementComponent implements AfterViewInit {
     }
   }
 
-  RandomDataset(): void {
-    if (!this.chartInstance) return;
-    this.chartInstance.setOption({
-      dataset: {
-        source: [
-          ['product', '2015', '2016', '2017'],
-          ['Matcha Latte', ...this.getRandomValues()],
-          ['Milk Tea', ...this.getRandomValues()],
-          ['Cheese Cocoa', ...this.getRandomValues()],
-          ['Walnut Brownie', ...this.getRandomValues()]
-        ]
-      }
-    });
-  }
+
 
   private getRandomValues(): number[] {
     const res: number[] = [];
