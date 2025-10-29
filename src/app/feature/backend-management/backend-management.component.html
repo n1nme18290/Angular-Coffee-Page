@@ -1,7 +1,14 @@
 <nz-header>
     <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-        <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline" class="big-icon"></span>
+        <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
+            class="big-icon"></span>
     </button>
     <h2 nz-typography class="h2">系統管理首頁</h2>
 </nz-header>
-<nz-content></nz-content>
+
+<nz-content>
+    <div style="padding:16px">
+        <div #echartContainer style="width:400px;height:400px;"></div>
+        <button nz-button nzType="primary" (click)="RandomDataset()" style="margin-top:12px">Randomize</button>
+    </div>
+</nz-content>
