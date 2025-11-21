@@ -20,7 +20,7 @@
             <div nz-row [nzGutter]="16">
                 <div nz-col>
                     <button nz-button nzType="primary" nzBlock (click)="createDeviceModal()" class="createDeviceBtn">
-                        <span nz-icon nzType="device" nzTheme="outline"></span>新增設備
+                        <span nz-icon nzType="plus" nzTheme="outline"></span>新增設備
                     </button>
                 </div>
             </div>
@@ -44,13 +44,13 @@
                             style="width: 100%; margin-top: 10px;" />
                     </div>
                     <div>
-                        <h5 nz-typography style="margin: 0;">咖啡豆存量:</h5>
-                        <input nz-input placeholder="輸入咖啡豆存量" [(ngModel)]="bean_level"
+                        <h5 nz-typography style="margin: 0;">設備ID:</h5>
+                        <input nz-input placeholder="輸入設備ID" [(ngModel)]="machine_id"
                             style="width: 100%; margin-top: 10px;" />
                     </div>
                     <div>
-                        <h5 nz-typography style="margin: 0;">水存量:</h5>
-                        <input nz-input placeholder="輸入水存量" [(ngModel)]="water_level"
+                        <h5 nz-typography style="margin: 0;">設備IP:</h5>
+                        <input nz-input placeholder="輸入設備IP" [(ngModel)]="machine_ip"
                             style="width: 100%; margin-top: 10px;" />
                     </div>
                 </ng-container>
@@ -73,8 +73,10 @@
                     <th>名稱</th>
                     <th>地點</th>
                     <th>狀態</th>
-                    <th>咖啡豆存量</th>
-                    <th>水位</th>
+                    <th>設備ID</th>
+                    <th>設備IP</th>
+                    <!-- <th>咖啡豆存量</th>
+                    <th>水位</th> -->
                     <th>操作</th>
                 </tr>
             </thead>
@@ -88,8 +90,8 @@
                     <td>{{ data.name }}</td>
                     <td>{{ data.location }}</td>
                     <td>{{ data.status }}</td>
-                    <td>{{ data.bean_level }}</td>
-                    <td>{{ data.water_level }}</td>
+                    <td>{{ data.machine_id }}</td>
+                    <td>{{ data.machine_ip }}</td>
                     <td>
                         <!-- 編輯設備 -->
                         <button nz-button nzType="link" (click)="updateDeviceModal(data)">編輯</button>
@@ -114,13 +116,13 @@
                                         style="width: 100%; margin-top: 10px;" />
                                 </div>
                                 <div>
-                                    <h5 nz-typography style="margin: 0;">咖啡豆存量:</h5>
-                                    <input nz-input placeholder="輸入咖啡豆存量" [(ngModel)]="bean_level"
+                                    <h5 nz-typography style="margin: 0;">設備ID:</h5>
+                                    <input nz-input placeholder="輸入設備ID" [(ngModel)]="machine_id"
                                         style="width: 100%; margin-top: 10px;" />
                                 </div>
                                 <div>
-                                    <h5 nz-typography style="margin: 0;">水存量:</h5>
-                                    <input nz-input placeholder="輸入水存量" [(ngModel)]="water_level"
+                                    <h5 nz-typography style="margin: 0;">設備IP:</h5>
+                                    <input nz-input placeholder="輸入設備IP" [(ngModel)]="machine_ip"
                                         style="width: 100%; margin-top: 10px;" />
                                 </div>
                             </ng-container>

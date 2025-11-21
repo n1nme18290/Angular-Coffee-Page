@@ -29,6 +29,7 @@
                     (nzCurrentPageDataChange)="onHistoryCurrentPageDataChange($event)">
                     <thead>
                         <tr>
+                            <th>會員名稱</th>
                             <th>異動事件</th>
                             <th>點數異動情況</th>
                             <th>
@@ -56,8 +57,9 @@
                         @if (pointsHistoryList && pointsHistoryList.length > 0) {
                         @for (data of pointsHistoryList; track data.id) {
                         <tr>
+                            <td>{{ "等後端改member.name" }}</td>
                             <td>{{ data.type }}</td>
-                            <td>{{ data.amount >= 0 ? '+' : '' }}{{ data.amount }} ({{ data.before_balance }} → {{ data.after_balance }})</td>
+                            <td>{{ data.after_balance >= data.before_balance ? '+' : '-' }}{{ data.amount }} ({{ data.before_balance }} → {{ data.after_balance }})</td>
                             <td>{{ data.created_at }}</td>
                         </tr>
                         }
@@ -85,7 +87,6 @@
                     </div>
                 </div>
             </nz-content>
-
             <div class="point-information-container">
                 <nz-table #deviceLogTable [nzData]="deviceLogList" [nzBordered]="true" [nzLoading]="deviceLogLoading"
                     [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="devicePageIndex"

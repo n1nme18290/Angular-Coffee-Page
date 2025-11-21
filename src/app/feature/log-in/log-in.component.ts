@@ -18,7 +18,6 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../share/service/service';
 
 
-
 @Component({
   selector: 'app-log-in',
   standalone: true,
@@ -36,20 +35,39 @@ export class LogInComponent {
   
   constructor(private router: Router, private http: HttpClient, private authService: AuthService) {}
 
-  adminLogin() {
-    this.authService.adminLogin(this.email, this.password).subscribe({
+  onLogin(email: string, password: string): void {
+    this.authService.loginAndSaveToken(email, password).subscribe({
       next: (response) => {
-        // 處理成功登入的邏輯
-        console.log('登入成功', response.message);
-        // 登入成功導航到主頁面
-        this.router.navigate(['/personal-info']);
+        if (response.isSuccess) {
+          console.log('登入成功，token 已儲存');
+          // 導向到主頁面
+        } else {
+          console.error('登入失敗:', response.message);
+        }
       },
       error: (error) => {
-        // 處理登入失敗的邏輯
-        console.error('登入失敗', error);
+        console.error('登入錯誤:', error);
       }
     });
   }
+  onLogout(): void {
+    this.authService.logout();
+    console.log('已登出，token 已清除');
+  }
+  // adminLogin() {
+  //   this.authService.adminLogin(this.email, this.password).subscribe({
+  //     next: (response) => {
+  //       // 處理成功登入的邏輯
+  //       console.log('登入成功', response.message);
+  //       // 登入成功導航到主頁面
+  //       this.router.navigate(['/personal-info']);
+  //     },
+  //     error: (error) => {
+  //       // 處理登入失敗的邏輯
+  //       console.error('登入失敗', error);
+  //     }
+  //   });
+  // }
   //連結
   GoRegister(){
     this.router.navigate(['/register']);

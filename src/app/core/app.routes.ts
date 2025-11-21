@@ -19,22 +19,26 @@ import { MainPageComponent } from '../share/main-page/main-page.component';
 
 
 export const routes: Routes = [
+  { path: 'log-in', component: LogInComponent },
   { path: '', redirectTo: '/personal-info', pathMatch: 'full' },
-
-  { path: 'demo-components', component: DemoComponentsComponent },
-  { path: 'equipment/equipment-information', component: EquipmentInformationComponent },
-
   {
     path: '',
     component: MainPageComponent,
     children: [
       { path: 'personal-info', component: PersonalInfoComponent },
       { path: 'point-information', component: PointInformationComponent },
-      { path: 'equipment',component: EquipmentComponent,},
-      { path: 'backend-management', component: BackendManagementComponent },
+      { path: 'equipment',
+        component: EquipmentComponent,
+        children: [
+          { path: 'equipment/equipment-information', component: EquipmentInformationComponent },
+        ]
+      },
+      { path: 'backend-management',component: BackendManagementComponent,},
       { path: 'historical-record', component: HistoricalRecordComponent },
       { path: 'permission-management', component: PermissionManagementComponent },
       { path: 'test-page', component: TestPageComponent }
     ]
   }
+  // { path: 'demo-components', component: DemoComponentsComponent },
+  // { path: 'equipment/equipment-information', component: EquipmentInformationComponent },
 ];

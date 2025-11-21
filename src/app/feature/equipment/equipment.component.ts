@@ -26,7 +26,7 @@ import { SidebarService } from '../../share/service/sidebar.service';
 import { DeviceService } from '../../share/service/service';
 import { IApiResponseDevice } from '../../share/service/model';
 import { NzModalModule } from 'ng-zorro-antd/modal';
-
+import { TokenService } from '../../share/service/token.service';
 @Component({
   selector: 'app-equipment',
   standalone: true,
@@ -44,6 +44,7 @@ export class EquipmentComponent {
   router = inject(Router);
   sidebarService = inject(SidebarService);
   deviceService = inject(DeviceService);
+  tokenService = inject(TokenService);
 
   devicesList: IApiResponseDevice[] = [];
   checked = false;
@@ -63,12 +64,27 @@ export class EquipmentComponent {
   deviceName: string = '';
   deviceLocation: string = '';
   deviceStatus: string = '';
+  machine_id: string = '';
+  machine_ip: string = '';
   bean_level: number = 0;
   water_level: number = 0;
 
   ngOnInit() {
     // Initialization logic can go here
     this.getPagePoints(1, 5);
+    if (this.tokenService.hasToken()) {
+      console.log('用戶已登入');
+    } else {
+      console.log('用戶未登入');
+    }
+    // 監聽 token 變化
+    this.tokenService.token$.subscribe(token => {
+      if (token) {
+        console.log('用戶已登入');
+      } else {
+        console.log('用戶已登出');
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -83,7 +99,7 @@ export class EquipmentComponent {
     this.createDeviceVisible = true;
   }
   createDevice() {
-    this.deviceService.createDevice(this.deviceName, this.deviceLocation, this.deviceStatus, this.bean_level, this.water_level).subscribe({
+    this.deviceService.createDevice(this.deviceName, this.deviceLocation, this.deviceStatus, this.machine_id, this.machine_ip).subscribe({
       next: (res) => {
         // Handle successful creation
         this.createDeviceVisible = false;
@@ -101,8 +117,8 @@ export class EquipmentComponent {
     this.deviceName = device.name;
     this.deviceLocation = device.location;
     this.deviceStatus = device.status;
-    this.bean_level = device.bean_level;
-    this.water_level = device.water_level;
+    this.machine_id = device.machine_id;
+    this.machine_ip = device.machine_ip;
     this.updateDeviceVisible = true;
   }
   updateDevice() {
@@ -112,8 +128,8 @@ export class EquipmentComponent {
       this.deviceName,
       this.deviceLocation,
       this.deviceStatus,
-      this.bean_level,
-      this.water_level
+      this.machine_id,
+      this.machine_ip
     ).subscribe({
       next: (res) => {
         // Handle successful update
@@ -132,8 +148,8 @@ export class EquipmentComponent {
     this.deviceName = '';
     this.deviceLocation = '';
     this.deviceStatus = '';
-    this.bean_level = 0;
-    this.water_level = 0;
+    this.machine_id = '';
+    this.machine_ip = '';
   }
   // 更新選取的ID集合
   updateCheckedSet(id: string, checked: boolean): void {

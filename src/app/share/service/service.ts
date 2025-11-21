@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
 import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog } from './model';
 import { IApiResponsePoints } from './model';
+import { TokenService } from '../service/token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,10 +21,35 @@ export abstract class BaseService {
   protected readonly DeviceUrl = "/Device/Device/";
   constructor() { }
 }
-// Points 相關API
+
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const tokenService = inject(TokenService);
+  const token = tokenService.getToken();
+
+  // 不需要 token 的 API 路徑
+  const excludePaths = [
+    '/Auth/Auth/admin_login'
+  ];
+
+  // 檢查是否為排除的路徑
+  const shouldExclude = excludePaths.some(path => req.url.includes(path));
+
+  // 如果有 token 且不在排除路徑中，加入 Authorization header
+  if (token && !shouldExclude) {
+    const authReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return next(authReq);
+  }
+
+  return next(req);
+};
 @Injectable({
   providedIn: 'root'
 })
+// Points 相關API
 export class PointService extends BaseService {
   constructor() {
     super();
@@ -178,25 +204,25 @@ export class AdminService extends BaseService {
     return this.http.post<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
   }
   // 建立管理員
-  createAdmin(name: string, email: string, password: string, premission: number, status: string): Observable<IApiResponse<IApiResponseAdmin>> {
+  createAdmin(name: string, email: string, password: string, permission: number, status: string): Observable<IApiResponse<IApiResponseAdmin>> {
     const apiUrl = `${this.url}${this.AdminUrl}create_admin`;
     const requestBody = {
       name: name,
       email: email,
       password: password,
-      premission: premission,
+      permission: permission,
       status: status
     };
     return this.http.post<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
   }
   // 更新管理員
-  updateAdmin(id: string, name: string, email: string, premission: number, status: string): Observable<IApiResponse<IApiResponseAdmin>> {
+  updateAdmin(id: string, name: string, email: string, permission: number, status: string): Observable<IApiResponse<IApiResponseAdmin>> {
     const apiUrl = `${this.url}${this.AdminUrl}update_admin`;
     const requestBody = {
       id: id,
       name: name,
       email: email,
-      premission: premission,
+      permission: permission,
       status: status
     };
     return this.http.put<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
@@ -225,7 +251,7 @@ export class AdminService extends BaseService {
   providedIn: 'root'
 })
 export class AuthService extends BaseService {
-  constructor() {
+  constructor(private tokenService: TokenService) {
     super();
   }
   // Admin 登入
@@ -237,6 +263,29 @@ export class AuthService extends BaseService {
       password: password
     };
     return this.http.post<IApiResponse<IApiResponseAdminLogin>>(apiUrl, requestBody);
+  }
+  // 新增登入並儲存 token 的方法
+  loginAndSaveToken(email: string, password: string): Observable<IApiResponse<IApiResponseAdminLogin>> {
+    return new Observable(observer => {
+      this.adminLogin(email, password).subscribe({
+        next: (response) => {
+          // 如果登入成功且有 token，儲存它
+          if (response.isSuccess && response.data && response.data.token) {
+            this.tokenService.setToken(response.data.token);
+          }
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+  // 登出方法
+  logout(): void {
+    this.tokenService.removeToken();
+    // 這裡可以加入其他登出邏輯，如重新導向到登入頁面
   }
 }
 // Member 相關API
@@ -312,26 +361,26 @@ export class DeviceService extends BaseService {
     super();
   }
   // 創建新設備
-  createDevice(name: string, location: string, status: string, bean_level: number, water_level: number): Observable<IApiResponse<IApiResponseDevice>> {
+  createDevice(name: string, location: string, status: string, machine_id: string, machine_ip: string): Observable<IApiResponse<IApiResponseDevice>> {
     const apiUrl = `${this.url}${this.DeviceUrl}create_device`;
     const requestBody = {
       name: name,
       location: location,
       status: status,
-      bean_level: bean_level,
-      water_level: water_level
+      machine_id: machine_id,
+      machine_ip: machine_ip
     };
     return this.http.post<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
   }
-  updateDevice(device_id: string, name: string, location: string, status: string, bean_level: number, water_level: number): Observable<IApiResponse<IApiResponseDevice>> {
+  updateDevice(device_id: string, name: string, location: string, status: string, machine_id: string, machine_ip: string): Observable<IApiResponse<IApiResponseDevice>> {
     const apiUrl = `${this.url}${this.DeviceUrl}update_device`;
     const requestBody = {
       device_id: device_id,
       name: name,
       location: location,
       status: status,
-      bean_level: bean_level,
-      water_level: water_level
+      machine_id: machine_id,
+      machine_ip: machine_ip
     };
     return this.http.put<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
   }

@@ -39,7 +39,7 @@ export interface IApiResponseAdminLogin {
     admin_id: string
     name: string
     email: string
-    premission: number
+    permission: number
     status: string
     token: string
 }
@@ -49,8 +49,10 @@ export interface IApiResponseDevice {
     name: string
     location: string
     status: string
-    bean_level: number
-    water_level: number
+    machine_id: string
+    machine_ip: string
+    // bean_level: number
+    // water_level: number
     created_at: string
     updated_at: string
 }
@@ -59,7 +61,7 @@ export interface IApiResponseAdmin {
     id: string
     name: string
     email: string
-    premission: number
+    permission: number
     status: string
     created_at: string
     updated_at: string
