@@ -29,6 +29,7 @@
                     (nzCurrentPageDataChange)="onHistoryCurrentPageDataChange($event)">
                     <thead>
                         <tr>
+                            <th>序號</th>
                             <th>會員名稱</th>
                             <th>異動事件</th>
                             <th>點數異動情況</th>
@@ -55,9 +56,10 @@
                     </thead>
                     <tbody>
                         @if (pointsHistoryList && pointsHistoryList.length > 0) {
-                        @for (data of pointsHistoryList; track data.id) {
+                        @for (data of pointsHistoryList; track data.id; let i = $index) {
                         <tr>
-                            <td>{{ "等後端改member.name" }}</td>
+                            <td>{{ getSerialNumber(i) }}</td>
+                            <td>{{ data.member_name }}</td>
                             <td>{{ data.type }}</td>
                             <td>{{ data.after_balance >= data.before_balance ? '+' : '-' }}{{ data.amount }} ({{ data.before_balance }} → {{ data.after_balance }})</td>
                             <td>{{ data.created_at }}</td>
@@ -149,7 +151,7 @@
             <nz-content>
                 <div nz-row class="row-style">
                     <div nz-col [nzSpan]="12" class="left-col">
-                        <h2 nz-typography class="boxword">點數使用紀錄</h2>
+                        <h2 nz-typography class="boxword">會員點數資訊</h2>
                     </div>
                 </div>
             </nz-content>
@@ -163,8 +165,8 @@
                     (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>會員ID</th>
+                            <th>序號</th>
+                            <th>會員名稱</th>
                             <th>點數數量</th>
                             <th>
                                 上次變動時間
@@ -189,10 +191,10 @@
                     </thead>
                     <tbody>
                         @if (pointsList && pointsList.length > 0) {
-                        @for (data of pointsList; track data.id) {
+                        @for (data of pointsList; track data.id; let i = $index) {
                         <tr>
-                            <td>{{ data.id }}</td>
-                            <td>{{ data.member_id }}</td>
+                            <td>{{ getSerialNumber(i) }}</td>
+                            <td>{{ data.member_name }}</td>
                             <td>{{ data.balance }}</td>
                             <td>{{ data.updated_at }}</td>
                         </tr>

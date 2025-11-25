@@ -18,13 +18,27 @@ export interface IApiResponsePages<T> {
 export interface IApiResponsePoints {
     id: string;
     member_id: string;
+    member_name: string;
     balance: number;
+    updated_at: string;
+}
+export interface IApiResponseMemberInfo {
+    id: string;
+    student_id: string;
+    card_id: string;
+    title: string;
+    identityLev: number;
+    name: string;
+    email: string;
+    status: string;
+    created_at: string;
     updated_at: string;
 }
 
 export interface IApiResponsePointsHistory {
     id: string;
     member_id: string;
+    member_name: string;
     type: string;
     amount: number;
     before_balance: number

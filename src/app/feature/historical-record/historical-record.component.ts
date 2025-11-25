@@ -85,7 +85,7 @@ export class HistoricalRecordComponent {
   selectedIndex = 0;
   Title01 = '使用者使用紀錄';
   Title02 = '設備使用紀錄';
-  Title03 = '點數使用紀錄';
+  Title03 = '會員點數資訊';
 
   // 使用者使用紀錄日期篩選
   historyFilterVisible = false;
