@@ -366,7 +366,7 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
       return;
     }
     this.currentMemberId = '9aa162f8-5ceb-4783-be85-274fed2ecb8e'; // 測試用
-    this.pointService.exchangeProduct(this.currentMemberId, productId, pointsRequired).subscribe({
+    this.pointService.exchangeProduct(this.currentMemberId, productId, this.exchangeQuantity).subscribe({
       next: (response) => {
         console.log('兌換成功:', response);
         alert(`成功兌換 ${this.exchangeQuantity} 張「${this.selectedProduct?.name}」！`);
