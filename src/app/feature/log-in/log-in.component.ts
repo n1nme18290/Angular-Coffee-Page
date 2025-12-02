@@ -29,31 +29,43 @@ import { AuthService } from '../../share/service/service';
 })
 export class LogInComponent {
 
+  //使用者輸入的 Email 帳號欄位
   email: string = '';
+  //使用者輸入的密碼欄位
   password: string = '';
+  //控制密碼是否顯示在畫面上，眼睛 icon開關
   passwordVisible = false;
   
   constructor(private router: Router, private authService: AuthService) {}
 
+  // 登入
   onLogin(email: string, password: string): void {
     this.authService.loginAndSaveToken(email, password).subscribe({
       next: (response) => {
+        //登入成功，Token 已在 AuthService 儲存
         if (response.isSuccess) {
           console.log('登入成功，token 已儲存');
+          // 登入成功導航到主頁面
           this.router.navigate(['/personal-info']);
         } else {
+          //回傳錯誤訊息
           console.error('登入失敗:', response.message);
         }
       },
+      // 處理登入失敗的邏輯
       error: (error) => {
         console.error('登入錯誤:', error);
       }
     });
   }
+
+  //登出
   onLogout(): void {
     this.authService.logout();
+    //清除Token
     console.log('已登出，token 已清除');
   }
+
   // adminLogin() {
   //   this.authService.adminLogin(this.email, this.password).subscribe({
   //     next: (response) => {
@@ -68,13 +80,13 @@ export class LogInComponent {
   //     }
   //   });
   // }
-  //連結
+
+  // 導到註冊頁面
   GoRegister(){
     this.router.navigate(['/register']);
   }
-  // GoPersonalInfo(){
-  //   this.router.navigate(['/personal-info']);
-  // }
+
+  //sso 單一登入流程
   onSSOLogin(): void {
     this.authService.ssoLoginAndSaveToken().subscribe({
       next: (response) => {

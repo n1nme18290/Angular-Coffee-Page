@@ -89,13 +89,13 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
 
   // 輪換通知
   get coffeeCount(): number {
-    return Math.floor(this.userpoint / 100);
+    return Math.floor(this.userpoint / 20);
   }
   get pointsToNextCoffee(): number {
-    return 100 - (this.userpoint % 100);
+    return 20 - (this.userpoint % 20);
   }
   get isExact(): boolean {
-    return this.userpoint % 100 === 0;
+    return this.userpoint % 20 === 0;
   }
   get carouselMessages(): string[] {
     return [

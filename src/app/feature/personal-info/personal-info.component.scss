@@ -1,23 +1,37 @@
+/* ===== 按鈕共用樣式 ===== */
 button[nz-button] {
     margin-right: 8px;
     margin-bottom: 12px;
-    height: 40px; //增加上下寬度
-    border-radius: 100px; //圓角設定
-    border: 1.5px solid #27496D; //邊框設定
-    font-weight: bold; //粗體
-
-    background-color: #ffffff; //顏色設定
-    color: #27496D; //字體顏色
+    height: 40px;
+    border-radius: 100px;
+    border: 1.5px solid #27496D;
+    font-weight: bold;
+    background-color: #ffffff;
+    color: #27496D;
 }
 
+/* Header 左側按鈕 */
+button[nz-button].btn-styles4 {
+    background-color: #27496D;
+    color: #ffffff;
+    border: 0.5px solid #27496D;
+    width: 64px;
+    height: 64px;
+
+    .big-icon {
+        font-size: 28px;
+    }
+}
+
+/* 一般按鈕樣式 */
 button[nz-button].btn-styles1 {
-    background-color: #FFD014; //顏色設定
-    color: #ffffff; //字體顏色
+    background-color: #FFD014;
+    color: #ffffff;
 }
 
 button[nz-button].btn-styles2 {
-    background-color: #27496D; //顏色設定
-    color: #ffffff; //字體顏色
+    background-color: #27496D;
+    color: #ffffff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -27,32 +41,12 @@ button[nz-button].btn-styles3 {
     box-shadow: none;
     border: 0.1px solid #F0F2F5;
     height: 40px;
-
     display: flex;
     align-items: flex-end;
     justify-content: center;
-
-}
-
-
-
-button[nz-button].btn-styles4 {
-
-    //icon btn
-    background-color: #27496D;
-    color: #ffffff;
-    border: 0.5px solid #27496D;
-    width: 64px;
-    height: 64px;
-
-    .big-icon {
-        font-size: 28px; // 控制 icon 大小
-    }
 }
 
 button[nz-button].btn-styles5 {
-
-    //icon btn
     background-color: #000000;
     color: #ffffff;
     border: 0.5px solid #000000;
@@ -60,12 +54,11 @@ button[nz-button].btn-styles5 {
     height: 32px;
 
     .big-icon {
-        font-size: 28px; // 控制 icon 大小
+        font-size: 28px;
     }
 }
 
-
-
+/* ===== Input 欄位樣式 ===== */
 .input-block {
     display: flex;
     flex-direction: column;
@@ -74,7 +67,6 @@ button[nz-button].btn-styles5 {
 
     input[nz-input] {
         border-radius: 10px;
-
         width: 100%;
     }
 
@@ -83,13 +75,13 @@ button[nz-button].btn-styles5 {
         border-radius: 10px;
         width: 100%;
 
-
         .ant-input-wrapper {
             border-radius: 10px;
         }
     }
 }
 
+/* Header username 樣式 */
 .trigger {
     font-size: 18px;
     line-height: 64px;
@@ -98,113 +90,81 @@ button[nz-button].btn-styles5 {
     transition: color 0.3s;
 }
 
-
 .logo {
     height: 32px;
     background-color: #001529;
     margin: 16px;
-
-}
-
-nz-breadcrumb {
-    margin: 16px 0;
 }
 
 .h2 {
     color: #ffffff;
 }
 
+/* 點數到期文字 */
 .pointdate {
     color: #d67070;
     margin: 0;
-
 }
 
+/* 個人資訊標題與數值 */
 .boxword {
     color: #27496D;
     margin: 0;
-    //background-color: #FFB433;
-
-
 }
 
 .boxnum {
     color: #FFD014;
     margin: 0;
-
     font-size: 64px;
     font-weight: bold;
-
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-
     height: 100%;
     box-sizing: border-box;
-    //background-color: #FFB433;
 }
-
 
 .h1box {
     color: #27496D;
     margin: 0;
 }
 
-//排版
+/* ===== 版面排版 ===== */
 .row-style {
     width: 100%;
     margin: 0;
-
 }
 
-//框
-.pointbox {
+/* ===== 點數與商品券框 ===== */
+.pointbox,
+.pointbox2,
+.rulebox {
     width: 100%;
-    height: 150px;
     background-color: white;
-    //border: 1px solid #27496D;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 16px;
     padding: 16px 32px 16px 16px;
     border-radius: 8px;
     box-sizing: border-box;
+}
 
+.pointbox {
     display: flex;
     align-items: center;
-
     justify-content: space-between;
-
+    height: 150px;
+    margin-top: 16px;
 }
 
 .pointbox2 {
-    width: 100%;
-    height: 150px;
-    background-color: white;
-    //border: 1px solid #27496D;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 16px;
-    padding: 16px 32px 16px 16px;
-    border-radius: 8px;
-    box-sizing: border-box;
-
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
+    height: 150px;
+    margin-top: 16px;
 }
 
-
 .rulebox {
-    width: 100%;
-    background-color: #ffffff;
-    //border: 1px solid #27496D;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 16px 32px 16px 16px;
-    border-radius: 8px;
-    box-sizing: border-box;
-
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -212,18 +172,16 @@ nz-breadcrumb {
     gap: 8px;
 }
 
+/* 標題盒子 */
 .titlebox {
     width: 100%;
     display: flex;
     justify-content: left;
-    /* 整體置中 */
     align-items: center;
-    /* 垂直置中 */
     gap: 10px;
-    /* 元素間距 */
 }
 
-//文字輪換框
+/* 文字輪播 */
 [nz-carousel-content] {
     display: flex;
     align-items: center;
@@ -239,6 +197,17 @@ nz-breadcrumb {
     box-sizing: border-box;
 }
 
+nz-carousel {
+    width: 100%;
+    overflow: hidden;
+}
+
+nz-carousel h3 {
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
 h3 {
     color: #ffffff;
     margin: 0;
@@ -248,28 +217,27 @@ h3 {
     word-break: break-word;
 }
 
-//表格
+/* 點數異動紀錄容器 */
 .point-information-container {
-    // margin: 16px;
     padding: 16px;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* 按鈕群組 */
 .button-group {
-  margin-top: 16px;
-  margin-bottom: 16px;
-  display: flex;
-  justify-content: center;
+    margin: 16px 0;
+    display: flex;
+    justify-content: center;
 }
 
-
+/* 標題文字 */
 .h4 {
     font-weight: bold;
-
 }
 
+/* 轉贈 / 兌換 Modal 內樣式 */
 .exchange-confirm {
     .product-info {
         margin-bottom: 20px;
@@ -278,14 +246,12 @@ h3 {
 
         h4 {
             margin-bottom: 8px;
-            //color: #3ca2a7;
             font-weight: bold;
         }
     }
 
     .quantity-section {
         margin-bottom: 20px;
-        
 
         h5 {
             margin-bottom: 10px;
@@ -315,9 +281,7 @@ h3 {
             &.now {
                 font-weight: 600;
                 color: #3ca2a7;
-
             }
-
 
             &.total {
                 font-weight: 600;
@@ -351,14 +315,14 @@ h3 {
     }
 }
 
-//關於商品
+/* 商品資訊 */
 .ProductFont {
     font-weight: bold;
     color: #27496D;
     font-size: 16px;
+    margin: 0;
 }
 
-//icon
 .product-item {
     display: flex;
     align-items: center;
@@ -371,22 +335,16 @@ h3 {
     color: #27496D;
 }
 
-.ProductFont {
-    margin: 0;
-    font-weight: 600;
+/* 摺疊區 Header */
+.headerword {
+    font-weight: bold;
     color: #27496D;
 }
 
-//摺疊
-.headerword{
-    font-weight: bold; //粗體
-    color: #27496D; //字體顏色
-}
-.headerbox{
+.headerbox {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding-left: 12px; 
-    
-
+    padding-left: 12px;
 }
+
