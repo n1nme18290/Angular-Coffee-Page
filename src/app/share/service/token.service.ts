@@ -5,35 +5,77 @@ import { BehaviorSubject } from 'rxjs';
     providedIn: 'root'
 })
 export class TokenService {
-    private tokenKey = 'coffee_auth_token';
+    private baseTokenKey = 'coffee_auth_token';
+    private baseMemberIdKey = 'coffee_member_id';
+
     private tokenSubject = new BehaviorSubject<string | null>(this.getToken());
+    private memberIdSubject = new BehaviorSubject<string | null>(this.getMemberId());
 
     constructor() { }
 
-    // 儲存 token
+    // 獲取當前用戶的 token key
+    private getTokenKey(): string {
+        const currentUserToken = `${this.baseTokenKey}`;
+        return currentUserToken;
+    }
+
+    // 獲取當前用戶的 member ID key
+    private getMemberIdKey(): string {
+        const currentUserMemberId = `${this.baseMemberIdKey}`;
+        return currentUserMemberId;
+    }
+
+    // 獲取當前用戶 ID
+    // getCurrentUserId(name?: string): string | null {
+    //     return localStorage.getItem(name ? `${this.baseMemberIdKey}_${name}` : this.baseMemberIdKey);
+    // }
+
+    // Token 相關方法
     setToken(token: string): void {
-        localStorage.setItem(this.tokenKey, token);
-        this.tokenSubject.next(token);
+        const tokenKey = this.getTokenKey();
+        localStorage.setItem(tokenKey, token);
     }
 
-    // 取得 token
     getToken(): string | null {
-        return localStorage.getItem(this.tokenKey);
+        const tokenKey = this.getTokenKey();
+        return localStorage.getItem(tokenKey);
     }
 
-    // 移除 token
     removeToken(): void {
-        localStorage.removeItem(this.tokenKey);
-        this.tokenSubject.next(null);
+        const tokenKey = this.getTokenKey();
+        localStorage.removeItem(tokenKey);
     }
 
-    // 檢查是否有 token
     hasToken(): boolean {
         return !!this.getToken();
     }
 
-    // 監聽 token 變化
+    // Member ID 相關方法（修改為支援多用戶）
+    setMemberId(memberId: string): void {
+        const memberIdKey = this.getMemberIdKey();
+        localStorage.setItem(memberIdKey, memberId);
+    }
+
+    getMemberId(): string {
+        const memberIdKey = this.getMemberIdKey();
+        return localStorage.getItem(memberIdKey) || '';
+    }
+
+    remonveMemberId(): void {
+        const memberIdKey = this.getMemberIdKey();
+        localStorage.removeItem(memberIdKey);
+    }
+
+    hasMemberId(): boolean {
+        return !!this.getMemberId();
+    }
+    
+    // Observable 以便訂閱 token 和 member ID 的變化
     get token$() {
         return this.tokenSubject.asObservable();
+    }
+
+    get memberId$() {
+        return this.memberIdSubject.asObservable();
     }
 }

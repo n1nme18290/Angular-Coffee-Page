@@ -19,8 +19,8 @@ import { MainPageComponent } from '../share/main-page/main-page.component';
 
 
 export const routes: Routes = [
+  { path: '', redirectTo: '/log-in', pathMatch: 'full' },
   { path: 'log-in', component: LogInComponent },
-  { path: '', redirectTo: '/personal-info', pathMatch: 'full' },
   {
     path: '',
     component: MainPageComponent,

@@ -55,7 +55,17 @@ export interface IApiResponseAdminLogin {
     email: string
     permission: number
     status: string
-    token: string
+    jwt: string
+}
+
+export interface IApiResponseMemberSSOLogin {
+    member_id: string
+    name: string
+    email: string
+    status: string
+    sso_token: string
+    isNew: boolean
+    jwt: string
 }
 
 export interface IApiResponseDevice {

@@ -74,11 +74,11 @@
                     <h3 nz-typography><span nz-icon nzType="swap" nzTheme="outline"></span>轉贈點數</h3>
                 </button>
             </div>
-            <div nz-col [nzSpan]="12">
+            <!-- <div nz-col [nzSpan]="12">
                 <button nz-button nzType="primary" nzBlock class="btn-styles2" (click)="usepointModal()">
                     <h3 nz-typography><span nz-icon nzType="coffee" nzTheme="outline"></span>兌換商品券</h3>
                 </button>
-            </div>
+            </div> -->
         </div>
 
         <nz-divider></nz-divider>
@@ -107,8 +107,8 @@
                 </div>
             </ng-container>
         </nz-modal>
-        <!-- 兌換商品券 Modal，商品似乎可以改成用 dictionary -->
-        <nz-modal [(nzVisible)]="usepointisVisible" nzTitle="兌換商品券" [nzFooter]="usepointmodalFooter" nzWidth="520px"
+        <!-- 兌換商品券 Modal，用不到了 -->
+        <!-- <nz-modal [(nzVisible)]="usepointisVisible" nzTitle="兌換商品券" [nzFooter]="usepointmodalFooter" nzWidth="520px"
             nzCentered [nzClosable]="false">
             <ng-container *nzModalContent>
                 <div>
@@ -123,14 +123,13 @@
                             <p class="ProductFont">{{ product.product_name }} - {{ product.quantity }} 張</p>
                         </div>
 
-
                     </div>
                     <div nz-row [nzGutter]="8">
                         @if (productList && productList.length > 0) {
                         @for (product of productList; track product.id) {
-                        <div nz-col [nzSpan]="8">
+                        <div nz-col [nzSpan]="8"> -->
                             <!-- 商品 card -->
-                            <nz-card nzHoverable [nzTitle]="product.category + ' - ' + product.name"
+                            <!-- <nz-card nzHoverable [nzTitle]="product.category + ' - ' + product.name"
                                 (click)="onDrinkSelect(product)">
                                 <nz-card-meta [nzTitle]="product.description"
                                     [nzDescription]="product.points_required + '點'">
@@ -145,27 +144,27 @@
                             </nz-card>
                         </div>
                         }
-                    </div>
+                    </div> -->
                     <!-- <h5 nz-typography style="margin: 0;">兌換杯數:</h5>
                     <input nz-input placeholder="輸入數量" [(ngModel)]="capvalue" type="number"
                         style="width: 100%; margin-top: 10px;" /> -->
-                </div>
+                <!-- </div>
             </ng-container>
             <ng-template #usepointmodalFooter>
                 <button nz-button (click)="usepointhandleCancel()">關閉彈窗</button>
             </ng-template>
-        </nz-modal>
+        </nz-modal> -->
         <!-- 兌換確認 Modal -->
-        <nz-modal [(nzVisible)]="exchangeConfirmVisible" nzTitle="確認兌換" [nzFooter]="exchangeFooter" nzWidth="500px"
+        <!-- <nz-modal [(nzVisible)]="exchangeConfirmVisible" nzTitle="確認兌換" [nzFooter]="exchangeFooter" nzWidth="500px"
             nzCentered [nzClosable]="false">
             <ng-container *nzModalContent>
                 @if (selectedProduct) {
                 <div class="exchange-confirm">
                     <div class="product-info">
                         <h4>{{ selectedProduct.name }} - {{ selectedProduct.description }}</h4>
-                    </div>
+                    </div> -->
                     <!-- 數量選擇區域 -->
-                    <div class="quantity-section">
+                    <!-- <div class="quantity-section">
                         <h4 class="h4">選擇數量：</h4>
                         <div class="quantity-controls">
                             <button class="btn-styles5" nz-button nzType="default" nzSize="small"
@@ -183,9 +182,9 @@
                             </button>
                         </div>
                         <p class="quantity-info">最多可兌換 {{ getMaxQuantity() }} 張</p>
-                    </div>
+                    </div> -->
                     <!-- 點數計算區域 -->
-                    <div class="points-info">
+                    <!-- <div class="points-info">
                         <div class="points-row">
                             <span class="h4">單張需要：</span>
                             <span class="points-required">{{ selectedProduct.points_required }}
@@ -211,16 +210,16 @@
                     </div>
                 </div>
                 }
-            </ng-container>
-            <ng-template #exchangeFooter>
+            </ng-container> -->
+            <!-- <ng-template #exchangeFooter>
                 <button nz-button (click)="cancelExchange()">取消</button>
                 <button nz-button nzType="primary" nzDanger
                     (click)="confirmExchange(selectedProduct!.id, selectedProduct!.points_required)"
                     [disabled]="!isQuantityValid()">
                     確認兌換
                 </button>
-            </ng-template>
-        </nz-modal>
+            </ng-template> -->
+        <!-- </nz-modal> -->
 
         <!-- 點數使用與規則說明 -->
         <nz-collapse [nzBordered]="false">

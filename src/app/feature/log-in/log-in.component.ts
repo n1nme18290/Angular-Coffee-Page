@@ -33,14 +33,14 @@ export class LogInComponent {
   password: string = '';
   passwordVisible = false;
   
-  constructor(private router: Router, private http: HttpClient, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   onLogin(email: string, password: string): void {
     this.authService.loginAndSaveToken(email, password).subscribe({
       next: (response) => {
         if (response.isSuccess) {
           console.log('登入成功，token 已儲存');
-          // 導向到主頁面
+          this.router.navigate(['/personal-info']);
         } else {
           console.error('登入失敗:', response.message);
         }
@@ -75,5 +75,17 @@ export class LogInComponent {
   // GoPersonalInfo(){
   //   this.router.navigate(['/personal-info']);
   // }
-
+  onSSOLogin(): void {
+    this.authService.ssoLoginAndSaveToken().subscribe({
+      next: (response) => {
+        if (response.isSuccess) {
+          console.log('登入成功，token 已儲存');
+          this.router.navigate(['/personal-info']);
+        }
+      },
+      error: (error) => {
+        console.error('SSO 登入錯誤:', error);
+      }
+    });
+  }
 }

@@ -27,8 +27,9 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { SidebarService } from '../../share/service/sidebar.service';
 import { Observable, of, Subscription } from 'rxjs';
 import { IApiResponse, IApiResponsePoints, IApiResponseMember, IApiResponsePointsHistory, IApiResponseGetPageProduct, IApiResponseGetProduct } from '../../share/service/model';
-import { PointService, MemberService, AdminService, LogService, ProductService, } from '../../share/service/service';
-//import { AuthTokenService } from '../../share/service/auth.service';
+import { PointService, MemberService, AdminService, LogService, ProductService, AuthService, } from '../../share/service/service';
+import { TokenService } from '../../share/service/token.service';
+
 
 
 @Component({
@@ -46,8 +47,7 @@ import { PointService, MemberService, AdminService, LogService, ProductService, 
 
 export class PersonalInfoComponent implements OnInit, OnDestroy {
   private memberIdSubscription?: Subscription;
-
-  currentMemberId: string | null = null;
+  private currentMemberId: string = '';
 
   constructor(
     public sidebarService: SidebarService,
@@ -56,33 +56,18 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
     public adminservice: AdminService,
     public logservice: LogService,
     public productService: ProductService,
-    //public authTokenService: AuthTokenService
+    public tokenService: TokenService
   ) { }
 
-  // 訂閱
-  // ngOnInit(): void {
-  //   // 訂閱 memberId 變化
-  //   this.memberIdSubscription = this.authTokenService.memberId$.subscribe(
-  //     memberId => {
-  //       if (memberId) {
-  //         this.currentMemberId = memberId;
-  //         this.loadUserData(memberId);
-  //       } else {
-  //         console.error('無法取得會員ID，請重新登入');
-  //         // 可以導向登入頁面
-  //       }
-  //     }
-  //   );
-  // }
   ngOnInit(): void {
-    // 實際 member id 如何取得 -> 夾帶在 header
-    this.getPointByMemberId("9aa162f8-5ceb-4783-be85-274fed2ecb8e");
-    this.getMember("9aa162f8-5ceb-4783-be85-274fed2ecb8e");
-    this.getAllMembers();
-    this.getMemberLog("9aa162f8-5ceb-4783-be85-274fed2ecb8e", 1, 10); // ✨ 修改: 調整為取得更多筆資料
-    this.getMemPageProduct();
+    const memberId = this.tokenService.getMemberId();
+    this.getPointByMemberId(memberId || undefined);
+    this.getMember(memberId || undefined);
+    // this.getAllMembers();
+    this.getMemberLog(memberId || undefined, 1, 10);
+    // this.getMemPageProduct(memberId);
     // 載入商品清單
-    this.loadProducts();
+    // this.loadProducts();
   }
   // 取消訂閱
   ngOnDestroy(): void {
@@ -91,18 +76,8 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
     }
   }
 
-  // 載入用戶相關資料
-  private loadUserData(memberId: string): void {
-    this.getPointByMemberId(memberId);
-    this.getMember(memberId);
-    this.getAllMembers();
-    this.getMemberLog(memberId, 1, 5);
-    this.loadProducts();
-  }
-
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
-
   }
 
   username: string = '';
@@ -111,8 +86,6 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
 
   productList: IApiResponseGetPageProduct[] = [];
   memberProductList: IApiResponseGetProduct[] = [];
-
-
 
   // 輪換通知
   get coffeeCount(): number {
@@ -173,7 +146,7 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
     });
   }
 
-  // 依 id 查詢會員名稱  
+  // 依 id 查詢會員名稱 
   getMember(id?: string) {
     const targetId = id || this.currentMemberId;
     if (!targetId) {
@@ -289,121 +262,122 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
   }
 
   // 載入商品清單
-  loadProducts(): void {
-    this.productService.getPageProduct(1, 5).subscribe({
-      next: (response) => {
-        if (response && response.data && response.data.data) {
-          this.productList = response.data.data;
-        }
-      },
-      error: (error) => {
-        console.error('載入商品失敗:', error);
-        this.productList = [];
-      }
-    });
-  }
+  // loadProducts(): void {
+  //   this.productService.getPageProduct(1, 5).subscribe({
+  //     next: (response) => {
+  //       if (response && response.data && response.data.data) {
+  //         this.productList = response.data.data;
+  //       }
+  //     },
+  //     error: (error) => {
+  //       console.error('載入商品失敗:', error);
+  //       this.productList = [];
+  //     }
+  //   });
+  // }
   // 取得商品列表
-  getPageProduct(): void {
-    this.productService.getPageProduct(1, 5).subscribe({
-      next: (response) => {
-        this.productList = response.data.data || [];
-      },
-      error: (error) => {
-        console.error('Error fetching product data:', error);
-      }
-    });
-  }
+  // getPageProduct(): void {
+  //   this.productService.getPageProduct(1, 5).subscribe({
+  //     next: (response) => {
+  //       this.productList = response.data.data || [];
+  //     },
+  //     error: (error) => {
+  //       console.error('Error fetching product data:', error);
+  //     }
+  //   });
+  // }
 
-  exchangeConfirmVisible = false;
-  selectedProduct: IApiResponseGetPageProduct | null = null;
-  exchangeQuantity: number = 1;
-  // 點擊飲品卡片
-  onDrinkSelect(product: IApiResponseGetPageProduct): void {
-    console.log('你點擊了:', product);
-    this.selectedProduct = product;
-    this.exchangeQuantity = 1;
+  // exchangeConfirmVisible = false;
+  // selectedProduct: IApiResponseGetPageProduct | null = null;
+  // exchangeQuantity: number = 1;
+  // // 點擊飲品卡片
+  // onDrinkSelect(product: IApiResponseGetPageProduct): void {
+  //   console.log('你點擊了:', product);
+  //   this.selectedProduct = product;
+  //   this.exchangeQuantity = 1;
 
-    // 檢查點數是否足夠
-    if (this.userpoint < product.points_required) {
-      alert(`點數不足！需要 ${product.points_required} 點，您目前有 ${this.userpoint} 點`);
-      return;
-    }
+  //   // 檢查點數是否足夠
+  //   if (this.userpoint < product.points_required) {
+  //     alert(`點數不足！需要 ${product.points_required} 點，您目前有 ${this.userpoint} 點`);
+  //     return;
+  //   }
 
-    // 顯示兌換確認彈窗
-    this.exchangeConfirmVisible = true;
-  }
+  //   // 顯示兌換確認彈窗
+  //   this.exchangeConfirmVisible = true;
+  // }
   // 增加數量
-  increaseQuantity(): void {
-    if (!this.selectedProduct) return;
-    const maxQuantity = Math.floor(this.userpoint / this.selectedProduct.points_required);
-    if (this.exchangeQuantity < maxQuantity) {
-      this.exchangeQuantity++;
-    }
-  }
+  // increaseQuantity(): void {
+  //   if (!this.selectedProduct) return;
+  //   const maxQuantity = Math.floor(this.userpoint / this.selectedProduct.points_required);
+  //   if (this.exchangeQuantity < maxQuantity) {
+  //     this.exchangeQuantity++;
+  //   }
+  // }
   // 減少數量
-  decreaseQuantity(): void {
-    if (this.exchangeQuantity > 1) {
-      this.exchangeQuantity--;
-    }
-  }// 計算總點數
-  getTotalPoints(): number {
-    if (!this.selectedProduct) return 0;
-    return this.selectedProduct.points_required * this.exchangeQuantity;
-  }
+  // decreaseQuantity(): void {
+  //   if (this.exchangeQuantity > 1) {
+  //     this.exchangeQuantity--;
+  //   }
+  // }
+  // 計算總點數
+  // getTotalPoints(): number {
+  //   if (!this.selectedProduct) return 0;
+  //   return this.selectedProduct.points_required * this.exchangeQuantity;
+  // }
   // 計算最大可兌換數量
-  getMaxQuantity(): number {
-    if (!this.selectedProduct) return 0;
-    return Math.floor(this.userpoint / this.selectedProduct.points_required);
-  }
+  // getMaxQuantity(): number {
+  //   if (!this.selectedProduct) return 0;
+  //   return Math.floor(this.userpoint / this.selectedProduct.points_required);
+  // }
   // 檢查數量是否有效
-  isQuantityValid(): boolean {
-    return this.exchangeQuantity >= 1 && this.exchangeQuantity <= this.getMaxQuantity();
-  }
+  // isQuantityValid(): boolean {
+  //   return this.exchangeQuantity >= 1 && this.exchangeQuantity <= this.getMaxQuantity();
+  // }
   // 確認兌換
-  confirmExchange(productId: string, pointsRequired: number): void {
-    if (!this.selectedProduct || !this.isQuantityValid()) {
-      alert('請選擇有效的兌換數量');
-      return;
-    }
-    this.currentMemberId = '9aa162f8-5ceb-4783-be85-274fed2ecb8e'; // 測試用
-    this.pointService.exchangeProduct(this.currentMemberId, productId, this.exchangeQuantity).subscribe({
-      next: (response) => {
-        console.log('兌換成功:', response);
-        alert(`成功兌換 ${this.exchangeQuantity} 張「${this.selectedProduct?.name}」！`);
-        this.exchangeConfirmVisible = false;
-        this.selectedProduct = null;
-        this.exchangeQuantity = 1;
+  // confirmExchange(productId: string, pointsRequired: number): void {
+  //   if (!this.selectedProduct || !this.isQuantityValid()) {
+  //     alert('請選擇有效的兌換數量');
+  //     return;
+  //   }
+  //   this.currentMemberId = '9aa162f8-5ceb-4783-be85-274fed2ecb8e'; // 測試用
+  //   this.pointService.exchangeProduct(this.currentMemberId, productId, this.exchangeQuantity).subscribe({
+  //     next: (response) => {
+  //       console.log('兌換成功:', response);
+  //       alert(`成功兌換 ${this.exchangeQuantity} 張「${this.selectedProduct?.name}」！`);
+  //       this.exchangeConfirmVisible = false;
+  //       this.selectedProduct = null;
+  //       this.exchangeQuantity = 1;
 
-        // 重新載入資料
-        this.getPointByMemberId("9aa162f8-5ceb-4783-be85-274fed2ecb8e");
-        this.getMemberLog("9aa162f8-5ceb-4783-be85-274fed2ecb8e", 1, 10);
-      },
-      error: (error) => {
-        console.error('兌換失敗:', error);
-        alert('兌換失敗，請稍後再試');
-      }
-    });
-  }
+  //       // 重新載入資料
+  //       this.getPointByMemberId("9aa162f8-5ceb-4783-be85-274fed2ecb8e");
+  //       this.getMemberLog("9aa162f8-5ceb-4783-be85-274fed2ecb8e", 1, 10);
+  //     },
+  //     error: (error) => {
+  //       console.error('兌換失敗:', error);
+  //       alert('兌換失敗，請稍後再試');
+  //     }
+  //   });
+  // }
   // 取消兌換確認
-  cancelExchange(): void {
-    this.exchangeConfirmVisible = false;
-    this.selectedProduct = null;
-    this.exchangeQuantity = 1;
-  }
+  // cancelExchange(): void {
+  //   this.exchangeConfirmVisible = false;
+  //   this.selectedProduct = null;
+  //   this.exchangeQuantity = 1;
+  // }
 
   // 取得會員商品列表
-  getMemPageProduct(): void {
-    this.currentMemberId = '9aa162f8-5ceb-4783-be85-274fed2ecb8e'; // 測試用
-    this.productService.getMemPageProduct(1, 5, this.currentMemberId).subscribe({
-      next: (response) => {
-        this.memberProductList = response.data || [];
-        console.log('會員商品列表:', this.memberProductList);
-      },
-      error: (error) => {
-        console.error('Error fetching member product data:', error);
-      }
-    });
-  }
+  // getMemPageProduct(memberId?: string): void {
+  //   const currentMemberId = memberId || this.currentMemberId;
+  //   this.productService.getMemPageProduct(currentMemberId, 1, 5).subscribe({
+  //     next: (response) => {
+  //       this.memberProductList = response.data || [];
+  //       console.log('會員商品列表:', this.memberProductList);
+  //     },
+  //     error: (error) => {
+  //       console.error('Error fetching member product data:', error);
+  //     }
+  //   });
+  // }
 
   //異動折疊
   pointpanels = [

@@ -14,5 +14,5 @@ const updatedAppConfig = {
 };
 
 
-bootstrapApplication(AppComponent, appConfig)
+bootstrapApplication(AppComponent, updatedAppConfig)
   .catch((err) => console.error(err));

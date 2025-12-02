@@ -1,7 +1,7 @@
 import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Type } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog } from './model';
+import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog, IApiResponseMemberSSOLogin } from './model';
 import { IApiResponsePoints } from './model';
 import { TokenService } from '../service/token.service';
 
@@ -11,7 +11,8 @@ import { TokenService } from '../service/token.service';
 // 基底服務類別
 export abstract class BaseService {
   protected http = inject(HttpClient);
-  protected readonly url = 'http://10.25.1.172:5054';
+  // protected readonly url = 'http://10.25.1.172:5054';
+  protected readonly url = 'http://10.25.1.172:5055';
   protected readonly PointsUrl = "/Points/Points/";
   protected readonly LogUrl = "/Logs/Log/";
   protected readonly ProductUrl = "/Product/Product/";
@@ -28,7 +29,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   // 不需要 token 的 API 路徑
   const excludePaths = [
-    '/Auth/Auth/admin_login'
+    '/Auth/Auth/admin_login',
+    '/Auth/Auth/sso_login'
   ];
 
   // 檢查是否為排除的路徑
@@ -38,6 +40,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (token && !shouldExclude) {
     const authReq = req.clone({
       setHeaders: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       }
     });
@@ -121,7 +124,7 @@ export class LogService extends BaseService {
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl);
   }
   // 分頁查詢設備操作紀錄
-  getPageDeviceLog(page: number, perpage: number, deviceName?: string | null, sortField?: string | null, sortOrder?: 'asc'|'desc'|null) {
+  getPageDeviceLog(page: number, perpage: number, deviceName?: string | null, sortField?: string | null, sortOrder?: 'asc' | 'desc' | null) {
     const params = new URLSearchParams();
     params.set('page', String(page));
     params.set('perPage', String(perpage));
@@ -137,7 +140,7 @@ export class LogService extends BaseService {
   // }
 }
 
-// Product 相關Api
+// Product 相關Api，應該用不到了
 @Injectable({
   providedIn: 'root'
 })
@@ -146,35 +149,35 @@ export class ProductService extends BaseService {
     super();
   }
   // 建立商品品項
-  createProduct(name: string, description: string, category: string, points_required: number, status: number): Observable<IApiResponse<IApiResponsePoints>> {
-    const apiUrl = `${this.url}${this.ProductUrl}create_product`;
-    const requestBody = {
-      name: name,
-      description: description,
-      category: category,
-      points_required: points_required,
-      status: status
-    };
-    return this.http.post<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
-  }
+  // createProduct(name: string, description: string, category: string, points_required: number, status: number): Observable<IApiResponse<IApiResponsePoints>> {
+  //   const apiUrl = `${this.url}${this.ProductUrl}create_product`;
+  //   const requestBody = {
+  //     name: name,
+  //     description: description,
+  //     category: category,
+  //     points_required: points_required,
+  //     status: status
+  //   };
+  //   return this.http.post<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
+  // }
   // 分頁查詢商品項目
-  getPageProduct(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseGetPageProduct>>> {
-    const apiUrl = `${this.url}${this.ProductUrl}get_page_product?page=${page}&perPage=${perPage}`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageProduct>>>(apiUrl);
-  }
+  // getPageProduct(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseGetPageProduct>>> {
+  //   const apiUrl = `${this.url}${this.ProductUrl}get_page_product?page=${page}&perPage=${perPage}`;
+  //   return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageProduct>>>(apiUrl);
+  // }
   // 分頁查詢會員所有商品數量
-  getMemPageProduct(page: number, perPage: number, memberId: string): Observable<IApiResponseProductList> {
-    const apiUrl = `${this.url}${this.ProductUrl}get_mem_page_product?page=${page}&perPage=${perPage}`;
-    return this.http.post<IApiResponseProductList>(
-      apiUrl,
-      `"${memberId}"`,  // 直接傳送 JSON 字串格式
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-  }
+  // getMemPageProduct(memberId: string, page: number, perPage: number): Observable<IApiResponseProductList> {
+  //   const apiUrl = `${this.url}${this.ProductUrl}get_mem_page_product?page=${page}&perPage=${perPage}`;
+  //   return this.http.post<IApiResponseProductList>(
+  //     apiUrl,
+  //     `"${memberId}"`,  // 直接傳送 JSON 字串格式
+  //     {
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       }
+  //     }
+  //   );
+  // }
 }
 // Admin 相關API
 @Injectable({
@@ -255,7 +258,7 @@ export class AuthService extends BaseService {
     super();
   }
   // Admin 登入
-  // 帳：string 密：string
+  // 帳：admin@example.com 密：P@ssw0rd
   adminLogin(email: string, password: string): Observable<IApiResponse<IApiResponseAdminLogin>> {
     const apiUrl = `${this.url}${this.AuthUrl}admin_login`;
     const requestBody = {
@@ -264,14 +267,20 @@ export class AuthService extends BaseService {
     };
     return this.http.post<IApiResponse<IApiResponseAdminLogin>>(apiUrl, requestBody);
   }
-  // 新增登入並儲存 token 的方法
   loginAndSaveToken(email: string, password: string): Observable<IApiResponse<IApiResponseAdminLogin>> {
     return new Observable(observer => {
       this.adminLogin(email, password).subscribe({
         next: (response) => {
-          // 如果登入成功且有 token，儲存它
-          if (response.isSuccess && response.data && response.data.token) {
-            this.tokenService.setToken(response.data.token);
+          // 如果登入成功且有 jwt token
+          if (response.isSuccess && response.data) {
+            // 儲存 token
+            if (response.data.jwt) {
+              this.tokenService.setToken(response.data.jwt);
+            }
+            // 儲存 admin_id
+            if (response.data.admin_id) {
+              this.tokenService.setMemberId(response.data.admin_id);
+            }
           }
           observer.next(response);
           observer.complete();
@@ -282,10 +291,44 @@ export class AuthService extends BaseService {
       });
     });
   }
-  // 登出方法
+  // SSO 登入 -暫定
+  ssoLogin(): Observable<IApiResponse<IApiResponseMemberSSOLogin>> {
+    const ssoUrl = this.url + this.AuthUrl + 'sso_login';
+    const requestBody = {
+      "provider": "member",
+      "student_id": "1311232029",
+      // "email": "string",
+      // "password": "string",
+    }
+    return this.http.post<IApiResponse<IApiResponseMemberSSOLogin>>(ssoUrl, requestBody);
+  }
+  ssoLoginAndSaveToken(): Observable<IApiResponse<IApiResponseMemberSSOLogin>> {
+    return new Observable(observer => {
+      this.ssoLogin().subscribe({
+        next: (response) => {
+          if (response.isSuccess && response.data) {
+            // 儲存 sso_token
+            if (response.data.jwt) {
+              this.tokenService.setToken(response.data.jwt);
+            }
+            // 儲存 member_id
+            if (response.data.member_id) {
+              this.tokenService.setMemberId(response.data.member_id);
+            }
+          }
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+  // 登出
   logout(): void {
     this.tokenService.removeToken();
-    // 這裡可以加入其他登出邏輯，如重新導向到登入頁面
+    this.tokenService.remonveMemberId();
   }
 }
 // Member 相關API
@@ -314,20 +357,6 @@ export class MemberService extends BaseService {
     };
     return this.http.post<IApiResponse<IApiResponseMember>>(apiUrl, requestBody);
   }
-  // 建立會員 - 前端應該用不到
-  // createMember(student_id: string, card_id: string, title: string, identityLev: string, name: string, email: string, status: string): Observable<IApiResponse<IApiResponseMember>> {
-  //   const apiUrl = `${this.url}${this.MemberUrl}create_member`;
-  //   const requestBody = {
-  //     student_id: student_id,
-  //     card_id: card_id,
-  //     title: title,
-  //     identityLev: identityLev,
-  //     name: name,
-  //     email: email,
-  //     status: status
-  //   };
-  //   return this.http.post<IApiResponse<IApiResponseMember>>(apiUrl, requestBody);
-  // }
   // 更新會員
   updateMember(id: string, student_id: string, card_id: string, title: string, identityLev: string, name: string, email: string, status: string): Observable<IApiResponse<IApiResponseMember>> {
     const apiUrl = `${this.url}${this.MemberUrl}update_member`;
