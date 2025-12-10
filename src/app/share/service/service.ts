@@ -1,7 +1,7 @@
 import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
 import { inject, Injectable, Type } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog, IApiResponseMemberSSOLogin } from './model';
+import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog, IApiResponseMemberSSOLogin, IApiResponseSecurityRole } from './model';
 import { IApiResponsePoints } from './model';
 import { TokenService } from '../service/token.service';
 
@@ -11,8 +11,7 @@ import { TokenService } from '../service/token.service';
 // 基底服務類別
 export abstract class BaseService {
   protected http = inject(HttpClient);
-  // protected readonly url = 'http://10.25.1.172:5054';
-  protected readonly url = 'http://10.25.1.172:5055';
+  protected readonly url = 'http://10.25.1.172:5054';
   protected readonly PointsUrl = "/Points/Points/";
   protected readonly LogUrl = "/Logs/Log/";
   protected readonly ProductUrl = "/Product/Product/";
@@ -20,7 +19,7 @@ export abstract class BaseService {
   protected readonly AuthUrl = "/Auth/Auth/";
   protected readonly MemberUrl = "/Member/Member/";
   protected readonly DeviceUrl = "/Device/Device/";
-  constructor() { }
+  protected readonly SecurityUrl = "/Security/Role/";
 }
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -80,7 +79,7 @@ export class PointService extends BaseService {
     const apiUrl = `${this.url}${this.PointsUrl}add_member_points`;
     const requestBody = {
       memberId: memberId,
-      targetMemberId: targetMemberId,
+      studentId: targetMemberId,
       balance: balance
     };
     return this.http.put<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
@@ -296,9 +295,7 @@ export class AuthService extends BaseService {
     const ssoUrl = this.url + this.AuthUrl + 'sso_login';
     const requestBody = {
       "provider": "member",
-      "student_id": "1311232029",
-      // "email": "string",
-      // "password": "string",
+      "student_id": "s1811432008",
     }
     return this.http.post<IApiResponse<IApiResponseMemberSSOLogin>>(ssoUrl, requestBody);
   }
@@ -425,5 +422,51 @@ export class DeviceService extends BaseService {
       id: id
     };
     return this.http.post<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
+  }
+}
+
+// Security 相關API
+@Injectable({
+  providedIn: 'root'
+})
+export class SecurityService extends BaseService {
+  constructor() {
+    super();
+  }
+  // 取得所有權限角色
+  getAllRolesList(): Observable<IApiResponse<IApiResponsePages<IApiResponseSecurityRole>>> {
+    const apiUrl = `${this.url}${this.SecurityUrl}list`;
+    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseSecurityRole>>>(apiUrl);
+  }
+  // 創建權限角色
+  createRole(name: string, description: string, status: string): Observable<IApiResponse<IApiResponseSecurityRole[]>> {
+    const apiUrl = `${this.url}${this.SecurityUrl}create`;
+    const requestBody = {
+      name: name,
+      description: description,
+      status: status
+    };
+    return this.http.post<IApiResponse<IApiResponseSecurityRole[]>>(apiUrl, requestBody);
+  }
+  // 修改權限角色
+  updateRole(id: string, name: string, description: string, status: string): Observable<IApiResponse<null>> {
+    const apiUrl = `${this.url}${this.SecurityUrl}update`;
+    const requestBody = {
+      id: id,
+      name: name,
+      description: description,
+      status: status
+    };
+    return this.http.put<IApiResponse<null>>(apiUrl, requestBody);
+  }
+  // 設定權限角色
+  setPermissions(role_id: string, permissions: string[], replace: boolean): Observable<IApiResponse<any>> {
+    const apiUrl = `${this.url}${this.SecurityUrl}set_permissions`;
+    const requestBody = {
+      role_id: role_id,
+      permissions: permissions,
+      replace: replace
+    };
+    return this.http.put<IApiResponse<any>>(apiUrl, requestBody);
   }
 }
