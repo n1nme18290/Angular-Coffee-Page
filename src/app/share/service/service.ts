@@ -295,7 +295,7 @@ export class AuthService extends BaseService {
     const ssoUrl = this.url + this.AuthUrl + 'sso_login';
     const requestBody = {
       "provider": "member",
-      "student_id": "s1811432008",
+      "student_id": "1811432008",
     }
     return this.http.post<IApiResponse<IApiResponseMemberSSOLogin>>(ssoUrl, requestBody);
   }
