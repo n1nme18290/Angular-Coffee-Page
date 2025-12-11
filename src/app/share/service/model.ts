@@ -135,3 +135,6 @@ export interface IApiResponseGetPageDeviceLog {
     amount: number
     created_at: string
 }
+export interface IApiResponseSecurityRole{
+
+}

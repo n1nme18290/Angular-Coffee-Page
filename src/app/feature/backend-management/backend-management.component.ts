@@ -1,52 +1,70 @@
-import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import {Component,AfterViewInit,ViewChild,ElementRef,OnDestroy,OnInit,Inject,PLATFORM_ID} from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common'; 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
-import { FormsModule } from '@angular/forms';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzSwitchModule } from 'ng-zorro-antd/switch';
-import { NzAvatarModule } from 'ng-zorro-antd/avatar';
-import { NzTabsModule } from 'ng-zorro-antd/tabs';
-import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { NzDrawerModule } from 'ng-zorro-antd/drawer';
-import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { CommonModule } from '@angular/common';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import * as echarts from 'echarts';
+import { Observable } from 'rxjs'; 
 
 import { SidebarService } from '../../share/service/sidebar.service';
-import { LogService } from '../../share/service/service';
-import { IApiResponsePointsHistory } from '../../share/service/model';
+import { LogService } from '../../share/service/service'; 
+
+
+interface IApiResponse<T> {
+  data: T;
+  isSuccess: boolean;
+  message: string;
+}
+
+interface WeeklyExchangeData {
+  weeks: string[]; 
+  counts: number[]; 
+}
+
 
 @Component({
   selector: 'app-backend-management',
   standalone: true,
   imports: [
-    NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule,
-    NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
-    NzRadioModule, NzModalModule, CommonModule
+    NzLayoutModule,
+    NzButtonModule,
+    NzIconModule,
+    NzTypographyModule,
+    NzSpinModule,
+    CommonModule
   ],
   templateUrl: './backend-management.component.html',
   styleUrl: './backend-management.component.scss'
 })
-export class BackendManagementComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('echartContainer', { static: true }) chartEl!: ElementRef<HTMLDivElement>;
+export class BackendManagementComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('echartContainer', { static: false }) chartEl?: ElementRef<HTMLDivElement>;
   private chartInstance?: echarts.ECharts;
 
+  isLoading = false;
+  hasError = false;
+  errorMessage = '';
+
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object, 
     public sidebarService: SidebarService,
     private logService: LogService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private message: NzMessageService
   ) { }
+
+  ngOnInit(): void {
+  }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.loadChartData();
+      setTimeout(() => {
+        this.initChart();
+        this.loadChartData();
+      }, 100);
+
       window.addEventListener('resize', this.onResize);
     }
   }
@@ -54,150 +72,158 @@ export class BackendManagementComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     if (isPlatformBrowser(this.platformId)) {
       window.removeEventListener('resize', this.onResize);
-      this.chartInstance?.dispose();
+    }
+
+    if (this.chartInstance) {
+      this.chartInstance.dispose();
     }
   }
 
-  private loadChartData(): void {
-    //取得所有點數異動紀錄
-    this.logService.getAllLog().subscribe({
-      next: (res: any) => {
-        if (res && res.isSuccess && res.data) {
-          const allData = res.data;
-
-          const coffeeData = allData.filter((item: any) => 
-            item.type === 'exchange_coffee' || item.type === 'exchange_product'
-          );
-          
-          // 生成圖表
-          this.processDataAndInitChart(coffeeData);
-        } else {
-          console.warn('No data or unsuccessful response');
-          this.initChart({});
-        }
-      },
-      error: (error) => {
-        console.error('Error fetching points history:', error);
- 
-        this.initChart({});
-      }
-    });
-  }
-
-  private processDataAndInitChart(data: IApiResponsePointsHistory[]): void {
-    // 月份
-    const monthlyStats: { [key: string]: { americano: number; latte: number } } = {};
-
-    data.forEach(item => {
-
-      const dateStr = item.created_at;
-      const month = dateStr.substring(5, 7);
-      const monthKey = `${parseInt(month)}月`; 
-
-      if (!monthlyStats[monthKey]) {
-        monthlyStats[monthKey] = { americano: 0, latte: 0 };
-      }
-
-      //判斷咖啡類型
-      const amount = Math.abs(item.amount);
-      if (amount === 20) {
-        monthlyStats[monthKey].americano++;
-      } else if (amount === 25) {
-        monthlyStats[monthKey].latte++;
-      }
-    });
-
-
-    const chartData = this.convertToChartData(monthlyStats);
-    this.initChart(chartData);
-  }
-
-  private convertToChartData(stats: { [key: string]: { americano: number; latte: number } }): any {
-    // 排序月份
-    const months = Object.keys(stats).sort((a, b) => {
-      const monthA = parseInt(a.replace('月', ''));
-      const monthB = parseInt(b.replace('月', ''));
-      return monthA - monthB;
-    });
-
-
-    if (months.length === 0) {
-      return {};
+  private initChart(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
     }
 
-
-    const source: any[] = [['product', '美式咖啡', '拿鐵']];
-    
-    months.forEach(month => {
-      source.push([
-        month,
-        stats[month].americano,
-        stats[month].latte
-      ]);
-    });
-
-    return { source };
-  }
-
-  private initChart(dataset: any): void {
     try {
+      if (!this.chartEl?.nativeElement) {
+        console.error('圖表容器不存在');
+        return;
+      }
+
       this.chartInstance = echarts.init(this.chartEl.nativeElement);
-      
-      //沒有資料空圖表
-      const hasData = dataset.source && dataset.source.length > 1;
-      
+
       const option: echarts.EChartsOption = {
         title: {
-          text: '咖啡兌換統計',
-          left: 'center'
-        },
-        legend: {
-          bottom: 10,
+          text: '本週咖啡兌換數量',
           left: 'center'
         },
         tooltip: {
           trigger: 'axis',
-          axisPointer: {
-            type: 'shadow'
-          }
+          formatter: '{b}<br/>兌換數量: {c} 杯'
         },
-        dataset: hasData ? dataset : {
-          source: [
-            ['product', '美式咖啡', '拿鐵'],
-            ['暫無資料', 0, 0]
-          ]
-        },
-        xAxis: { 
+        xAxis: {
           type: 'category',
+          name: '星期',
+          data: ['載入中...'],
           axisLabel: {
-            interval: 0,
             rotate: 0
           }
         },
         yAxis: {
           type: 'value',
-          name: '兌換次數',
+          name: '數量(杯)',
           minInterval: 1
         },
-        series: [
-          { 
-            type: 'bar',
-            itemStyle: {
-              color: '#5470c6'
-            }
-          }, 
-          { 
-            type: 'bar',
-            itemStyle: {
-              color: '#91cc75'
-            }
+        series: [{
+          type: 'bar',
+          data: [0],
+          itemStyle: {
+            color: '#1890ff'
+          },
+          label: {
+            show: true,
+            position: 'top'
           }
-        ]
+        }]
       };
-      
+
       this.chartInstance.setOption(option);
     } catch (e) {
-      console.error('echarts init error', e);
+      console.error('echarts 初始化錯誤:', e);
+      this.handleErrorDisplay('圖表初始化失敗');
+    }
+  }
+
+  private loadChartData(deviceId?: string): void {
+    this.isLoading = true;
+    this.hasError = false;
+
+    const apiCall: Observable<IApiResponse<Array<{weekOfDay: number, coffeeCount: number}>>> =
+      this.logService.getWeeklyCoffeeExchange(deviceId) as Observable<IApiResponse<Array<{weekOfDay: number, coffeeCount: number}>>>;
+
+    apiCall.subscribe({
+      next: (response) => {
+        this.isLoading = false;
+
+        if (response.isSuccess && response.data) {
+          const transformedData = this.transformApiData(response.data);
+          
+          if (isPlatformBrowser(this.platformId)) {
+            this.updateChart(transformedData);
+          }
+        } else {
+          this.handleErrorDisplay(response.message || '取得資料失敗');
+          this.showNoData();
+        }
+      },
+      error: (error: any) => {
+        console.error('API 錯誤:', error);
+        this.handleErrorDisplay('載入資料時發生錯誤');
+        this.showNoData();
+      }
+    });
+  }
+
+  private transformApiData(apiData: Array<{weekOfDay: number, coffeeCount: number}>): WeeklyExchangeData {
+    const weekNames = ['一', '二', '三', '四', '五', '六', '日'];
+    
+    const weeks = apiData.map(item => weekNames[item.weekOfDay - 1] || `週${item.weekOfDay}`);
+    const counts = apiData.map(item => item.coffeeCount);
+    
+    return { weeks, counts };
+  }
+
+  private handleErrorDisplay(message: string): void {
+    this.isLoading = false;
+    this.hasError = true;
+    this.errorMessage = message;
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.message.error(this.errorMessage);
+    }
+  }
+
+  private showNoData(): void {
+    if (isPlatformBrowser(this.platformId) && this.chartInstance) {
+      this.updateChart({ weeks: ['暫無資料'], counts: [0] });
+    }
+  }
+
+  private updateChart(data: WeeklyExchangeData): void { 
+    if (!isPlatformBrowser(this.platformId)) { 
+      return; 
+    }
+
+    try {
+      if (!this.chartInstance) {
+        console.error('圖表實例不存在');
+        return;
+      }
+
+      let weeks: string[] = data.weeks || [];
+      let counts: number[] = data.counts || [];
+
+      if (weeks.length === 0 || counts.length === 0) {
+        weeks = ['暫無資料'];
+        counts = [0];
+      }
+
+      const option: echarts.EChartsOption = {
+        xAxis: {
+          data: weeks
+        },
+        series: [{
+          data: counts
+        }]
+      };
+
+      this.chartInstance.setOption(option);
+
+    } catch (error) {
+      console.error('更新圖表錯誤:', error);
+      if (isPlatformBrowser(this.platformId)) {
+        this.message.error('圖表更新失敗');
+      }
     }
   }
 

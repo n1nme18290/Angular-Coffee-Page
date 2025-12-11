@@ -7,11 +7,14 @@
 </nz-header>
 
 <nz-content>
-    
     <div class="box">
         <div style="padding:16px">
-            <div #echartContainer style="width:400px;height:400px;"></div>
+            <!-- 載入中狀態 -->
+            <nz-spin [nzSpinning]="isLoading" >
 
+                <!-- 圖表容器 -->
+                <div #echartContainer style="width:400px;height:400px;"></div>
+            </nz-spin>
         </div>
     </div>
 </nz-content>

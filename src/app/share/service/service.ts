@@ -137,6 +137,17 @@ export class LogService extends BaseService {
   //   const apiUrl = `${this.url}${this.LogUrl}get_device_log?page=${page}&perPage=${perPage}`;
   //   return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageDeviceLog>>>(apiUrl);
   // }
+
+    // 取得本月每週咖啡兌換數量
+  getWeeklyCoffeeExchange(deviceId?: string): Observable<IApiResponse<any>> {
+    let apiUrl = `${this.url}${this.LogUrl}get_weekly_coffee_exchange`;
+
+    if (deviceId) {
+      apiUrl += `?device_id=${deviceId}`;
+    }
+
+    return this.http.get<IApiResponse<any>>(apiUrl);
+  }
 }
 
 // Product 相關Api，應該用不到了
@@ -295,7 +306,7 @@ export class AuthService extends BaseService {
     const ssoUrl = this.url + this.AuthUrl + 'sso_login';
     const requestBody = {
       "provider": "member",
-      "student_id": "s1811432008",
+      "student_id": "1811432008",
     }
     return this.http.post<IApiResponse<IApiResponseMemberSSOLogin>>(ssoUrl, requestBody);
   }
