@@ -72,7 +72,6 @@ export class EquipmentComponent {
   tokenService = inject(TokenService);
 
   devicesList: IApiResponseDevice[] = [];
-  allDevicesList: IApiResponseDevice[] = [];
   checked = false;
   loading = false;
   indeterminate = false;
@@ -86,6 +85,9 @@ export class EquipmentComponent {
   createDeviceVisible = false;
   updateDeviceVisible = false;
   cleanedDeviceVisible = false;
+  deviceOnLineCount: number = 0;
+  deviceFixCount: number = 0;
+  deviceOffLineCount: number = 0;
   editingDeviceId: string | null = null;
   deviceName: string = '';
   deviceLocation: string = '';
@@ -96,26 +98,11 @@ export class EquipmentComponent {
   water_level: number = 0;
 
   ngOnInit() {
-    // Initialization logic can go here
     this.getPageDevices(1, 5);
-    if (this.tokenService.hasToken()) {
-      console.log('用戶已登入');
-    } else {
-      console.log('用戶未登入');
-    }
-    // 監聽 token 變化
-    this.tokenService.token$.subscribe(token => {
-      if (token) {
-        console.log('用戶已登入');
-      } else {
-        console.log('用戶已登出');
-      }
-    });
+    this.getAllDevicesState();
   }
 
-  ngAfterViewInit() {
-    // Logic that needs to run after the view has been initialized can go here
-  }
+  ngAfterViewInit() { }
   
   // 計算流水號的方法
   getSerialNumber(index: number): number {
@@ -259,19 +246,23 @@ export class EquipmentComponent {
     this.currentPage = 1; // 重置到第一頁
     this.getPageDevices(this.currentPage, this.pageSize);
   }
-  // 取得所有設備
-  getAllDevices() {
+  // 取得所有設備狀態
+  getAllDevicesState() {
     this.loading = true;
-    this.deviceService.getAllDevice().subscribe({
+    this.deviceService.getAllDeviceState().subscribe({
       next: (res) => {
         if (res && res.data) {
-          this.allDevicesList = res.data.data || [];
+          this.deviceOnLineCount = res.data.online || 0;
+          this.deviceFixCount = res.data.fix || 0;
+          this.deviceOffLineCount = res.data.offline || 0;
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error fetching all devices:', error);
-        this.allDevicesList = [];
+        this.deviceOnLineCount = 0;
+        this.deviceFixCount = 0;
+        this.deviceOffLineCount = 0;
         this.loading = false;
       }
     });
@@ -335,13 +326,13 @@ export class EquipmentComponent {
   }
   // 統計方法
   getActiveDeviceCount(): number {
-    return this.allDevicesList.filter(d => d.status === '運作中').length;
+    return this.deviceOnLineCount;
   }
   getMaintenanceDeviceCount(): number {
-    return this.allDevicesList.filter(d => d.status === '維護中').length;
+    return this.deviceFixCount;
   }
   getOfflineDeviceCount(): number {
-    return this.allDevicesList.filter(d => d.status === '離線').length;
+    return this.deviceOffLineCount;
   }
   // 切換側邊欄展開/收起狀態
   toggleCollapsed(): void {

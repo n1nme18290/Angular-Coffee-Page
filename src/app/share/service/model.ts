@@ -127,6 +127,12 @@ export interface IApiResponseProductList {
     isSuccess: boolean;
     message: string;
 }
+export interface IApiResponseDeviceState {
+    online: number
+    fix: number
+    offline: number
+}
+
 export interface IApiResponseGetPageDeviceLog {
     id: string
     device_id: string

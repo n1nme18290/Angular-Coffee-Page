@@ -1,7 +1,7 @@
 import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
 import { inject, Injectable, Type } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog, IApiResponseMemberSSOLogin, IApiResponseSecurityRole } from './model';
+import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog, IApiResponseMemberSSOLogin, IApiResponseSecurityRole, IApiResponseDeviceState } from './model';
 import { IApiResponsePoints } from './model';
 import { TokenService } from '../service/token.service';
 
@@ -430,10 +430,10 @@ export class DeviceService extends BaseService {
     };
     return this.http.put<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
   }
-  // 取得所有設備
-  getAllDevice(): Observable<IApiResponse<IApiResponsePages<IApiResponseDevice>>> {
-    const apiUrl = `${this.url}${this.DeviceUrl}get_all_device`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseDevice>>>(apiUrl);
+  // 取得所有設備狀態
+  getAllDeviceState(): Observable<IApiResponse<IApiResponseDeviceState>> {
+    const apiUrl = `${this.url}${this.DeviceUrl}device_state`;
+    return this.http.get<IApiResponse<IApiResponseDeviceState>>(apiUrl);
   }
   // 分頁查詢設備項目
   getPageDevice(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseDevice>>> {
