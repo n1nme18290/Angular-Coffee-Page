@@ -82,7 +82,6 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
 
   username: string = '';
   userpoint: number = 0;
-  Date = '25/10/31';
 
   productList: IApiResponseGetPageProduct[] = [];
   memberProductList: IApiResponseGetProduct[] = [];
@@ -100,7 +99,6 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
   get carouselMessages(): string[] {
     return [
       `目前可兌換 ${this.coffeeCount} 杯咖啡`,
-      `再 ${this.pointsToNextCoffee} 點即可再兌換一杯！`,
       '試試轉贈點數給朋友',
       '趕緊兌換咖啡吧！'
     ];
@@ -120,28 +118,6 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error fetching point data:', error);
-      }
-    });
-  }
-
-  // 增加點數或轉贈點數
-  addMemberpoints(targetMemberId: string, balance: number) {
-    if (!this.currentMemberId) {
-      console.error('無法取得會員ID');
-      return;
-    }
-
-    this.pointService.addMemberpoints(this.currentMemberId, targetMemberId, balance).subscribe({
-      next: (response) => {
-        console.log('Add member points response:', response);
-        alert('轉贈成功！');
-        // 重新載入點數和異動紀錄
-        this.getPointByMemberId();
-        this.getMemberLog();
-      },
-      error: (error) => {
-        console.error('Error adding member points:', error);
-        alert('轉贈失敗，請稍後再試');
       }
     });
   }
@@ -214,17 +190,34 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
   // 轉贈點數彈跳視窗
   addpointisVisible = false;
   addpointselectedValue: string = '';
-  pointvalue?: number;
-
+  pointvalue: number = 0;
   addpointModal(): void {
     this.addpointisVisible = true;
   }
-
-  addpointhandleOk(): void {
+  // 確認轉贈
+  // 增加點數或轉贈點數
+  addpointhandleOk(targetMemberId: string, balance: number) {
+    this.currentMemberId = this.tokenService.getMemberId() || '';
+    if (!this.currentMemberId) {
+      console.error('無法取得會員ID');
+      return;
+    }
+    this.pointService.addMemberpoints(this.currentMemberId, targetMemberId, balance).subscribe({
+      next: (response) => {
+        console.log('Add member points response:', response);
+        alert('轉贈成功！');
+        // 重新載入點數和異動紀錄
+        this.getPointByMemberId();
+        this.getMemberLog();
+      },
+      error: (error) => {
+        console.error('Error adding member points:', error);
+        alert('轉贈失敗，請稍後再試');
+      }
+    });
     this.addpointisVisible = false;
   }
-
-
+  // 取消轉贈
   addpointhandleCancel(): void {
     this.addpointisVisible = false;
   }

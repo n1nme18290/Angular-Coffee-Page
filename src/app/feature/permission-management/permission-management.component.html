@@ -6,6 +6,7 @@
         </button>
         <h2 nz-typography class="h2">使用者管理</h2>
     </nz-header>
+
     <nz-content>
         <div nz-row class="row-style">
             <div nz-col [nzSpan]="12" class="left-col">
@@ -16,16 +17,14 @@
 
     <div class="admin-information-container">
         <div class="send-request">
-            <nz-table #basicTable [nzData]="adminList" [nzBordered]="true" [nzLoading]="loading"
+            <!-- 管理員列表 Table -->
+            <nz-table #basicTable [nzData]="adminList || []" [nzBordered]="true" [nzLoading]="loading"
                 [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="adminCurrentPage"
-                [nzPageSize]="adminPageSize" [nzTotal]="totalAdmin" [nzShowSizeChanger]="true" [nzPageSizeOptions]="[5, 10, 20]"
-                (nzPageIndexChange)="onAdminPageIndexChange($event)" (nzPageSizeChange)="onAdminPageSizeChange($event)"
-                (nzCurrentPageDataChange)="onCurrentPageAdminDataChange($event)">
+                [nzPageSize]="adminPageSize" [nzTotal]="totalAdmin" [nzShowSizeChanger]="true"
+                [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onAdminPageIndexChange($event)"
+                (nzPageSizeChange)="onAdminPageSizeChange($event)">
                 <thead>
                     <tr>
-                        <!-- <th [nzChecked]="checked" [nzIndeterminate]="indeterminate"
-                        (nzCheckedChange)="onAllChecked($event)">
-                        Select all</th> -->
                         <th>名稱</th>
                         <th>授權</th>
                         <th>狀態</th>
@@ -36,38 +35,17 @@
                     @if (adminList && adminList.length > 0) {
                     @for (data of adminList; track data.id) {
                     <tr>
-                        <!-- <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)">
-                    </td> -->
                         <td>{{ data.name }}</td>
                         <td>{{ data.permission }}</td>
                         <td>{{ data.status }}</td>
                         <td>
-                            <button nz-button nzType="link" (click)="editNormalAdmin()">編輯</button>
+                            <button nz-button nzType="link" (click)="editNormalAdminModal(data)">編輯</button>
                         </td>
-                        <!-- 編輯設備 --><!-- 編輯設備 Modal -->
-                        <!-- <td>
-                            <button nz-button nzType="link" (click)="updateDeviceModal(data)">編輯</button>
-                            <nz-modal [(nzVisible)]="updateAdminVisible" nzTitle="編輯設備" [nzFooter]="updateDeviceFooter"
-                                nzWidth="520px" nzCentered [nzClosable]="false">
-                                <ng-container *nzModalContent>
-                                    <div>
-                                        <h5 nz-typography style="margin: 0;">設備名稱:</h5>
-                                        <input nz-input placeholder="輸入設備名稱" [(ngModel)]="deviceName"
-                                            style="width: 100%; margin-top: 10px;" />
-                                    </div>
-                                </ng-container>
-                                <ng-template #updateDeviceFooter>
-                                    <button nz-button (click)="updateDeviceVisible=false">取消</button>
-                                    <button nz-button nzType="primary" class="btn-styles2"
-                                        (click)="updateDevice()">完成</button>
-                                </ng-template>
-                            </nz-modal>
-                        </td> -->
                     </tr>
                     }
                     } @else {
                     <tr>
-                        <td colspan="6" class="text-center">
+                        <td colspan="4" class="text-center">
                             @if (loading) {
                             載入中...
                             } @else {
@@ -81,6 +59,75 @@
         </div>
     </div>
 
+    <!-- ✅ 將 Modal 移到 table 外面，只保留一個 Modal -->
+    <nz-modal [(nzVisible)]="editNormalAdminVisible" [nzTitle]="'編輯權限 - ' + (currentEditAdmin?.name || '')"
+        [nzFooter]="editNormalAdminFooter" nzWidth="720px" nzCentered [nzClosable]="true"
+        (nzOnCancel)="editNormalAdminhandleCancel()">
+        <ng-container *nzModalContent>
+            <!-- 顯示當前編輯的管理員資訊 -->
+            <div style="margin-bottom: 16px; padding: 12px; background: #f5f5f5; border-radius: 4px;">
+                <p style="margin: 0;"><strong>管理員：</strong>{{ currentEditAdmin?.name }}</p>
+                <p style="margin: 0;"><strong>ID：</strong>{{ currentEditAdmin?.id }}</p>
+                <p style="margin: 0;"><strong>Email：</strong>{{ currentEditAdmin?.email }}</p>
+                <p style="margin: 0;"><strong>已選擇權限數：</strong>{{ setOfCheckedId.size }}</p>
+            </div>
+
+            <!-- 權限列表 -->
+            <nz-table #roleListsTable [nzData]="roleList || []" [nzLoading]="roleListLoading" [nzBordered]="true"
+                [nzShowPagination]="true" [nzPageSize]="10" [nzFrontPagination]="true" [nzHideOnSinglePage]="false">
+                <thead>
+                    <tr>
+                        <th nzShowCheckbox [nzChecked]="checked" [nzIndeterminate]="indeterminate"
+                            (nzCheckedChange)="onAllChecked($event)">
+                        </th>
+                        <th>ID</th>
+                        <th>名稱</th>
+                        <th>說明</th>
+                        <th>狀態</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (roleList && roleList.length > 0) {
+                    @for (data of roleList; track data.id) {
+                    <tr>
+                        <td nzShowCheckbox [nzChecked]="setOfCheckedId.has(data.id)"
+                            (nzCheckedChange)="onItemChecked(data.id, $event)">
+                        </td>
+                        <td>{{ data.id }}</td>
+                        <td>{{ data.name }}</td>
+                        <td>{{ data.description }}</td>
+                        <td>
+                            <nz-tag [nzColor]="data.status === 'active' ? 'green' : 'red'">
+                                {{ data.status }}
+                            </nz-tag>
+                        </td>
+                    </tr>
+                    }
+                    } @else {
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            @if (roleListLoading) {
+                            載入中...
+                            } @else {
+                            暫無可用權限
+                            }
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </nz-table>
+        </ng-container>
+
+        <ng-template #editNormalAdminFooter>
+            <button nz-button (click)="editNormalAdminhandleCancel()">取消</button>
+            <button nz-button nzType="primary" class="btn-styles2" [nzLoading]="roleListLoading"
+                (click)="editNormalAdminhandleOk()">
+                完成設定
+            </button>
+        </ng-template>
+    </nz-modal>
+
+    <!-- 會員列表 -->
     <nz-content>
         <div nz-row class="row-style">
             <div nz-col [nzSpan]="12" class="left-col">
@@ -91,16 +138,13 @@
 
     <div class="memberlist-information-container">
         <div class="send-request">
-            <nz-table #basicTable [nzData]="memberlist" [nzBordered]="true" [nzLoading]="loading"
+            <nz-table #memberTable [nzData]="memberlist || []" [nzBordered]="true" [nzLoading]="loading"
                 [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="memberCurrentPage"
-                [nzPageSize]="memberPageSize" [nzTotal]="totalMember" [nzShowSizeChanger]="true" [nzPageSizeOptions]="[5, 10, 20]"
-                (nzPageIndexChange)="onMemberPageIndexChange($event)" (nzPageSizeChange)="onMemberPageSizeChange($event)"
-                (nzCurrentPageDataChange)="onCurrentPageMemberDataChange($event)">
+                [nzPageSize]="memberPageSize" [nzTotal]="totalMember" [nzShowSizeChanger]="true"
+                [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onMemberPageIndexChange($event)"
+                (nzPageSizeChange)="onMemberPageSizeChange($event)">
                 <thead>
                     <tr>
-                        <!-- <th [nzChecked]="checked" [nzIndeterminate]="indeterminate"
-                        (nzCheckedChange)="onAllChecked($event)">
-                        Select all</th> -->
                         <th>ID</th>
                         <th>名稱</th>
                         <th>卡片類別</th>
@@ -113,8 +157,6 @@
                     @if (memberlist && memberlist.length > 0) {
                     @for (data of memberlist; track data.id) {
                     <tr>
-                        <!-- <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)">
-                    </td> -->
                         <td>{{ data.student_id }}</td>
                         <td>{{ data.name }}</td>
                         <td>{{ data.title }}</td>
@@ -123,25 +165,6 @@
                         <td>
                             <button nz-button nzType="link" (click)="sendPoints()">發送點數</button>
                         </td>
-                        <!-- 編輯設備 --><!-- 編輯設備 Modal -->
-                        <!-- <td>
-                            <button nz-button nzType="link" (click)="updateDeviceModal(data)">編輯</button>
-                            <nz-modal [(nzVisible)]="updateAdminVisible" nzTitle="編輯設備" [nzFooter]="updateDeviceFooter"
-                                nzWidth="520px" nzCentered [nzClosable]="false">
-                                <ng-container *nzModalContent>
-                                    <div>
-                                        <h5 nz-typography style="margin: 0;">設備名稱:</h5>
-                                        <input nz-input placeholder="輸入設備名稱" [(ngModel)]="deviceName"
-                                            style="width: 100%; margin-top: 10px;" />
-                                    </div>
-                                </ng-container>
-                                <ng-template #updateDeviceFooter>
-                                    <button nz-button (click)="updateDeviceVisible=false">取消</button>
-                                    <button nz-button nzType="primary" class="btn-styles2"
-                                        (click)="updateDevice()">完成</button>
-                                </ng-template>
-                            </nz-modal>
-                        </td> -->
                     </tr>
                     }
                     } @else {
