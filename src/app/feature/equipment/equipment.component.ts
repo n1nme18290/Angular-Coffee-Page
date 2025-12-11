@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common'; // 新增這個
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -27,17 +26,43 @@ import { DeviceService } from '../../share/service/service';
 import { IApiResponseDevice } from '../../share/service/model';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { TokenService } from '../../share/service/token.service';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTagModule } from 'ng-zorro-antd/tag'; 
 @Component({
   selector: 'app-equipment',
   standalone: true,
   imports: [
-    CommonModule, // 新增 CommonModule
-    NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
-    , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzGridModule,
-    NzRadioModule, NzModalModule, CommonModule, NzTableModule, NzDividerModule, NzCheckboxModule],
+    CommonModule,
+    NzLayoutModule, 
+    NzButtonModule, 
+    NzIconModule, 
+    NzInputModule, 
+    NzTypographyModule, 
+    NzDropDownModule, 
+    FormsModule,
+    NzSelectModule, 
+    NzSwitchModule, 
+    NzAvatarModule, 
+    NzTabsModule, 
+    NzPageHeaderModule, 
+    NzDrawerModule, 
+    NzGridModule,
+    NzRadioModule, 
+    NzModalModule, 
+    NzTableModule, 
+    NzDividerModule, 
+    NzCheckboxModule,
+    NzCardModule,
+    NzBadgeModule,
+    NzSpinModule,
+    NzTagModule
+  ],
   templateUrl: './equipment.component.html',
   styleUrl: './equipment.component.scss'
 })
+
 export class EquipmentComponent {
   constructor() { }
 
@@ -47,6 +72,7 @@ export class EquipmentComponent {
   tokenService = inject(TokenService);
 
   devicesList: IApiResponseDevice[] = [];
+  allDevicesList: IApiResponseDevice[] = [];
   checked = false;
   loading = false;
   indeterminate = false;
@@ -57,9 +83,9 @@ export class EquipmentComponent {
   pageSize = 5;
   total = 0;
 
-
   createDeviceVisible = false;
   updateDeviceVisible = false;
+  cleanedDeviceVisible = false;
   editingDeviceId: string | null = null;
   deviceName: string = '';
   deviceLocation: string = '';
@@ -71,7 +97,7 @@ export class EquipmentComponent {
 
   ngOnInit() {
     // Initialization logic can go here
-    this.getPagePoints(1, 5);
+    this.getPageDevices(1, 5);
     if (this.tokenService.hasToken()) {
       console.log('用戶已登入');
     } else {
@@ -90,21 +116,23 @@ export class EquipmentComponent {
   ngAfterViewInit() {
     // Logic that needs to run after the view has been initialized can go here
   }
-
+  
   // 計算流水號的方法
   getSerialNumber(index: number): number {
     return (this.currentPage - 1) * this.pageSize + index + 1;
   }
+  // 新增設備Modal
   createDeviceModal() {
     this.createDeviceVisible = true;
   }
+  // 新增設備
   createDevice() {
     this.deviceService.createDevice(this.deviceName, this.deviceLocation, this.deviceStatus, this.machine_id, this.machine_ip).subscribe({
       next: (res) => {
         // Handle successful creation
         this.createDeviceVisible = false;
         this.resetDeviceForm();
-        this.getPagePoints(this.currentPage, this.pageSize);
+        this.getPageDevices(this.currentPage, this.pageSize);
       },
       error: (error) => {
         // Handle error
@@ -112,6 +140,7 @@ export class EquipmentComponent {
       }
     });
   }
+  // 編輯設備Modal
   updateDeviceModal(device: IApiResponseDevice) {
     this.editingDeviceId = device.id;
     this.deviceName = device.name;
@@ -121,6 +150,7 @@ export class EquipmentComponent {
     this.machine_ip = device.machine_ip;
     this.updateDeviceVisible = true;
   }
+  // 編輯設備
   updateDevice() {
     if (!this.editingDeviceId) return;
     this.deviceService.updateDevice(
@@ -135,7 +165,7 @@ export class EquipmentComponent {
         // Handle successful update
         this.updateDeviceVisible = false;
         this.resetDeviceForm();
-        this.getPagePoints(this.currentPage, this.pageSize);
+        this.getPageDevices(this.currentPage, this.pageSize);
       },
       error: (error) => {
         // Handle error
@@ -144,12 +174,37 @@ export class EquipmentComponent {
       }
     });
   }
+  // 重置設備表單
   resetDeviceForm() {
     this.deviceName = '';
     this.deviceLocation = '';
     this.deviceStatus = '';
     this.machine_id = '';
     this.machine_ip = '';
+  }
+
+  // 設備清潔按鈕Modal
+  deviceCleanedModal(device: IApiResponseDevice) {
+    this.cleanedDeviceVisible = true;
+    this.editingDeviceId = device.id;
+  }
+  // 設備清潔狀態更新
+  deviceCleaned() {
+    const memberId = this.tokenService.getMemberId() || '';
+    const deviceId = this.editingDeviceId || '';
+    this.deviceService.deviceCleaned(deviceId, memberId).subscribe({
+      next: (res) => {
+        // Handle successful update
+        this.getPageDevices(this.currentPage, this.pageSize);
+      },
+      error: (error) => {
+        // Handle error
+        console.error('Error updating device cleaned status:', error);
+      },
+      complete: () => {
+        this.cleanedDeviceVisible = false;
+      }
+    });
   }
   // 更新選取的ID集合
   updateCheckedSet(id: string, checked: boolean): void {
@@ -196,16 +251,33 @@ export class EquipmentComponent {
   // 當前頁面數據變更時
   onPageIndexChange(pageIndex: number): void {
     this.currentPage = pageIndex;
-    this.getPagePoints(this.currentPage, this.pageSize);
+    this.getPageDevices(this.currentPage, this.pageSize);
   }
   // 一頁幾筆變更時，
   onPageSizeChange(pageSize: number): void {
     this.pageSize = pageSize;
     this.currentPage = 1; // 重置到第一頁
-    this.getPagePoints(this.currentPage, this.pageSize);
+    this.getPageDevices(this.currentPage, this.pageSize);
+  }
+  // 取得所有設備
+  getAllDevices() {
+    this.loading = true;
+    this.deviceService.getAllDevice().subscribe({
+      next: (res) => {
+        if (res && res.data) {
+          this.allDevicesList = res.data.data || [];
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error fetching all devices:', error);
+        this.allDevicesList = [];
+        this.loading = false;
+      }
+    });
   }
   // 取得分頁設備
-  getPagePoints(page: number, perpage: number) {
+  getPageDevices(page: number, perpage: number) {
     this.loading = true;
     this.deviceService.getPageDevice(page, perpage).subscribe({
       next: (res) => {
@@ -227,9 +299,52 @@ export class EquipmentComponent {
       }
     });
   }
+
+  // 表單驗證
+  isFormValid(): boolean {
+    return !!(
+      this.deviceName?.trim() &&
+      this.deviceLocation?.trim() &&
+      this.deviceStatus?.trim() &&
+      this.machine_id?.trim() &&
+      this.machine_ip?.trim()
+    );
+  }
+
+  // 取得狀態顏色
+  getStatusColor(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      '運作中': 'success',
+      '維護中': 'warning',
+      '離線': 'error',
+      '正常': 'success',
+      '異常': 'error'
+    };
+    return statusMap[status] || 'default';
+  }
+  // 取得狀態圖示
+  getStatusIcon(status: string): string {
+    const iconMap: { [key: string]: string } = {
+      '運作中': 'check-circle',
+      '維護中': 'tool',
+      '離線': 'close-circle',
+      '正常': 'check-circle',
+      '異常': 'warning'
+    };
+    return iconMap[status] || 'info-circle';
+  }
+  // 統計方法
+  getActiveDeviceCount(): number {
+    return this.allDevicesList.filter(d => d.status === '運作中').length;
+  }
+  getMaintenanceDeviceCount(): number {
+    return this.allDevicesList.filter(d => d.status === '維護中').length;
+  }
+  getOfflineDeviceCount(): number {
+    return this.allDevicesList.filter(d => d.status === '離線').length;
+  }
   // 切換側邊欄展開/收起狀態
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }
-
 }

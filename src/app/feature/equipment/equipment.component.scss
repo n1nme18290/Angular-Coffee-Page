@@ -1,6 +1,6 @@
 button[nz-button] {
     margin-right: 8px;
-    // margin-bottom: 12px;
+    margin-bottom: 12px;
     height: 40px; //增加上下寬度
     border-radius: 100px; //圓角設定
     border: 1px solid #27496D; //邊框設定
@@ -8,24 +8,6 @@ button[nz-button] {
 
     background-color: #ffffff; //顏色設定
     color: #27496D; //字體顏色
-}
-
-button[nz-button].btn-styles1 {
-    background-color: #FFD014; //顏色設定
-    color: #ffffff; //字體顏色
-}
-
-button[nz-button].btn-styles2 {
-    background-color: #27496D; //顏色設定
-    color: #ffffff; //字體顏色
-    border: 1px solid #ffffff; //邊框設定
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-button[nz-button].btn-styles3 {
-    width: 40px;
-    background-color: #000000; //顏色設定
-    color: #ffffff; //字體顏色
 }
 
 button[nz-button].btn-styles4 {
@@ -41,90 +23,265 @@ button[nz-button].btn-styles4 {
         font-size: 28px; // 控制 icon 大小
     }
 }
+.h2 {
+    color: #ffffff;
+}
+.row-style {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
+    .left-col {
+        display: flex;
+        align-items: center;
 
-.input-block {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 4px;
-    width: 100%;
+        .boxword {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 600;
 
-    input[nz-input] {
-        border-radius: 10px;
-
-        width: 100%;
+            i {
+                font-size: 24px;
+                color: #1890ff;
+            }
+        }
     }
 
-    nz-input-group {
-        margin-top: 5px;
-        border-radius: 10px;
-        width: 100%;
+    .right-col {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
 
+        .create-device-btn {
+            height: 40px;
+            font-size: 14px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+            transition: all 0.3s ease; // ✅ 加入 transition
 
-        .ant-input-wrapper {
-            border-radius: 10px;
+            i {
+                font-size: 16px;
+            }
+
+            &:hover {
+                box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+                transform: translateY(-1px);
+            }
         }
     }
 }
 
-.trigger {
-    font-size: 18px;
-    line-height: 64px;
-    padding: 0 24px;
-    cursor: pointer;
-    transition: color 0.3s;
-}
+// 統計卡片樣式
+.stats-row {
+    margin-bottom: 24px;
 
+    .stat-card {
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
 
-.logo {
-    height: 32px;
-    background-color: #001529;
-    margin: 16px;
+        &:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
 
-}
+        ::ng-deep .ant-card-body {
+            // ✅ 使用 ::ng-deep 來覆蓋 ng-zorro 的樣式
+            padding: 20px;
+        }
 
-nz-breadcrumb {
-    margin: 16px 0;
-}
+        .stat-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
 
-.h2 {
-    color: #ffffff;
-}
+            .stat-icon {
+                width: 56px;
+                height: 56px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 28px;
+            }
 
-.boxword {
-    color: #27496D;
-    margin: 0;
-    //background-color: #FFB433;
+            .stat-info {
+                flex: 1;
 
+                .stat-label {
+                    font-size: 14px;
+                    color: #8c8c8c;
+                    margin-bottom: 4px;
+                }
 
-}
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 600;
+                    line-height: 1;
+                }
+            }
+        }
 
-.row-style {
-    width: 100%;
-    margin: 0;
+        &.stat-total {
+            .stat-icon {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: #fff;
+            }
 
-    .left-col,
-    .right-col {
-        padding: 16px;
+            .stat-value {
+                color: #667eea;
+            }
+        }
+
+        &.stat-active {
+            .stat-icon {
+                background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+                color: #fff;
+            }
+
+            .stat-value {
+                color: #52c41a;
+            }
+        }
+
+        &.stat-maintenance {
+            .stat-icon {
+                background: linear-gradient(135deg, #faad14 0%, #fa8c16 100%);
+                color: #fff;
+            }
+
+            .stat-value {
+                color: #faad14;
+            }
+        }
+
+        &.stat-offline {
+            .stat-icon {
+                background: linear-gradient(135deg, #ff4d4f 0%, #cf1322 100%);
+                color: #fff;
+            }
+
+            .stat-value {
+                color: #ff4d4f;
+            }
+        }
     }
 }
 
-
+// 設備表格樣式
 .devices-information-container {
-    margin: 16px;
-    padding: 16px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
 }
 
-.send-request {
-    margin-top: 8px;
-    margin-left: 8px;
-    margin-bottom: 8px;
+.device-table {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    .device-id,
+    .device-ip {
+        background: #f5f5f5;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-family: 'Monaco', 'Menlo', monospace;
+        font-size: 12px;
+        color: #666;
+    }
+
+    .text-center {
+        text-align: center;
+        padding: 40px 0;
+        color: #999;
+    }
 }
 
-.createDeviceBtn {
-    margin-top: 16px;
-    margin-bottom: 16px;
+// Modal 表單樣式
+.modal-form {
+    .form-item {
+        margin-bottom: 24px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #262626;
+
+            i {
+                color: #1890ff;
+                font-size: 16px;
+            }
+
+            .required {
+                color: #ff4d4f;
+                margin-left: 4px;
+            }
+        }
+    }
+}
+
+// 清潔確認內容
+.clean-confirm-content {
+    text-align: center;
+    padding: 20px;
+
+    .confirm-icon {
+        font-size: 64px;
+        margin-bottom: 16px;
+
+        i {
+            font-size: 64px;
+        }
+    }
+
+    h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #262626;
+    }
+
+    p {
+        font-size: 14px;
+        color: #595959;
+        margin-bottom: 8px;
+
+        &.hint {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-top: 12px;
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+    }
+}
+
+// 響應式設計
+@media (max-width: 768px) {
+    .stats-row {
+        [nz-col] {
+            // ✅ 修正選擇器
+            margin-bottom: 16px;
+        }
+    }
+
+    .row-style {
+        .right-col {
+            justify-content: flex-start;
+            margin-top: 12px;
+        }
+    }
 }

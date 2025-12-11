@@ -11,7 +11,8 @@ import { TokenService } from '../service/token.service';
 // 基底服務類別
 export abstract class BaseService {
   protected http = inject(HttpClient);
-  protected readonly url = 'http://10.25.1.172:5054';
+  // protected readonly url = 'http://10.25.1.172:5054';
+  protected readonly url = 'http://163.17.136.69:11538';
   protected readonly PointsUrl = "/Points/Points/";
   protected readonly LogUrl = "/Logs/Log/";
   protected readonly ProductUrl = "/Product/Product/";
@@ -203,9 +204,12 @@ export class AdminService extends BaseService {
     return this.http.get<IApiResponse<IApiResponseAdmin>>(apiUrl);
   }
   // 分頁取得管理員
-  getPageAdmins(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseAdmin>>> {
-    const apiUrl = `${this.url}${this.AdminUrl}get_page_admins?page=${page}&perPage=${perPage}`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseAdmin>>>(apiUrl);
+  getPageAdmins(page: number, pageSize: number): Observable<IApiResponse<IApiResponsePages<IApiResponseAdmin>>> {
+    const params = {
+      page: page.toString(),
+      per_page: pageSize.toString()
+    };
+    return this.http.get<IApiResponse<any>>(`${this.url}${this.AdminUrl}get_page_admins`, { params });
   }
   // 依 id 查詢管理員
   getAdmin(id: string): Observable<IApiResponse<IApiResponseAdmin>> {
@@ -353,9 +357,13 @@ export class MemberService extends BaseService {
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponseMember>>>(apiUrl);
   }
   // 分頁取得會員
-  getPageMembers(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseMember>>> {
-    const apiUrl = `${this.url}${this.MemberUrl}get_page_members?page=${page}&perPage=${perPage}`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseMember>>>(apiUrl);
+  getPageMembers(page: number, pageSize: number): Observable<IApiResponse<IApiResponsePages<IApiResponseMember>>> {
+    const params = {
+      page: page.toString(),
+      per_page: pageSize.toString()
+    };
+    const apiUrl = `${this.url}${this.MemberUrl}get_page_members`;
+    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseMember>>>(apiUrl, { params });
   }
   // 依 id 查詢會員
   getMember(id: string): Observable<IApiResponse<IApiResponseMember>> {
@@ -409,6 +417,7 @@ export class DeviceService extends BaseService {
     };
     return this.http.post<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
   }
+  // 更新設備資訊
   updateDevice(device_id: string, name: string, location: string, status: string, machine_id: string, machine_ip: string): Observable<IApiResponse<IApiResponseDevice>> {
     const apiUrl = `${this.url}${this.DeviceUrl}update_device`;
     const requestBody = {
@@ -417,9 +426,14 @@ export class DeviceService extends BaseService {
       location: location,
       status: status,
       machine_id: machine_id,
-      machine_ip: machine_ip
+      machine_ip: machine_ip,
     };
     return this.http.put<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
+  }
+  // 取得所有設備
+  getAllDevice(): Observable<IApiResponse<IApiResponsePages<IApiResponseDevice>>> {
+    const apiUrl = `${this.url}${this.DeviceUrl}get_all_device`;
+    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseDevice>>>(apiUrl);
   }
   // 分頁查詢設備項目
   getPageDevice(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseDevice>>> {
@@ -433,6 +447,15 @@ export class DeviceService extends BaseService {
       id: id
     };
     return this.http.post<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
+  }
+  // 設備清潔狀態更新
+  deviceCleaned(deviceId:string, memberId:string): Observable<IApiResponseNormal> {
+    const apiUrl = `${this.url}${this.DeviceUrl}device_cleaning_button`;
+    const requestBody = {
+      deviceId: deviceId,
+      memberId: memberId
+    };
+    return this.http.put<IApiResponseNormal>(apiUrl, requestBody);
   }
 }
 

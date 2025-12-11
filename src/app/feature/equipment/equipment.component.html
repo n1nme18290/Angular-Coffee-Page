@@ -6,142 +6,153 @@
         </button>
         <h2 nz-typography class="h2">設備管理頁面</h2>
     </nz-header>
+
     <nz-content>
         <div nz-row class="row-style">
             <div nz-col [nzSpan]="12" class="left-col">
-                <h2 nz-typography class="boxword">設備清單</h2>
+                <h2 nz-typography class="boxword">
+                    <i nz-icon nzType="laptop" nzTheme="outline"></i>
+                    設備清單
+                </h2>
+            </div>
+            <div nz-col [nzSpan]="12" class="right-col">
+                <button nz-button nzType="primary" (click)="createDeviceModal()" class="create-device-btn">
+                    <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+                    新增設備
+                </button>
             </div>
         </div>
     </nz-content>
 
     <div class="devices-information-container">
-        <div class="send-request">
-            <!-- 新增設備 -->
-            <div nz-row [nzGutter]="16">
-                <div nz-col>
-                    <button nz-button nzType="primary" nzBlock (click)="createDeviceModal()" class="createDeviceBtn">
-                        <span nz-icon nzType="plus" nzTheme="outline"></span>新增設備
-                    </button>
-                </div>
+        <!-- 設備統計卡片 -->
+        <div nz-row [nzGutter]="16" class="stats-row">
+            <div nz-col [nzSpan]="6">
+                <nz-card class="stat-card stat-total">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i nz-icon nzType="laptop" nzTheme="outline"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">總設備數</div>
+                            <div class="stat-value">{{ total }}</div>
+                        </div>
+                    </div>
+                </nz-card>
             </div>
-            <!-- 新增設備 Modal -->
-            <nz-modal [(nzVisible)]="createDeviceVisible" nzTitle="新增設備" [nzFooter]="createDeviceFooter" nzWidth="520px"
-                nzCentered [nzClosable]="false">
-                <ng-container *nzModalContent>
-                    <div>
-                        <h5 nz-typography style="margin: 0;">設備名稱:</h5>
-                        <input nz-input placeholder="輸入設備名稱" [(ngModel)]="deviceName"
-                            style="width: 100%; margin-top: 10px;" />
+            <div nz-col [nzSpan]="6">
+                <nz-card class="stat-card stat-active">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">運作中</div>
+                            <div class="stat-value">{{ getActiveDeviceCount() }}</div>
+                        </div>
                     </div>
-                    <div>
-                        <h5 nz-typography style="margin: 0;">放置地點:</h5>
-                        <input nz-input placeholder="輸入設備地點" [(ngModel)]="deviceLocation"
-                            style="width: 100%; margin-top: 10px;" />
+                </nz-card>
+            </div>
+            <div nz-col [nzSpan]="6">
+                <nz-card class="stat-card stat-maintenance">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i nz-icon nzType="tool" nzTheme="outline"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">維護中</div>
+                            <div class="stat-value">{{ getMaintenanceDeviceCount() }}</div>
+                        </div>
                     </div>
-                    <div>
-                        <h5 nz-typography style="margin: 0;">狀態:</h5>
-                        <input nz-input placeholder="輸入設備狀態" [(ngModel)]="deviceStatus"
-                            style="width: 100%; margin-top: 10px;" />
+                </nz-card>
+            </div>
+            <div nz-col [nzSpan]="6">
+                <nz-card class="stat-card stat-offline">
+                    <div class="stat-content">
+                        <div class="stat-icon">
+                            <i nz-icon nzType="warning" nzTheme="outline"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">離線</div>
+                            <div class="stat-value">{{ getOfflineDeviceCount() }}</div>
+                        </div>
                     </div>
-                    <div>
-                        <h5 nz-typography style="margin: 0;">設備ID:</h5>
-                        <input nz-input placeholder="輸入設備ID" [(ngModel)]="machine_id"
-                            style="width: 100%; margin-top: 10px;" />
-                    </div>
-                    <div>
-                        <h5 nz-typography style="margin: 0;">設備IP:</h5>
-                        <input nz-input placeholder="輸入設備IP" [(ngModel)]="machine_ip"
-                            style="width: 100%; margin-top: 10px;" />
-                    </div>
-                </ng-container>
-                <ng-template #createDeviceFooter>
-                    <button nz-button (click)="createDeviceVisible=false">取消</button>
-                    <button nz-button nzType="primary" class="btn-styles2" (click)="createDevice()">完成</button>
-                </ng-template>
-            </nz-modal>
+                </nz-card>
+            </div>
         </div>
-        <nz-table #basicTable [nzData]="devicesList" [nzBordered]="true" [nzLoading]="loading" [nzShowPagination]="true"
-            [nzFrontPagination]="false" [nzPageIndex]="currentPage" [nzPageSize]="pageSize" [nzTotal]="total"
-            [nzShowSizeChanger]="true" [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onPageIndexChange($event)"
-            (nzPageSizeChange)="onPageSizeChange($event)" (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
+
+        <!-- 設備列表 -->
+        <nz-table #basicTable [nzData]="devicesList || []" [nzBordered]="true" [nzLoading]="loading"
+            [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage" [nzPageSize]="pageSize"
+            [nzTotal]="total" [nzShowSizeChanger]="true" [nzPageSizeOptions]="[5, 10, 20]"
+            (nzPageIndexChange)="onPageIndexChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+            class="device-table">
             <thead>
                 <tr>
-                    <!-- <th [nzChecked]="checked" [nzIndeterminate]="indeterminate"
-                        (nzCheckedChange)="onAllChecked($event)">
-                        Select all</th> -->
-                    <th>序號</th> <!-- 流水號欄位 -->
-                    <th>名稱</th>
-                    <th>地點</th>
-                    <th>狀態</th>
-                    <th>設備ID</th>
-                    <th>設備IP</th>
-                    <!-- <th>咖啡豆存量</th>
-                    <th>水位</th> -->
-                    <th>操作</th>
+                    <th nzWidth="80px">序號</th>
+                    <th nzWidth="150px">名稱</th>
+                    <th nzWidth="120px">地點</th>
+                    <th nzWidth="100px">狀態</th>
+                    <th nzWidth="120px">累積兌換杯數</th>
+                    <th nzWidth="150px">上次清潔時間</th>
+                    <th nzWidth="150px">設備ID</th>
+                    <th nzWidth="130px">設備IP</th>
+                    <th nzWidth="180px">操作</th>
                 </tr>
             </thead>
             <tbody>
                 @if (devicesList && devicesList.length > 0) {
                 @for (data of devicesList; track data.id; let i = $index) {
                 <tr>
-                    <!-- <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)">
-                    </td> -->
-                    <td>{{ getSerialNumber(i) }}</td> <!-- 顯示流水號 -->
-                    <td>{{ data.name }}</td>
-                    <td>{{ data.location }}</td>
-                    <td>{{ data.status }}</td>
-                    <td>{{ data.machine_id }}</td>
-                    <td>{{ data.machine_ip }}</td>
+                    <td>{{ getSerialNumber(i) }}</td>
                     <td>
-                        <!-- 編輯設備 -->
-                        <button nz-button nzType="link" (click)="updateDeviceModal(data)">編輯</button>
-                        <!-- 編輯設備 Modal -->
-                        <nz-modal [(nzVisible)]="updateDeviceVisible" nzTitle="編輯設備" [nzFooter]="updateDeviceFooter"
-                            nzWidth="520px" nzCentered [nzClosable]="false">
-                            <ng-container *nzModalContent>
-                                <div>
-                                    <h5 nz-typography style="margin: 0;">設備名稱:</h5>
-                                    <input nz-input placeholder="輸入設備名稱" [(ngModel)]="deviceName"
-                                        style="width: 100%; margin-top: 10px;" />
-                                </div>
-                                <div>
-                                    <h5 nz-typography style="margin: 0;">放置地點:</h5>
-                                    <input nz-input placeholder="輸入設備地點" [(ngModel)]="deviceLocation"
-                                        style="width: 100%; margin-top: 10px;" />
-                                </div>
-                                <div>
-                                    <!-- 使用更醒目的方式呈現如：紅色圖示與綠色圖示等 -->
-                                    <h5 nz-typography style="margin: 0;">狀態:</h5>
-                                    <input nz-input placeholder="輸入設備狀態" [(ngModel)]="deviceStatus"
-                                        style="width: 100%; margin-top: 10px;" />
-                                </div>
-                                <div>
-                                    <h5 nz-typography style="margin: 0;">設備ID:</h5>
-                                    <input nz-input placeholder="輸入設備ID" [(ngModel)]="machine_id"
-                                        style="width: 100%; margin-top: 10px;" />
-                                </div>
-                                <div>
-                                    <h5 nz-typography style="margin: 0;">設備IP:</h5>
-                                    <input nz-input placeholder="輸入設備IP" [(ngModel)]="machine_ip"
-                                        style="width: 100%; margin-top: 10px;" />
-                                </div>
-                            </ng-container>
-                            <ng-template #updateDeviceFooter>
-                                <button nz-button (click)="updateDeviceVisible=false">取消</button>
-                                <button nz-button nzType="primary" class="btn-styles2"
-                                    (click)="updateDevice()">完成</button>
-                            </ng-template>
-                        </nz-modal>
+                        <strong>{{ data.name }}</strong>
+                    </td>
+                    <td>
+                        <i nz-icon nzType="environment" nzTheme="outline"></i>
+                        {{ data.location }}
+                    </td>
+                    <td>
+                        <nz-tag [nzColor]="getStatusColor(data.status)">
+                            <i nz-icon [nzType]="getStatusIcon(data.status)" nzTheme="outline"></i>
+                            {{ data.status }}
+                        </nz-tag>
+                    </td>
+                    <td class="text-center">
+                        <nz-badge [nzCount]="+(data.water_level || 0)" [nzOverflowCount]="999" nzShowZero></nz-badge>
+                    </td>
+                    <td>
+                        <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+                        {{ data.cleaned_at || '尚未清潔' }}
+                    </td>
+                    <td>
+                        <code class="device-id">{{ data.machine_id }}</code>
+                    </td>
+                    <td>
+                        <code class="device-ip">{{ data.machine_ip }}</code>
+                    </td>
+                    <td>
+                        <button nz-button nzType="link" nzSize="small" (click)="updateDeviceModal(data)">
+                            <i nz-icon nzType="edit" nzTheme="outline"></i>
+                            編輯
+                        </button>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <button nz-button nzType="link" nzSize="small" (click)="deviceCleanedModal(data)">
+                            <i nz-icon nzType="tool" nzTheme="outline"></i>
+                            已清潔
+                        </button>
                     </td>
                 </tr>
                 }
                 } @else {
                 <tr>
-                    <td colspan="6" class="text-center">
+                    <td colspan="9" class="text-center">
                         @if (loading) {
-                        載入中...
+                        <nz-spin nzSimple></nz-spin>
+                        <p style="margin-top: 8px;">載入中...</p>
                         } @else {
-                        暫無資料
+                        <i nz-icon nzType="inbox" nzTheme="outline" style="font-size: 48px; color: #d9d9d9;"></i>
+                        <p style="color: #999;">暫無設備資料</p>
                         }
                     </td>
                 </tr>
@@ -149,4 +160,168 @@
             </tbody>
         </nz-table>
     </div>
+
+    <!-- 新增設備 Modal -->
+    <nz-modal [(nzVisible)]="createDeviceVisible" nzTitle="新增設備" [nzFooter]="createDeviceFooter" nzWidth="600px"
+        nzCentered [nzClosable]="true" (nzOnCancel)="resetDeviceForm()">
+        <ng-container *nzModalContent>
+            <div class="modal-form">
+                <div class="form-item">
+                    <div class="form-label">
+                        <i nz-icon nzType="laptop" nzTheme="outline"></i>
+                        設備名稱
+                        <span class="required">*</span>
+                    </div>
+                    <input nz-input placeholder="例如：咖啡機-A1" [(ngModel)]="deviceName" [nzSize]="'large'" />
+                </div>
+
+                <div class="form-item">
+                    <div class="form-label">
+                        <i nz-icon nzType="environment" nzTheme="outline"></i>
+                        放置地點
+                        <span class="required">*</span>
+                    </div>
+                    <input nz-input placeholder="例如：一樓大廳" [(ngModel)]="deviceLocation" [nzSize]="'large'" />
+                </div>
+
+                <div class="form-item">
+                    <div class="form-label">
+                        <i nz-icon nzType="info-circle" nzTheme="outline"></i>
+                        狀態
+                        <span class="required">*</span>
+                    </div>
+                    <nz-select [(ngModel)]="deviceStatus" nzPlaceHolder="請選擇設備狀態" [nzSize]="'large'"
+                        style="width: 100%;">
+                        <nz-option nzValue="運作中" nzLabel="運作中"></nz-option>
+                        <nz-option nzValue="維護中" nzLabel="維護中"></nz-option>
+                        <nz-option nzValue="離線" nzLabel="離線"></nz-option>
+                    </nz-select>
+                </div>
+
+                <div class="form-item">
+                    <div class="form-label">
+                        <i nz-icon nzType="barcode" nzTheme="outline"></i>
+                        設備ID
+                        <span class="required">*</span>
+                    </div>
+                    <input nz-input placeholder="例如：DEV-001" [(ngModel)]="machine_id" [nzSize]="'large'" />
+                </div>
+
+                <div class="form-item">
+                    <div class="form-label">
+                        <i nz-icon nzType="global" nzTheme="outline"></i>
+                        設備IP
+                        <span class="required">*</span>
+                    </div>
+                    <input nz-input placeholder="例如：192.168.1.100" [(ngModel)]="machine_ip" [nzSize]="'large'" />
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-template #createDeviceFooter>
+            <button nz-button nzSize="large" (click)="createDeviceVisible=false; resetDeviceForm()">
+                <i nz-icon nzType="close" nzTheme="outline"></i>
+                取消
+            </button>
+            <button nz-button nzType="primary" nzSize="large" (click)="createDevice()" [disabled]="!isFormValid()">
+                <i nz-icon nzType="check" nzTheme="outline"></i>
+                完成新增
+            </button>
+        </ng-template>
+    </nz-modal>
+
+    <!-- 編輯設備 Modal -->
+    <nz-modal [(nzVisible)]="updateDeviceVisible" nzTitle="編輯設備" [nzFooter]="updateDeviceFooter" nzWidth="600px"
+        nzCentered [nzClosable]="true" (nzOnCancel)="resetDeviceForm()">
+        <ng-container *nzModalContent>
+            <div class="modal-form">
+                <div class="form-item">
+                    <div class="form-label">
+                        <i nz-icon nzType="laptop" nzTheme="outline"></i>
+                        設備名稱
+                        <span class="required">*</span>
+                    </div>
+                    <input nz-input placeholder="輸入設備名稱" [(ngModel)]="deviceName" [nzSize]="'large'" />
+                </div>
+
+                <div class="form-item">
+                    <div class="form-label">
+                        <i nz-icon nzType="environment" nzTheme="outline"></i>
+                        放置地點
+                        <span class="required">*</span>
+                    </div>
+                    <input nz-input placeholder="輸入設備地點" [(ngModel)]="deviceLocation" [nzSize]="'large'" />
+                </div>
+
+                <div class="form-item">
+                    <div class="form-label">
+                        <i nz-icon nzType="info-circle" nzTheme="outline"></i>
+                        狀態
+                        <span class="required">*</span>
+                    </div>
+                    <nz-select [(ngModel)]="deviceStatus" nzPlaceHolder="請選擇設備狀態" [nzSize]="'large'"
+                        style="width: 100%;">
+                        <nz-option nzValue="運作中" nzLabel="運作中"></nz-option>
+                        <nz-option nzValue="維護中" nzLabel="維護中"></nz-option>
+                        <nz-option nzValue="離線" nzLabel="離線"></nz-option>
+                    </nz-select>
+                </div>
+
+                <div class="form-item">
+                    <div class="form-label">
+                        <i nz-icon nzType="barcode" nzTheme="outline"></i>
+                        設備ID
+                        <span class="required">*</span>
+                    </div>
+                    <input nz-input placeholder="輸入設備ID" [(ngModel)]="machine_id" [nzSize]="'large'" />
+                </div>
+
+                <div class="form-item">
+                    <div class="form-label">
+                        <i nz-icon nzType="global" nzTheme="outline"></i>
+                        設備IP
+                        <span class="required">*</span>
+                    </div>
+                    <input nz-input placeholder="輸入設備IP" [(ngModel)]="machine_ip" [nzSize]="'large'" />
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-template #updateDeviceFooter>
+            <button nz-button nzSize="large" (click)="updateDeviceVisible=false; resetDeviceForm()">
+                <i nz-icon nzType="close" nzTheme="outline"></i>
+                取消
+            </button>
+            <button nz-button nzType="primary" nzSize="large" (click)="updateDevice()" [disabled]="!isFormValid()">
+                <i nz-icon nzType="check" nzTheme="outline"></i>
+                儲存變更
+            </button>
+        </ng-template>
+    </nz-modal>
+
+    <!-- 設備清潔確認 Modal -->
+    <nz-modal [(nzVisible)]="cleanedDeviceVisible" [nzFooter]="cleanedDeviceFooter" nzWidth="400px" nzCentered
+        [nzClosable]="true">
+        <ng-container *nzModalContent>
+            <div class="clean-confirm-content">
+                <div class="confirm-icon">
+                    <i nz-icon nzType="question-circle" nzTheme="twotone" [nzTwotoneColor]="'#1890ff'"></i>
+                </div>
+                <h3>確認清潔完成</h3>
+                <p>您確定此設備已經完成清潔嗎？</p>
+                <p class="hint">系統將記錄清潔時間並重置計數器</p>
+            </div>
+        </ng-container>
+
+        <ng-template #cleanedDeviceFooter>
+            <button nz-button nzSize="large" (click)="cleanedDeviceVisible=false">
+                <i nz-icon nzType="close" nzTheme="outline"></i>
+                取消
+            </button>
+            <button nz-button nzType="primary" nzSize="large" (click)="deviceCleaned()">
+                <i nz-icon nzType="check" nzTheme="outline"></i>
+                確認清潔
+            </button>
+        </ng-template>
+    </nz-modal>
 </nz-layout>

@@ -76,7 +76,8 @@ export interface IApiResponseDevice {
     machine_id: string
     machine_ip: string
     // bean_level: number
-    // water_level: number
+    cleaned_at: string
+    water_level: string
     created_at: string
     updated_at: string
 }
@@ -135,6 +136,19 @@ export interface IApiResponseGetPageDeviceLog {
     amount: number
     created_at: string
 }
-export interface IApiResponseSecurityRole{
-
+export interface IApiResponseSecurityRole {
+    created_at: string
+    description: string
+    id: string
+    name: string
+    status: string
+    updated_at: string
 }
+// export interface IApiResponseCreateSecurityRole {
+//     id: string
+//     name: string
+//     description: string
+//     status: string
+//     created_at: string
+//     updated_at: string
+// }
