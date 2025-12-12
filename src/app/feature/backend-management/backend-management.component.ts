@@ -144,6 +144,8 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     apiCall.subscribe({
       next: (response) => {
         this.isLoading = false;
+        console.log('data:', response.data);
+
 
         if (response.isSuccess && response.data) {
           const transformedData = this.transformApiData(response.data);

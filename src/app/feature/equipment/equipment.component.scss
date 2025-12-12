@@ -23,19 +23,27 @@ button[nz-button].btn-styles4 {
         font-size: 28px; // 控制 icon 大小
     }
 }
+
 .h2 {
     color: #ffffff;
 }
+
 .row-style {
     padding: 20px;
     background: #fff;
     border-radius: 8px;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+
+
 
     .left-col {
         display: flex;
         align-items: center;
+
 
         .boxword {
             margin: 0;
@@ -56,6 +64,10 @@ button[nz-button].btn-styles4 {
         display: flex;
         justify-content: flex-end;
         align-items: center;
+        padding-top: 10px;
+        padding-left: 10px;
+
+
 
         .create-device-btn {
             height: 40px;
@@ -92,7 +104,7 @@ button[nz-button].btn-styles4 {
         }
 
         ::ng-deep .ant-card-body {
-            // ✅ 使用 ::ng-deep 來覆蓋 ng-zorro 的樣式
+            // ::ng-deep 來覆蓋 ng-zorro 的樣式
             padding: 20px;
         }
 
@@ -175,30 +187,96 @@ button[nz-button].btn-styles4 {
 }
 
 // 設備表格樣式
-.devices-information-container {
-    padding: 20px;
-}
-
 .device-table {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
-    .device-id,
-    .device-ip {
-        background: #f5f5f5;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-family: 'Monaco', 'Menlo', monospace;
-        font-size: 12px;
-        color: #666;
+    ::ng-deep {
+
+        //強制固定表格佈局
+        .ant-table {
+            table-layout: fixed !important;
+        }
+
+        // 標提置中
+        .ant-table-thead>tr>th {
+            text-align: center !important;
+            white-space: normal !important; // 換行
+            word-wrap: break-word !important;
+            line-height: 1.5 !important; // 增加行高
+        }
+
+        //  表格欄位置中
+        .ant-table-tbody>tr>td {
+            text-align: center !important;
+            white-space: normal !important; // 允許換行
+            word-wrap: break-word !important; // 允許單詞斷行
+            padding: 8px 8px !important; // 減少上下內距
+            line-height: 2.0 !important; // 調整行高
+        }
+
+        // 每列固定寬度
+        $column-widths: (
+            1:60px,//展開
+            2: 80px,// 序號
+            3: 150px,// 名稱
+            4: 140px,// 地點
+            5: 110px,// 狀態
+            6: 100px,// 累積兌換杯數
+            7: 100px,// 上次清潔時間
+            8: 120px,// 設備ID
+            9: 120px,// 設備IP
+            10: 220px // 操作
+        );
+
+    @each $index, $width in $column-widths {
+
+        .ant-table-thead>tr>th:nth-child(#{$index}),
+        .ant-table-tbody>tr>td:nth-child(#{$index}) {
+            width: $width !important;
+            min-width: $width !important;
+            max-width: $width !important;
+        }
     }
 
-    .text-center {
-        text-align: center;
-        padding: 40px 0;
-        color: #999;
+    // 防止內容撐開
+    .ant-table-cell {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
+
+    //  展開內容樣式
+    .expand-content {
+        padding: 16px;
+        background: #fafafa;
+        border-radius: 4px;
+        min-height: 100px;
+    }
+
+    //  展開按鈕置中
+    .ant-table-tbody>tr>td:first-child {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+}
+
+.device-id,
+.device-ip {
+    background: #f5f5f5;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 12px;
+    color: #666;
+}
+
+.text-center {
+    text-align: center;
+    padding: 40px 0;
+    color: #999;
+}
 }
 
 // Modal 表單樣式

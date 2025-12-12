@@ -89,21 +89,23 @@
             class="device-table">
             <thead>
                 <tr>
+                    <th nzWidth="60px"></th>
                     <th nzWidth="80px">序號</th>
                     <th nzWidth="150px">名稱</th>
-                    <th nzWidth="120px">地點</th>
-                    <th nzWidth="100px">狀態</th>
-                    <th nzWidth="120px">累積兌換杯數</th>
-                    <th nzWidth="150px">上次清潔時間</th>
-                    <th nzWidth="150px">設備ID</th>
-                    <th nzWidth="130px">設備IP</th>
-                    <th nzWidth="180px">操作</th>
+                    <th nzWidth="140px">地點</th>
+                    <th nzWidth="110px">狀態</th>
+                    <th nzWidth="100px">累積兌換杯數</th>
+                    <th nzWidth="100px">上次清潔時間</th>
+                    <th nzWidth="120px">設備ID</th>
+                    <th nzWidth="120px">設備IP</th>
+                    <th nzWidth="220px">操作</th>
                 </tr>
             </thead>
             <tbody>
                 @if (devicesList && devicesList.length > 0) {
                 @for (data of devicesList; track data.id; let i = $index) {
                 <tr>
+                    <td [nzExpand]="expandSet.has(data.id)" [nzExpandIcon]="expandIcon"></td>
                     <td>{{ getSerialNumber(i) }}</td>
                     <td>
                         <strong>{{ data.name }}</strong>
@@ -143,10 +145,28 @@
                         </button>
                     </td>
                 </tr>
+                
+                <tr [nzExpand]="expandSet.has(data.id)">
+                    <div class="expand-content">
+                        <p style="padding: 16px; color: #999;">展開內容區域</p>
+                    </div>
+                </tr>
+
+                <ng-template #expandIcon>
+                    @if (!expandSet.has(data.id)) {
+                    <span nz-icon nzType="plus-circle" nzTheme="outline" 
+                          (click)="onExpandChange(data.id, true)" 
+                          style="cursor: pointer; font-size: 16px; color: #1890ff;"></span>
+                    } @else {
+                    <span nz-icon nzType="minus-circle" nzTheme="outline" 
+                          (click)="onExpandChange(data.id, false)" 
+                          style="cursor: pointer; font-size: 16px; color: #1890ff;"></span>
+                    }
+                </ng-template>
                 }
                 } @else {
                 <tr>
-                    <td colspan="9" class="text-center">
+                    <td colspan="10" class="text-center">
                         @if (loading) {
                         <nz-spin nzSimple></nz-spin>
                         <p style="margin-top: 8px;">載入中...</p>

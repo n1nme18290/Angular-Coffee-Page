@@ -338,4 +338,17 @@ export class EquipmentComponent {
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }
+
+  //展開欄位
+  //展開控制
+  expandSet = new Set<string>();
+
+  //展開狀態變更處理
+  onExpandChange(id: string, checked: boolean): void {
+    if (checked) {
+      this.expandSet.add(id);
+    } else {
+      this.expandSet.delete(id);
+    }
+  }
 }
