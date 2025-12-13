@@ -89,15 +89,12 @@
             class="device-table">
             <thead>
                 <tr>
-                    <th nzWidth="60px"></th>
-                    <th nzWidth="80px">序號</th>
+                    <th nzWidth="100px">序號</th>
                     <th nzWidth="150px">名稱</th>
                     <th nzWidth="140px">地點</th>
                     <th nzWidth="110px">狀態</th>
-                    <th nzWidth="100px">累積兌換杯數</th>
-                    <th nzWidth="100px">上次清潔時間</th>
-                    <th nzWidth="120px">設備ID</th>
-                    <th nzWidth="120px">設備IP</th>
+                    <th nzWidth="120px">累積兌換杯數</th>
+                    <th nzWidth="150px">上次清潔時間</th>
                     <th nzWidth="220px">操作</th>
                 </tr>
             </thead>
@@ -105,8 +102,9 @@
                 @if (devicesList && devicesList.length > 0) {
                 @for (data of devicesList; track data.id; let i = $index) {
                 <tr>
-                    <td [nzExpand]="expandSet.has(data.id)" [nzExpandIcon]="expandIcon"></td>
-                    <td>{{ getSerialNumber(i) }}</td>
+                    <td [nzExpand]="expandSet.has(data.id)" [nzExpandIcon]="expandIcon">
+                        <span style="margin-left: 8px;">{{ getSerialNumber(i) }}</span>
+                    </td>
                     <td>
                         <strong>{{ data.name }}</strong>
                     </td>
@@ -128,12 +126,6 @@
                         {{ data.cleaned_at || '尚未清潔' }}
                     </td>
                     <td>
-                        <code class="device-id">{{ data.machine_id }}</code>
-                    </td>
-                    <td>
-                        <code class="device-ip">{{ data.machine_ip }}</code>
-                    </td>
-                    <td>
                         <button nz-button nzType="link" nzSize="small" (click)="updateDeviceModal(data)">
                             <i nz-icon nzType="edit" nzTheme="outline"></i>
                             編輯
@@ -145,28 +137,30 @@
                         </button>
                     </td>
                 </tr>
-                
+
                 <tr [nzExpand]="expandSet.has(data.id)">
                     <div class="expand-content">
-                        <p style="padding: 16px; color: #999;">展開內容區域</p>
+                        <span style="color: #595959;">
+                            <strong>設備ID:</strong> <code class="device-id">{{ data.machine_id }}</code>
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <strong>設備IP:</strong> <code class="device-ip">{{ data.machine_ip }}</code>
+                        </span>
                     </div>
                 </tr>
 
                 <ng-template #expandIcon>
                     @if (!expandSet.has(data.id)) {
-                    <span nz-icon nzType="plus-circle" nzTheme="outline" 
-                          (click)="onExpandChange(data.id, true)" 
-                          style="cursor: pointer; font-size: 16px; color: #1890ff;"></span>
+                    <span nz-icon nzType="plus-circle" nzTheme="outline" (click)="onExpandChange(data.id, true)"
+                        style="cursor: pointer; font-size: 16px; color: #1890ff;"></span>
                     } @else {
-                    <span nz-icon nzType="minus-circle" nzTheme="outline" 
-                          (click)="onExpandChange(data.id, false)" 
-                          style="cursor: pointer; font-size: 16px; color: #1890ff;"></span>
+                    <span nz-icon nzType="minus-circle" nzTheme="outline" (click)="onExpandChange(data.id, false)"
+                        style="cursor: pointer; font-size: 16px; color: #1890ff;"></span>
                     }
                 </ng-template>
                 }
                 } @else {
                 <tr>
-                    <td colspan="10" class="text-center">
+                    <td colspan="7" class="text-center">
                         @if (loading) {
                         <nz-spin nzSimple></nz-spin>
                         <p style="margin-top: 8px;">載入中...</p>
@@ -192,7 +186,7 @@
                         設備名稱
                         <span class="required">*</span>
                     </div>
-                    <input nz-input placeholder="例如：咖啡機-A1" [(ngModel)]="deviceName" [nzSize]="'large'" />
+                    <input nz-input placeholder="例如:咖啡機-A1" [(ngModel)]="deviceName" [nzSize]="'large'" />
                 </div>
 
                 <div class="form-item">
@@ -201,7 +195,7 @@
                         放置地點
                         <span class="required">*</span>
                     </div>
-                    <input nz-input placeholder="例如：一樓大廳" [(ngModel)]="deviceLocation" [nzSize]="'large'" />
+                    <input nz-input placeholder="例如:一樓大廳" [(ngModel)]="deviceLocation" [nzSize]="'large'" />
                 </div>
 
                 <div class="form-item">
@@ -224,7 +218,7 @@
                         設備ID
                         <span class="required">*</span>
                     </div>
-                    <input nz-input placeholder="例如：DEV-001" [(ngModel)]="machine_id" [nzSize]="'large'" />
+                    <input nz-input placeholder="例如:DEV-001" [(ngModel)]="machine_id" [nzSize]="'large'" />
                 </div>
 
                 <div class="form-item">
@@ -233,7 +227,7 @@
                         設備IP
                         <span class="required">*</span>
                     </div>
-                    <input nz-input placeholder="例如：192.168.1.100" [(ngModel)]="machine_ip" [nzSize]="'large'" />
+                    <input nz-input placeholder="例如:192.168.1.100" [(ngModel)]="machine_ip" [nzSize]="'large'" />
                 </div>
             </div>
         </ng-container>
@@ -328,7 +322,7 @@
                     <i nz-icon nzType="question-circle" nzTheme="twotone" [nzTwotoneColor]="'#1890ff'"></i>
                 </div>
                 <h3>確認清潔完成</h3>
-                <p>您確定此設備已經完成清潔嗎？</p>
+                <p>您確定此設備已經完成清潔嗎?</p>
                 <p class="hint">系統將記錄清潔時間並重置計數器</p>
             </div>
         </ng-container>

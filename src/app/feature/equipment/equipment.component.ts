@@ -334,6 +334,7 @@ export class EquipmentComponent {
   getOfflineDeviceCount(): number {
     return this.deviceOffLineCount;
   }
+  
   // 切換側邊欄展開/收起狀態
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
