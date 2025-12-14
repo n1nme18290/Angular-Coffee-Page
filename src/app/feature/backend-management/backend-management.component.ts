@@ -6,23 +6,22 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-
 import * as echarts from 'echarts';
 import { Observable } from 'rxjs'; 
-
 import { SidebarService } from '../../share/service/sidebar.service';
 import { LogService } from '../../share/service/service'; 
 
-
+// ======================= API 回傳格式介面 =======================
 interface IApiResponse<T> {
   data: T;
   isSuccess: boolean;
   message: string;
 }
 
+// ======================= 圖表資料結構 =======================
 interface WeeklyExchangeData {
-  weeks: string[]; 
-  counts: number[]; 
+  weeks: string[]; // 星期顯示文字
+  counts: number[]; // 對應的咖啡兌換數量
 }
 
 
@@ -44,9 +43,11 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
   @ViewChild('echartContainer', { static: false }) chartEl?: ElementRef<HTMLDivElement>;
   private chartInstance?: echarts.ECharts;
 
-  isLoading = false;
-  hasError = false;
-  errorMessage = '';
+// ======================= 狀態控制 =======================
+  isLoading = false; // 是否載入中
+  hasError = false; // 是否發生錯誤
+  errorMessage = ''; // 錯誤訊息內容
+
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object, 
@@ -58,17 +59,21 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
   ngOnInit(): void {
   }
 
+
+// ======================= View 初始化完成後 =======================
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       setTimeout(() => {
-        this.initChart();
-        this.loadChartData();
+        this.initChart(); // 初始化圖表
+        this.loadChartData(); // 取得 API 資料
       }, 100);
 
       window.addEventListener('resize', this.onResize);
     }
   }
 
+
+// ======================= Component 銷毀 =======================
   ngOnDestroy(): void {
     if (isPlatformBrowser(this.platformId)) {
       window.removeEventListener('resize', this.onResize);
@@ -79,6 +84,7 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
+// ======================= 初始化圖表 =======================
   private initChart(): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
@@ -90,18 +96,21 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
         return;
       }
 
+      // 建立 ECharts 實例
       this.chartInstance = echarts.init(this.chartEl.nativeElement);
 
+
+      // 預設圖表設定
       const option: echarts.EChartsOption = {
-        title: {
+        title: { //標題
           text: '本週咖啡兌換數量',
           left: 'center'
         },
-        tooltip: {
+        tooltip: { //圖表藍色長條狀註解
           trigger: 'axis',
           formatter: '{b}<br/>兌換數量: {c} 杯'
         },
-        xAxis: {
+        xAxis: { //橫軸
           type: 'category',
           name: '星期',
           data: ['載入中...'],
@@ -109,7 +118,7 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
             rotate: 0
           }
         },
-        yAxis: {
+        yAxis: { //縱軸
           type: 'value',
           name: '數量(杯)',
           minInterval: 1
@@ -118,7 +127,7 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
           type: 'bar',
           data: [0],
           itemStyle: {
-            color: '#1890ff'
+            color: '#718eaaff'
           },
           label: {
             show: true,
@@ -134,12 +143,14 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
+
+// ======================= 取得圖表資料 =======================
   private loadChartData(deviceId?: string): void {
     this.isLoading = true;
     this.hasError = false;
 
     const apiCall: Observable<IApiResponse<Array<{weekOfDay: number, coffeeCount: number}>>> =
-      this.logService.getWeeklyCoffeeExchange(deviceId) as Observable<IApiResponse<Array<{weekOfDay: number, coffeeCount: number}>>>;
+      this.logService.getWeeklyCoffeeExchange() as Observable<IApiResponse<Array<{weekOfDay: number, coffeeCount: number}>>>;
 
     apiCall.subscribe({
       next: (response) => {
@@ -166,6 +177,7 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     });
   }
 
+// ======================= API 資料轉換 =======================
   private transformApiData(apiData: Array<{weekOfDay: number, coffeeCount: number}>): WeeklyExchangeData {
     const weekNames = ['一', '二', '三', '四', '五', '六', '日'];
     
@@ -175,6 +187,8 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     return { weeks, counts };
   }
 
+
+// ======================= 錯誤處理 =======================
   private handleErrorDisplay(message: string): void {
     this.isLoading = false;
     this.hasError = true;
@@ -185,12 +199,15 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
+
+// ======================= 無資料顯示 =======================
   private showNoData(): void {
     if (isPlatformBrowser(this.platformId) && this.chartInstance) {
       this.updateChart({ weeks: ['暫無資料'], counts: [0] });
     }
   }
 
+// ======================= 更新圖表資料 =======================
   private updateChart(data: WeeklyExchangeData): void { 
     if (!isPlatformBrowser(this.platformId)) { 
       return; 
@@ -229,10 +246,14 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
+
+// ======================= 視窗縮放處理 =======================
   private onResize = () => {
     this.chartInstance?.resize();
   };
 
+
+// ======================= 側邊欄切換 =======================
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }
