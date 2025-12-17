@@ -26,9 +26,9 @@ export class TokenService {
     }
 
     // 獲取當前用戶 ID
-    // getCurrentUserId(name?: string): string | null {
-    //     return localStorage.getItem(name ? `${this.baseMemberIdKey}_${name}` : this.baseMemberIdKey);
-    // }
+    getCurrentUserId(name?: string): string | null {
+        return localStorage.getItem(name ? `${this.baseMemberIdKey}_${name}` : this.baseMemberIdKey);
+    }
 
     // Token 相關方法
     setToken(token: string): void {

@@ -14,9 +14,8 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../share/service/service';
-
+import { PermissionService } from '../../share/service/permission.service';
 
 @Component({
   selector: 'app-log-in',
@@ -29,14 +28,15 @@ import { AuthService } from '../../share/service/service';
 })
 export class LogInComponent {
 
-  //使用者輸入的 Email 帳號欄位
   email: string = '';
-  //使用者輸入的密碼欄位
   password: string = '';
   //控制密碼是否顯示在畫面上，眼睛 icon開關
   passwordVisible = false;
-  
-  constructor(private router: Router, private authService: AuthService) {}
+
+  private permissionService = inject(PermissionService);
+  private router = inject(Router)
+  private authService = inject(AuthService);
+  constructor() { }
 
   // 登入
   onLogin(email: string, password: string): void {
@@ -46,7 +46,10 @@ export class LogInComponent {
         if (response.isSuccess) {
           console.log('登入成功，token 已儲存');
           // 登入成功導航到主頁面
-          this.router.navigate(['/personal-info']);
+          this.permissionService.loadUserPermissions().subscribe(() => {
+            console.log('使用者權限已載入');
+            this.router.navigate(['/personal-info']);
+          });
         } else {
           //回傳錯誤訊息
           console.error('登入失敗:', response.message);
@@ -57,13 +60,6 @@ export class LogInComponent {
         console.error('登入錯誤:', error);
       }
     });
-  }
-
-  //登出
-  onLogout(): void {
-    this.authService.logout();
-    //清除Token
-    console.log('已登出，token 已清除');
   }
 
   // adminLogin() {
@@ -81,23 +77,27 @@ export class LogInComponent {
   //   });
   // }
 
-  // 導到註冊頁面
-  GoRegister(){
-    this.router.navigate(['/register']);
-  }
-
   //sso 單一登入流程
   onSSOLogin(): void {
     this.authService.ssoLoginAndSaveToken().subscribe({
       next: (response) => {
         if (response.isSuccess) {
           console.log('登入成功，token 已儲存');
-          this.router.navigate(['/personal-info']);
+          this.permissionService.loadUserPermissions().subscribe(() => {
+            console.log('使用者權限已載入');
+            this.router.navigate(['/personal-info']);
+          });
         }
       },
       error: (error) => {
         console.error('SSO 登入錯誤:', error);
       }
     });
+  }
+    //登出
+  onLogout(): void {
+    this.authService.logout();
+    this.permissionService.clearPermissions();
+    console.log('已登出，token 和權限已清除');
   }
 }

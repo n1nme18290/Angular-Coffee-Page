@@ -8,6 +8,11 @@ export interface IApiResponseNormal {
     isSuccess: boolean;
     message: string;
 }
+export interface IApiResponseNormal2 {
+    data: string;
+    isSuccess: boolean;
+    message: string;
+}
 export interface IApiResponsePages<T> {
     data: T[];
     total: number;
@@ -128,9 +133,10 @@ export interface IApiResponseProductList {
     message: string;
 }
 export interface IApiResponseDeviceState {
+    total:number
     online: number
-    fix: number
     offline: number
+    maintenance: number
 }
 
 export interface IApiResponseGetPageDeviceLog {

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
-import { DemoComponentsComponent } from '../share/demo-components/demo-components.component';
+import { authGuard } from '../feature/auth/auth-guard';
+import { permissionGuard } from '../feature/auth/permission-guard';
 
 import { LogInComponent } from '../feature/log-in/log-in.component';
 import { RegisterComponent } from '../feature/register/register.component';
@@ -24,19 +25,44 @@ export const routes: Routes = [
   {
     path: '',
     component: MainPageComponent,
+    canActivate: [authGuard],
     children: [
-      { path: 'personal-info', component: PersonalInfoComponent },
-      { path: 'point-information', component: PointInformationComponent },
+      { 
+        path: 'personal-info',
+        component: PersonalInfoComponent,
+        canActivate: [permissionGuard],
+      },
+      { 
+        path: 'point-information',
+        component: PointInformationComponent,
+        // canActivate: [permissionGuard],
+      },
       { path: 'equipment',
         component: EquipmentComponent,
+        // canActivate: [permissionGuard],
         children: [
           { path: 'equipment/equipment-information', component: EquipmentInformationComponent },
         ]
       },
-      { path: 'backend-management',component: BackendManagementComponent,},
-      { path: 'historical-record', component: HistoricalRecordComponent },
-      { path: 'permission-management', component: PermissionManagementComponent },
-      { path: 'test-page', component: TestPageComponent }
+      {
+        path: 'backend-management',
+        component: BackendManagementComponent,
+        // canActivate: [permissionGuard],
+      },
+      {
+        path: 'historical-record',
+        component: HistoricalRecordComponent,
+        // canActivate: [permissionGuard],
+      },
+      { 
+        path: 'permission-management',
+        component: PermissionManagementComponent,
+        // canActivate: [permissionGuard],
+      },
+      {
+        path: 'test-page',
+        component: TestPageComponent,
+      }
     ]
   }
   // { path: 'demo-components', component: DemoComponentsComponent },
