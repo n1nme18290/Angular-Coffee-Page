@@ -144,8 +144,8 @@
                             <input 
                                 type="text" 
                                 nz-input 
-                                placeholder="輸入設備名稱搜尋" 
-                                [(ngModel)]="deviceSearchName"
+                                placeholder="輸入操作內容搜尋" 
+                                [(ngModel)]="deviceSearchOperation"
                                 (keyup.enter)="searchDevice()"
                             />
                         </nz-input-group>
@@ -193,7 +193,7 @@
                                     cleaning_alert
                                 </li>
                                 <li nz-menu-item (click)="onDeviceTypeFilterChange('error_message')">
-                                    <i nz-icon nzType="setting" nzTheme="outline"></i>
+                                    <i nz-icon nzType="warning" nzTheme="outline"></i>
                                     error_message
                                 </li>
                             </ul>
@@ -204,7 +204,7 @@
                             nzType="default" 
                             class="clear-btn"
                             (click)="clearDeviceSearch()"
-                            *ngIf="deviceSearchName || deviceFilterType !== '全部類型'"
+                            *ngIf="deviceSearchOperation || deviceFilterType !== '全部類型'"
                         >
                             <i nz-icon nzType="close-circle" nzTheme="outline"></i>
                             清除

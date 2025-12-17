@@ -120,17 +120,17 @@ export class LogService extends BaseService {
   }
   // 分頁查詢點數異動紀錄 新
   searchPointLog(
-    page: number, 
-    perPage: number, 
-    name?: string, 
+    page: number,
+    perPage: number,
+    name?: string,
     type?: string
   ): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
     const apiUrl = `${this.url}${this.LogUrl}search_point_log?page=${page}&perPage=${perPage}`;
-  
+
     const body: any = {};
     if (name) body.name = name;
     if (type) body.type = type;
-    
+
     return this.http.post<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl, body);
   }
 
@@ -146,16 +146,16 @@ export class LogService extends BaseService {
   getPageDeviceLog(
   page: number, 
   perpage: number, 
-  deviceName?: string | null, 
+  deviceName?: string | null,
   operationType?: string | null,
   sortOrder?: 'asc' | 'desc' | null
 ) {
-  // 準備 query parameters
+
   const params = new URLSearchParams();
   params.set('page', String(page));
   params.set('perPage', String(perpage));
   
-  // 準備 request body
+
   const requestBody: any = {};
   
   if (deviceName) {
@@ -166,9 +166,6 @@ export class LogService extends BaseService {
     requestBody.type = operationType;
   }
   
-  // 如果需要排序，可以加在 body 或 params 中
-  // 根據您的 API 文件決定放置位置
-  
   const apiUrl = `${this.url}${this.LogUrl}get_device_log?${params.toString()}`;
   
   return this.http.post<IApiResponse<IApiResponsePages<IApiResponseGetPageDeviceLog>>>(
@@ -176,8 +173,6 @@ export class LogService extends BaseService {
     requestBody
   );
 }
-
-
   // getPageDeviceLog(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseGetPageDeviceLog>>> {
   //   const apiUrl = `${this.url}${this.LogUrl}get_device_log?page=${page}&perPage=${perPage}`;
   //   return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageDeviceLog>>>(apiUrl);
@@ -480,7 +475,7 @@ export class DeviceService extends BaseService {
     return this.http.get<IApiResponse<IApiResponseDeviceState>>(apiUrl);
   }
   // 分頁查詢設備項目
-   getPageDevice(
+  getPageDevice(
     page: number,
     perPage: number,
     device_name?: string,

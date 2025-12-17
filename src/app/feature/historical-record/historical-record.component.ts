@@ -226,8 +226,8 @@ export class HistoricalRecordComponent {
   devicePageSize = 5;
   deviceTotal = 0;
   
-  // 設備搜尋篩選
-  deviceSearchName: string = '';
+  // 設備搜尋篩選 (改為搜尋操作內容)
+  deviceSearchOperation: string = ''; 
   deviceFilterType: string = '全部類型';
 
   // 設備分頁事件
@@ -250,7 +250,7 @@ export class HistoricalRecordComponent {
 
   // 清除設備搜尋
   clearDeviceSearch(): void {
-    this.deviceSearchName = '';
+    this.deviceSearchOperation = '';
     this.deviceFilterType = '全部類型';
     this.devicePageIndex = 1;
     this.getPageDeviceLog();
@@ -263,25 +263,34 @@ export class HistoricalRecordComponent {
     this.getPageDeviceLog();
   }
 
-  // 取得設備操作紀錄 (修改為使用 POST)
+  // 取得設備操作紀錄 (使用前端篩選操作內容)
   getPageDeviceLog(): void {
     this.deviceLogLoading = true;
     
-    // 準備搜尋條件 (改為傳入 device_name 和 type)
-    const deviceName = this.deviceSearchName && this.deviceSearchName.trim() ? this.deviceSearchName.trim() : null;
+
     const operationType = this.deviceFilterType !== '全部類型' ? this.deviceFilterType : null;
     
     this.logService.getPageDeviceLog(
       this.devicePageIndex, 
       this.devicePageSize, 
-      deviceName,        // device_name 參數
+      null,              // device_name 暫不使用
       operationType,     // type 參數
       null               // sortOrder 參數
     ).subscribe({
       next: (res) => {
         console.log('Device Log API Response:', res);
         if (res && res.data) {
-          this.deviceLogList = res.data.data || [];
+          let dataList = res.data.data || [];
+          
+          // 前端篩選：操作內容搜尋
+          if (this.deviceSearchOperation && this.deviceSearchOperation.trim()) {
+            const searchLower = this.deviceSearchOperation.toLowerCase().trim();
+            dataList = dataList.filter(item => 
+              item.operation && item.operation.toLowerCase().includes(searchLower)
+            );
+          }
+          
+          this.deviceLogList = dataList;
           this.deviceTotal = res.data.total || 0;
         }
         this.deviceLogLoading = false;
@@ -371,7 +380,7 @@ export class HistoricalRecordComponent {
             );
           }
           
-          // 前端篩選：日期篩選
+          // 前端篩選:日期篩選
           if (this.pointsFilteredDate) {
             dataList = dataList.filter((item: IApiResponsePoints) => {
               const itemDate = item.updated_at.split(' ')[0];
