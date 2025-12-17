@@ -71,9 +71,11 @@ button[nz-button].btn-styles4 {
         align-items: center;
 
 
+
         .search-input {
             max-width: 400px;
             flex: 1;
+
 
             ::ng-deep {
                 .ant-input {
@@ -102,11 +104,11 @@ button[nz-button].btn-styles4 {
         }
 
         .search-btn {
-            height: 40px;
+            height: 35px;
             margin-top: 10px;
             border-radius: 6px;
             font-weight: 500;
-            min-width: 90px;
+            min-width: 110px;
             box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
 
 
@@ -117,9 +119,9 @@ button[nz-button].btn-styles4 {
         }
 
         .filter-dropdown {
-            height: 40px;
+            height: 35px;
             border-radius: 6px;
-            min-width: 140px;
+            min-width: 160px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -143,14 +145,16 @@ button[nz-button].btn-styles4 {
         display: flex;
         gap: 12px;
 
+
         .create-device-btn {
-            height: 40px;
+            height: 35px;
             font-size: 14px;
             border-radius: 6px;
             box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
             transition: all 0.3s ease;
             font-weight: 500;
             margin-top: 10px;
+            min-width: 130px;
 
             i {
                 font-size: 16px;
@@ -317,6 +321,8 @@ button[nz-button].btn-styles4 {
             word-wrap: break-word !important;
             line-height: 1.5 !important;
             padding: 12px 8px !important;
+            font-size: 16px;
+            font-weight: 600;
         }
 
         // 表身置中
@@ -327,6 +333,8 @@ button[nz-button].btn-styles4 {
             padding: 8px 8px !important;
             line-height: 2.0 !important;
             vertical-align: middle !important;
+            font-size: 16px; 
+            font-weight: 500;
         }
 
         // 每列固定寬度
@@ -341,9 +349,9 @@ button[nz-button].btn-styles4 {
             // 狀態
             5: 120px,
             // 累積兌換杯數
-            6: 150px,
+            6: 120px,
             // 上次清潔時間
-            7: 220px // 操作
+            7: 250px // 操作
         );
 
     @each $index, $width in $column-widths {

@@ -166,7 +166,7 @@ button[nz-button].btn-styles2 {
 // 表格容器樣式（與範例一致）
 .table-container {
     padding: 20px;
-    background: #fff;
+    //background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     
@@ -226,4 +226,37 @@ nz-content {
             }
         }
     }
+}
+
+
+::ng-deep {
+  nz-table {
+
+    .ant-table {
+      line-height: 1.5;
+    }
+
+    /*TITLE*/
+    .ant-table-thead > tr > th {
+      font-size: 16px;
+      font-weight: 600;
+
+      padding: 20px 15px; 
+      line-height: 1.3;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /*欄位*/
+    .ant-table-tbody > tr > td {
+      font-size: 16px;
+      font-weight: 500;
+
+      padding: 20px 15px;
+      line-height: 1.3;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+  }
 }
