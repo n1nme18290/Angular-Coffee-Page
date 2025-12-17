@@ -16,6 +16,7 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { PointService } from '../../share/service/service';
 import { NzTableModule} from 'ng-zorro-antd/table';
@@ -35,7 +36,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
-    NzRadioModule, NzModalModule, CommonModule,
+    NzRadioModule, NzModalModule, CommonModule,NzSpinModule,
     NzTableModule, NzDividerModule, NzCheckboxModule, NzGridModule, NzCollapseModule, NzDatePickerModule],
   templateUrl: './historical-record.component.html',
   styleUrl: './historical-record.component.scss'
@@ -66,14 +67,12 @@ export class HistoricalRecordComponent {
       default: return '';
     }
   }
-    ngOnInit() {
+  
+  ngOnInit() {
     // 使用各自的 page/index 初始值
-    //點數
-    this.getPagePoints(this.currentPage, this.pageSize);
-    //使用者使用
-    this.getPagePointsHistory(this.historyPageIndex, this.historyPageSize);
-    //設備
-    this.getPageDeviceLog(this.devicePageIndex, this.devicePageSize);
+    this.getPagePoints();
+    this.getPagePointsHistory();
+    this.getPageDeviceLog();
   }
 
   // 控制側邊欄折疊
@@ -83,49 +82,89 @@ export class HistoricalRecordComponent {
 
   // 計算流水號
   getSerialNumber(index: number): number {
-    const isDeviceTab = this.selectedIndex === 1;
-    const page = isDeviceTab ? this.devicePageIndex : this.currentPage;
-    const size = isDeviceTab ? this.devicePageSize : this.pageSize;
+    let page: number;
+    let size: number;
+    
+    switch (this.selectedIndex) {
+      case 0: // 使用者使用紀錄
+        page = this.historyPageIndex;
+        size = this.historyPageSize;
+        break;
+      case 1: // 設備使用紀錄
+        page = this.devicePageIndex;
+        size = this.devicePageSize;
+        break;
+      case 2: // 會員點數資訊
+        page = this.currentPage;
+        size = this.pageSize;
+        break;
+      default:
+        page = 1;
+        size = 5;
+    }
+    
     return (page - 1) * size + index + 1;
   }
  
 
 //==================================== 使用者使用紀錄 =====================================================
   // 使用者使用紀錄相關屬性
-  pointsHistoryList: IApiResponsePointsHistory[] = [];//使用者歷史紀錄列表
+  pointsHistoryList: IApiResponsePointsHistory[] = [];
   historyLoading = false;
-  historyChecked = false;//全選狀態
-  historyIndeterminate = false;//半選狀態
+  historyChecked = false;
+  historyIndeterminate = false;
   historyListOfCurrentPageData: readonly IApiResponsePointsHistory[] = [];
   historySetOfCheckedId = new Set<string>();
 
   // 使用者使用紀錄分頁屬性
-  historyPageIndex = 1; //分頁索引
-  historyPageSize = 5; //每頁筆數
-  historyTotal = 0; //總筆數
+  historyPageIndex = 1;
+  historyPageSize = 5;
+  historyTotal = 0;
 
-  // 使用者使用紀錄日期篩選
-  historyFilterVisible = false;
-  historySelectedDate: Date | null = null;
-  historyFilteredDate: string | null = null;
+  // 使用者使用紀錄搜尋篩選
+  historySearchName: string = '';
+  historyFilterType: string = '全部類型';
   
   // 使用者分頁事件
   onHistoryPageIndexChange(pageIndex: number): void {
     this.historyPageIndex = pageIndex;
-    this.getPagePointsHistory(this.historyPageIndex, this.historyPageSize);
+    this.getPagePointsHistory();
   }
+  
   onHistoryPageSizeChange(pageSize: number): void {
     this.historyPageSize = pageSize;
     this.historyPageIndex = 1;
-    this.getPagePointsHistory(this.historyPageIndex, this.historyPageSize);
+    this.getPagePointsHistory();
   }
 
-  // 使用者使用紀錄 - 當前頁面歷史紀錄數據變更時
+  // 使用者搜尋
+  searchHistory(): void {
+    this.historyPageIndex = 1;
+    this.getPagePointsHistory();
+  }
+
+  // 清除使用者搜尋
+  clearHistorySearch(): void {
+    this.historySearchName = '';
+    this.historyFilterType = '全部類型';
+    this.historyPageIndex = 1;
+    this.getPagePointsHistory();
+  }
+
+  // 使用者類型篩選變更
+  onHistoryTypeFilterChange(type: string): void {
+    this.historyFilterType = type;
+    this.historyPageIndex = 1;
+    this.getPagePointsHistory();
+  }
+
+  // 使用者使用紀錄 - 當前頁面數據變更時
   onHistoryCurrentPageDataChange(listOfCurrentPageData: readonly IApiResponsePointsHistory[]): void {
     this.historyListOfCurrentPageData = listOfCurrentPageData;
     this.refreshHistoryCheckedStatus();
   }
-  // 使用者使用紀錄更新歷史紀錄選取的ID集合
+  
+  // 使用者使用紀錄更新選取的ID集合
   updateHistoryCheckedSet(id: string, checked: boolean): void {
     if (checked) {
       this.historySetOfCheckedId.add(id);
@@ -134,25 +173,20 @@ export class HistoricalRecordComponent {
     }
   }
   
-  //使用者使用紀錄日期
-  getPagePointsHistory(page: number, perpage: number): void {
+  // 取得使用者使用紀錄
+  getPagePointsHistory(): void {
     this.historyLoading = true;
-    this.logService.getPageLog(page, perpage).subscribe({
+    
+    // 準備搜尋條件
+    const name = this.historySearchName && this.historySearchName.trim() ? this.historySearchName.trim() : undefined;
+    const type = this.historyFilterType !== '全部類型' ? this.historyFilterType : undefined;
+    
+    this.logService.searchPointLog(this.historyPageIndex, this.historyPageSize, name, type).subscribe({
       next: (res) => {
         console.log('Points History API Response:', res);
         if (res && res.data) {
-          let dataList = res.data.data || [];
-          
-          // 如果有日期篩選,進行前端過濾
-          if (this.historyFilteredDate) {
-            dataList = dataList.filter((item: IApiResponsePointsHistory) => {
-              const itemDate = item.created_at.split(' ')[0];
-              return itemDate === this.historyFilteredDate;
-            });
-          }
-          this.pointsHistoryList = dataList;
+          this.pointsHistoryList = res.data.data || [];
           this.historyTotal = res.data.total || 0;
-          // 清除選取狀態
           this.historySetOfCheckedId.clear();
           this.refreshHistoryCheckedStatus();
         }
@@ -166,28 +200,13 @@ export class HistoricalRecordComponent {
       }
     });
   }
-  filterHistoryByDate(): void { //日期篩選
-    if (this.historySelectedDate) {
-      this.historyFilteredDate = this.historySelectedDate.toLocaleDateString('en-CA');
-      this.historyPageIndex = 1;
-      this.getPagePointsHistory(this.historyPageIndex, this.historyPageSize);
-    }
-    this.historyFilterVisible = false;
-  }
-
-  resetHistoryDate(): void { //重製日期篩選
-    this.historySelectedDate = null;
-    this.historyFilteredDate = null;
-    this.historyPageIndex = 1;
-    this.getPagePointsHistory(this.historyPageIndex, this.historyPageSize);
-    this.historyFilterVisible = false;
-  }
 
   // 單項選取狀態變更時
   onHistoryItemChecked(id: string, checked: boolean): void {
     this.updateHistoryCheckedSet(id, checked);
     this.refreshHistoryCheckedStatus();
   }
+  
   // 刷新選取狀態
   refreshHistoryCheckedStatus(): void {
     const listOfEnabledData = this.historyListOfCurrentPageData;
@@ -201,44 +220,68 @@ export class HistoricalRecordComponent {
   deviceLogLoading = false;
   deviceLogChecked = false;
   deviceLogIndeterminate = false;
+  
   // 設備分頁屬性
   devicePageIndex = 1;
   devicePageSize = 5;
   deviceTotal = 0;
-  // 設備使用紀錄日期篩選
-  deviceFilterVisible = false;
-  deviceSelectedDate: Date | null = null;
-  deviceFilteredDate: string | null = null;
+  
+  // 設備搜尋篩選
+  deviceSearchName: string = '';
+  deviceFilterType: string = '全部類型';
 
   // 設備分頁事件
   onDevicePageIndexChange(pageIndex: number): void {
     this.devicePageIndex = pageIndex;
-    this.getPageDeviceLog(this.devicePageIndex, this.devicePageSize);
+    this.getPageDeviceLog();
   }
+  
   onDevicePageSizeChange(pageSize: number): void {
     this.devicePageSize = pageSize;
     this.devicePageIndex = 1;
-    this.getPageDeviceLog(this.devicePageIndex, this.devicePageSize);
+    this.getPageDeviceLog();
   }
 
-// 設備操作紀錄日期
-  getPageDeviceLog(page: number, perpage: number): void {
+  // 設備搜尋
+  searchDevice(): void {
+    this.devicePageIndex = 1;
+    this.getPageDeviceLog();
+  }
+
+  // 清除設備搜尋
+  clearDeviceSearch(): void {
+    this.deviceSearchName = '';
+    this.deviceFilterType = '全部類型';
+    this.devicePageIndex = 1;
+    this.getPageDeviceLog();
+  }
+
+  // 設備類型篩選變更
+  onDeviceTypeFilterChange(type: string): void {
+    this.deviceFilterType = type;
+    this.devicePageIndex = 1;
+    this.getPageDeviceLog();
+  }
+
+  // 取得設備操作紀錄 (修改為使用 POST)
+  getPageDeviceLog(): void {
     this.deviceLogLoading = true;
-    this.logService.getPageDeviceLog(page, perpage).subscribe({
+    
+    // 準備搜尋條件 (改為傳入 device_name 和 type)
+    const deviceName = this.deviceSearchName && this.deviceSearchName.trim() ? this.deviceSearchName.trim() : null;
+    const operationType = this.deviceFilterType !== '全部類型' ? this.deviceFilterType : null;
+    
+    this.logService.getPageDeviceLog(
+      this.devicePageIndex, 
+      this.devicePageSize, 
+      deviceName,        // device_name 參數
+      operationType,     // type 參數
+      null               // sortOrder 參數
+    ).subscribe({
       next: (res) => {
         console.log('Device Log API Response:', res);
         if (res && res.data) {
-          let dataList = res.data.data || [];
-          
-          // 如果有日期篩選,進行前端過濾
-          if (this.deviceFilteredDate) {
-            dataList = dataList.filter((item: IApiResponseGetPageDeviceLog) => {
-              const itemDate = item.created_at.split(' ')[0];
-              return itemDate === this.deviceFilteredDate;
-            });
-          }
-          
-          this.deviceLogList = dataList;
+          this.deviceLogList = res.data.data || [];
           this.deviceTotal = res.data.total || 0;
         }
         this.deviceLogLoading = false;
@@ -251,49 +294,52 @@ export class HistoricalRecordComponent {
       }
     });
   }
-  filterDeviceByDate(): void {
-    if (this.deviceSelectedDate) {
-      this.deviceFilteredDate = this.deviceSelectedDate.toLocaleDateString('en-CA');
-      this.devicePageIndex = 1;
-      this.getPageDeviceLog(this.devicePageIndex, this.devicePageSize);
-    }
-    this.deviceFilterVisible = false;
-  }
-
-  resetDeviceDate(): void {
-    this.deviceSelectedDate = null;
-    this.deviceFilteredDate = null;
-    this.devicePageIndex = 1;
-    this.getPageDeviceLog(this.devicePageIndex, this.devicePageSize);
-    this.deviceFilterVisible = false;
-  }
 
 //================================ 會員點數資訊 =================================================
-   // 點數資訊相關屬性
+  // 點數資訊相關屬性
   pointsList: IApiResponsePoints[] = [];
   checked = false;
   loading = false;
   indeterminate = false;
   listOfCurrentPageData: readonly IApiResponsePoints[] = [];
   setOfCheckedId = new Set<string>();
-  //點數資訊分頁屬性
+  
+  // 點數資訊分頁屬性
   currentPage = 1;
   pageSize = 5;
   total = 0;
+  
+  // 點數資訊搜尋篩選
+  pointsSearchName: string = '';
+  
   // 點數使用紀錄日期篩選
   pointsFilterVisible = false;
   pointsSelectedDate: Date | null = null;
   pointsFilteredDate: string | null = null;
   
-   // 點數分頁事件
+  // 點數分頁事件
   onPageIndexChange(pageIndex: number): void {
     this.currentPage = pageIndex;
-    this.getPagePoints(this.currentPage, this.pageSize);
+    this.getPagePoints();
   }
+  
   onPageSizeChange(pageSize: number): void {
     this.pageSize = pageSize;
-    this.currentPage = 1; // 重置到第一頁
-    this.getPagePoints(this.currentPage, this.pageSize);
+    this.currentPage = 1;
+    this.getPagePoints();
+  }
+
+  // 點數搜尋
+  searchPoints(): void {
+    this.currentPage = 1;
+    this.getPagePoints();
+  }
+
+  // 清除點數搜尋
+  clearPointsSearch(): void {
+    this.pointsSearchName = '';
+    this.currentPage = 1;
+    this.getPagePoints();
   }
 
   // 當前頁面數據變更時
@@ -301,6 +347,7 @@ export class HistoricalRecordComponent {
     this.listOfCurrentPageData = listOfCurrentPageData;
     this.refreshCheckedStatus();
   }
+  
   // 刷新選取狀態
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData.filter(({ balance }) => balance >= 0);
@@ -308,16 +355,23 @@ export class HistoricalRecordComponent {
     this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
   }
 
-  //點數使用紀錄日期
-  getPagePoints(page: number, perpage: number) {
+  // 取得點數資訊
+  getPagePoints() {
     this.loading = true;
-    this.pointService.getPagePoints(page, perpage).subscribe({
+    this.pointService.getPagePoints(this.currentPage, this.pageSize).subscribe({
       next: (res) => {
-        // console.log('API Response:', res);
         if (res && res.data) {
           let dataList = res.data.data || [];
           
-          // 如果有日期篩選,進行前端過濾
+          // 前端篩選：名稱搜尋
+          if (this.pointsSearchName && this.pointsSearchName.trim()) {
+            const searchLower = this.pointsSearchName.toLowerCase().trim();
+            dataList = dataList.filter(item => 
+              item.member_name.toLowerCase().includes(searchLower)
+            );
+          }
+          
+          // 前端篩選：日期篩選
           if (this.pointsFilteredDate) {
             dataList = dataList.filter((item: IApiResponsePoints) => {
               const itemDate = item.updated_at.split(' ')[0];
@@ -326,8 +380,7 @@ export class HistoricalRecordComponent {
           }
           
           this.pointsList = dataList;
-          this.total = res.data.total || 0;
-          // 清除當前頁的選取狀態
+          this.total = dataList.length;
           this.setOfCheckedId.clear();
           this.refreshCheckedStatus();
         }
@@ -341,11 +394,12 @@ export class HistoricalRecordComponent {
       }
     });
   }
+  
   filterPointsByDate(): void {
     if (this.pointsSelectedDate) {
       this.pointsFilteredDate = this.pointsSelectedDate.toLocaleDateString('en-CA');
       this.currentPage = 1;
-      this.getPagePoints(this.currentPage, this.pageSize);
+      this.getPagePoints();
     }
     this.pointsFilterVisible = false;
   }
@@ -354,88 +408,7 @@ export class HistoricalRecordComponent {
     this.pointsSelectedDate = null;
     this.pointsFilteredDate = null;
     this.currentPage = 1;
-    this.getPagePoints(this.currentPage, this.pageSize);
+    this.getPagePoints();
     this.pointsFilterVisible = false;
   }
 }
-
-
-//==================================== 目前無用到資訊 =====================================================
-
-  // // 查詢指定會員的點數異動紀錄
-  // getMemberPointsHistory(memberId: string) {
-  //   this.logService.getMemberLog(memberId, 1, 10).subscribe({
-  //     next: (response) => {
-  //       if (response.isSuccess) {
-  //         console.log('Member Points History:', response.data);
-  //         return response.data;
-  //       } else {
-  //         console.error('Error fetching member points history:', response.message);
-  //         return response.message;
-  //       }
-  //     },
-  //     error: (error) => {
-  //       console.error('Error fetching member points history:', error);
-  //     }
-  //   });
-  // }
-  
-  // 點數使用紀錄
-  // 更新選取的ID集合
-  // updateCheckedSet(id: string, checked: boolean): void {
-  //   if (checked) {
-  //     this.setOfCheckedId.add(id);
-  //   } else {
-  //     this.setOfCheckedId.delete(id);
-  //   }
-  // }
-
-
-  // // 單項選取狀態變更時
-  // onItemChecked(id: string, checked: boolean): void {
-  //   this.updateCheckedSet(id, checked);
-  //   this.refreshCheckedStatus();
-  // }
-
-  // // 全選狀態變更時
-  // onAllChecked(checked: boolean): void {
-  //   this.listOfCurrentPageData
-  //     .filter(({ balance }) => balance >= 0)
-  //     .forEach(({ id }) => this.updateCheckedSet(id, checked));
-  //   this.refreshCheckedStatus();
-  // }
-
-
-  // // 發送請求,後續要修改為有用的功能或是拿掉
-  // sendRequest(): void {
-  //   this.loading = true;
-  //   const requestData = this.pointsList.filter(data => this.setOfCheckedId.has(String(data.id)));
-  //   // console.log('Selected data:', requestData);
-  //   setTimeout(() => {
-  //     this.setOfCheckedId.clear();
-  //     this.refreshCheckedStatus();
-  //     this.loading = false;
-  //   }, 1000);
-  // }
-
-
-
-
-  // 歷史紀錄全選狀態變更時
-  // onHistoryAllChecked(checked: boolean): void {
-  //   this.historyListOfCurrentPageData
-  //     .forEach(({ id }) => this.updateHistoryCheckedSet(id, checked));
-  //   this.refreshHistoryCheckedStatus();
-  // }
-
-  // 發送歷史紀錄請求
-  // sendHistoryRequest(): void {
-  //   this.historyLoading = true;
-  //   const requestData = this.pointsHistoryList.filter(data => this.historySetOfCheckedId.has(String(data.id)));
-  //   console.log('Selected history data:', requestData);
-  //   setTimeout(() => {
-  //     this.historySetOfCheckedId.clear();
-  //     this.refreshHistoryCheckedStatus();
-  //     this.historyLoading = false;
-  //   }, 1000);
-  // }

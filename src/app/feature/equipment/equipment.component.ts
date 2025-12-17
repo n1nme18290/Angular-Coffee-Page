@@ -29,14 +29,17 @@ import { TokenService } from '../../share/service/token.service';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { NzTagModule } from 'ng-zorro-antd/tag'; 
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+
 @Component({
   selector: 'app-equipment',
   standalone: true,
   imports: [
-    CommonModule,NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule,NzSelectModule, 
-    NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzGridModule,NzRadioModule, NzModalModule, NzTableModule, NzDividerModule, 
-    NzCheckboxModule,NzCardModule,NzBadgeModule,NzSpinModule,NzTagModule
+    CommonModule, NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, 
+    NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, 
+    NzPageHeaderModule, NzDrawerModule, NzGridModule, NzRadioModule, NzModalModule, NzTableModule, 
+    NzDividerModule, NzCheckboxModule, NzCardModule, NzBadgeModule, NzSpinModule, NzTagModule, NzMenuModule
   ],
   templateUrl: './equipment.component.html',
   styleUrl: './equipment.component.scss'
@@ -76,8 +79,12 @@ export class EquipmentComponent {
   bean_level: number = 0;
   water_level: number = 0;
 
+  // 搜尋和篩選相關
+  searchName: string = '';
+  filterStatus: string = '全部狀態';
+
   ngOnInit() {
-    this.getPageDevices(1, 5);
+    this.getPageDevices();
     this.getAllDevicesState();
   }
 
@@ -87,25 +94,48 @@ export class EquipmentComponent {
   getSerialNumber(index: number): number {
     return (this.currentPage - 1) * this.pageSize + index + 1;
   }
+
+  // 搜尋設備
+  searchDevices() {
+    this.currentPage = 1;
+    this.getPageDevices();
+  }
+
+  // 清除搜尋
+  clearSearch() {
+    this.searchName = '';
+    this.filterStatus = '全部狀態';
+    this.currentPage = 1;
+    this.getPageDevices();
+  }
+
+  // 狀態篩選變更
+  onStatusFilterChange(status: string) {
+    this.filterStatus = status;
+    this.currentPage = 1;
+    this.getPageDevices();
+  }
+
+  
   // 新增設備Modal
   createDeviceModal() {
     this.createDeviceVisible = true;
   }
+  
   // 新增設備
   createDevice() {
     this.deviceService.createDevice(this.deviceName, this.deviceLocation, this.deviceStatus, this.machine_id, this.machine_ip).subscribe({
       next: (res) => {
-        // Handle successful creation
         this.createDeviceVisible = false;
         this.resetDeviceForm();
-        this.getPageDevices(this.currentPage, this.pageSize);
+        this.getPageDevices();
       },
       error: (error) => {
-        // Handle error
         console.error('Error creating device:', error);
       }
     });
   }
+
   // 編輯設備Modal
   updateDeviceModal(device: IApiResponseDevice) {
     this.editingDeviceId = device.id;
@@ -116,6 +146,7 @@ export class EquipmentComponent {
     this.machine_ip = device.machine_ip;
     this.updateDeviceVisible = true;
   }
+
   // 編輯設備
   updateDevice() {
     if (!this.editingDeviceId) return;
@@ -128,18 +159,17 @@ export class EquipmentComponent {
       this.machine_ip
     ).subscribe({
       next: (res) => {
-        // Handle successful update
         this.updateDeviceVisible = false;
         this.resetDeviceForm();
-        this.getPageDevices(this.currentPage, this.pageSize);
+        this.getPageDevices();
       },
       error: (error) => {
-        // Handle error
         this.resetDeviceForm();
         console.error('Error updating device:', error);
       }
     });
   }
+
   // 重置設備表單
   resetDeviceForm() {
     this.deviceName = '';
@@ -154,17 +184,16 @@ export class EquipmentComponent {
     this.cleanedDeviceVisible = true;
     this.editingDeviceId = device.id;
   }
+
   // 設備清潔狀態更新
   deviceCleaned() {
     const memberId = this.tokenService.getMemberId() || '';
     const deviceId = this.editingDeviceId || '';
     this.deviceService.deviceCleaned(deviceId, memberId).subscribe({
       next: (res) => {
-        // Handle successful update
-        this.getPageDevices(this.currentPage, this.pageSize);
+        this.getPageDevices();
       },
       error: (error) => {
-        // Handle error
         console.error('Error updating device cleaned status:', error);
       },
       complete: () => {
@@ -172,6 +201,7 @@ export class EquipmentComponent {
       }
     });
   }
+
   // 更新選取的ID集合
   updateCheckedSet(id: string, checked: boolean): void {
     if (checked) {
@@ -180,22 +210,26 @@ export class EquipmentComponent {
       this.setOfCheckedId.delete(id);
     }
   }
+
   // 當前頁面數據變更時
   onCurrentPageDataChange(listOfCurrentPageData: readonly IApiResponseDevice[]): void {
     this.listOfCurrentPageData = listOfCurrentPageData;
     this.refreshCheckedStatus();
   }
+
   // 刷新選取狀態
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData.filter(({ id }) => id !== undefined);
     this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
     this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
   }
+
   // 單項選取狀態變更時
   onItemChecked(id: string, checked: boolean): void {
     this.updateCheckedSet(id, checked);
     this.refreshCheckedStatus();
   }
+
   // 全選狀態變更時
   onAllChecked(checked: boolean): void {
     this.listOfCurrentPageData
@@ -203,28 +237,31 @@ export class EquipmentComponent {
       .forEach(({ id }) => this.updateCheckedSet(id, checked));
     this.refreshCheckedStatus();
   }
-  // 發送請求，後續要修改為有用的功能或是拿掉
+
+  // 發送請求
   sendRequest(): void {
     this.loading = true;
     const requestData = this.devicesList.filter(data => this.setOfCheckedId.has(String(data.id)));
-    // console.log('Selected data:', requestData);
     setTimeout(() => {
       this.setOfCheckedId.clear();
       this.refreshCheckedStatus();
       this.loading = false;
     }, 1000);
   }
+
   // 當前頁面數據變更時
   onPageIndexChange(pageIndex: number): void {
     this.currentPage = pageIndex;
-    this.getPageDevices(this.currentPage, this.pageSize);
+    this.getPageDevices();
   }
-  // 一頁幾筆變更時，
+
+  // 一頁幾筆變更時
   onPageSizeChange(pageSize: number): void {
     this.pageSize = pageSize;
-    this.currentPage = 1; // 重置到第一頁
-    this.getPageDevices(this.currentPage, this.pageSize);
+    this.currentPage = 1;
+    this.getPageDevices();
   }
+
   // 取得所有設備狀態
   getAllDevicesState() {
     this.loading = true;
@@ -246,23 +283,31 @@ export class EquipmentComponent {
       }
     });
   }
+
   // 取得分頁設備
-  getPageDevices(page: number, perpage: number) {
+  getPageDevices() {
     this.loading = true;
-    this.deviceService.getPageDevice(page, perpage).subscribe({
+    
+    // 準備篩選參數 (只在有值時才傳入，避免傳空字串)
+    const deviceName = this.searchName && this.searchName.trim() ? this.searchName.trim() : undefined;
+    const deviceLocation = undefined; // 目前沒有使用地點篩選
+    const state = this.filterStatus !== '全部狀態' ? this.filterStatus : undefined;
+    
+    this.deviceService.getPageDevice(this.currentPage, this.pageSize, deviceName, deviceLocation, state).subscribe({
       next: (res) => {
-        // console.log('API Response:', res);
         if (res && res.data) {
-          this.devicesList = res.data.data || [];
-          this.total = res.data.total || 0;
-          // 清除當前頁的選取狀態
+          const allData = res.data.data || [];
+          
+          // 更新顯示資料
+          this.devicesList = allData;
+          this.total = res.data.total || allData.length;
           this.setOfCheckedId.clear();
           this.refreshCheckedStatus();
         }
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error fetching page points:', error);
+        console.error('Error fetching page devices:', error);
         this.devicesList = [];
         this.total = 0;
         this.loading = false;
@@ -292,6 +337,7 @@ export class EquipmentComponent {
     };
     return statusMap[status] || 'default';
   }
+
   // 取得狀態圖示
   getStatusIcon(status: string): string {
     const iconMap: { [key: string]: string } = {
@@ -303,13 +349,16 @@ export class EquipmentComponent {
     };
     return iconMap[status] || 'info-circle';
   }
+
   // 統計方法
   getActiveDeviceCount(): number {
     return this.deviceOnLineCount;
   }
+
   getMaintenanceDeviceCount(): number {
     return this.deviceFixCount;
   }
+
   getOfflineDeviceCount(): number {
     return this.deviceOffLineCount;
   }
@@ -319,11 +368,10 @@ export class EquipmentComponent {
     this.sidebarService.toggleCollapsed();
   }
 
-  //展開欄位
-  //展開控制
+  // 展開控制
   expandSet = new Set<string>();
 
-  //展開狀態變更處理
+  // 展開狀態變更處理
   onExpandChange(id: string, checked: boolean): void {
     if (checked) {
       this.expandSet.add(id);

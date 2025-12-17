@@ -118,28 +118,72 @@ export class LogService extends BaseService {
     const apiUrl = `${this.url}${this.LogUrl}get_all_log`;
     return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl);
   }
+  // 分頁查詢點數異動紀錄 新
+  searchPointLog(
+    page: number, 
+    perPage: number, 
+    name?: string, 
+    type?: string
+  ): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
+    const apiUrl = `${this.url}${this.LogUrl}search_point_log?page=${page}&perPage=${perPage}`;
+  
+    const body: any = {};
+    if (name) body.name = name;
+    if (type) body.type = type;
+    
+    return this.http.post<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl, body);
+  }
+
+
   // 分頁查詢點數異動紀錄
-  getPageLog(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
-    const apiUrl = `${this.url}${this.LogUrl}get_page_log?page=${page}&perPage=${perPage}`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl);
-  }
+  // getPageLog(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
+  //   const apiUrl = `${this.url}${this.LogUrl}get_page_log?page=${page}&perPage=${perPage}`;
+  //   return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl);
+  // }
+
+
   // 分頁查詢設備操作紀錄
-  getPageDeviceLog(page: number, perpage: number, deviceName?: string | null, sortField?: string | null, sortOrder?: 'asc' | 'desc' | null) {
-    const params = new URLSearchParams();
-    params.set('page', String(page));
-    params.set('perPage', String(perpage));
-    if (deviceName) params.set('deviceName', deviceName);
-    if (sortField) params.set('sortField', sortField);
-    if (sortOrder) params.set('sortOrder', sortOrder);
-    const apiUrl = `${this.url}${this.LogUrl}get_device_log?${params.toString()}`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageDeviceLog>>>(apiUrl);
+  getPageDeviceLog(
+  page: number, 
+  perpage: number, 
+  deviceName?: string | null, 
+  operationType?: string | null,
+  sortOrder?: 'asc' | 'desc' | null
+) {
+  // 準備 query parameters
+  const params = new URLSearchParams();
+  params.set('page', String(page));
+  params.set('perPage', String(perpage));
+  
+  // 準備 request body
+  const requestBody: any = {};
+  
+  if (deviceName) {
+    requestBody.device_name = deviceName;
   }
+  
+  if (operationType) {
+    requestBody.type = operationType;
+  }
+  
+  // 如果需要排序，可以加在 body 或 params 中
+  // 根據您的 API 文件決定放置位置
+  
+  const apiUrl = `${this.url}${this.LogUrl}get_device_log?${params.toString()}`;
+  
+  return this.http.post<IApiResponse<IApiResponsePages<IApiResponseGetPageDeviceLog>>>(
+    apiUrl, 
+    requestBody
+  );
+}
+
+
   // getPageDeviceLog(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseGetPageDeviceLog>>> {
   //   const apiUrl = `${this.url}${this.LogUrl}get_device_log?page=${page}&perPage=${perPage}`;
   //   return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageDeviceLog>>>(apiUrl);
   // }
 
-    // 取得本月每週咖啡兌換數量
+  // 取得本月每週咖啡兌換數量
   getWeeklyCoffeeExchange(deviceId?: string): Observable<IApiResponse<any>> {
     let apiUrl = `${this.url}${this.LogUrl}get_weekly_coffee_exchange`;
 
@@ -436,10 +480,24 @@ export class DeviceService extends BaseService {
     return this.http.get<IApiResponse<IApiResponseDeviceState>>(apiUrl);
   }
   // 分頁查詢設備項目
-  getPageDevice(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseDevice>>> {
+   getPageDevice(
+    page: number,
+    perPage: number,
+    device_name?: string,
+    device_location?: string,
+    state?: string
+  ): Observable<IApiResponse<IApiResponsePages<IApiResponseDevice>>> {
     const apiUrl = `${this.url}${this.DeviceUrl}get_page_device?page=${page}&perPage=${perPage}`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseDevice>>>(apiUrl);
+
+    const body: any = {};
+    if (device_name) body.device_name = device_name;
+    if (device_location) body.device_location = device_location;
+    if (state) body.state = state;
+
+    return this.http.post<IApiResponse<IApiResponsePages<IApiResponseDevice>>>(apiUrl, body);
   }
+
+
   // 查詢單一設備狀態
   getOneDevice(id: string): Observable<IApiResponse<IApiResponseDevice>> {
     const apiUrl = `${this.url}${this.DeviceUrl}get_one_device`;
@@ -449,7 +507,7 @@ export class DeviceService extends BaseService {
     return this.http.post<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
   }
   // 設備清潔狀態更新
-  deviceCleaned(deviceId:string, memberId:string): Observable<IApiResponseNormal> {
+  deviceCleaned(deviceId: string, memberId: string): Observable<IApiResponseNormal> {
     const apiUrl = `${this.url}${this.DeviceUrl}device_cleaning_button`;
     const requestBody = {
       deviceId: deviceId,
