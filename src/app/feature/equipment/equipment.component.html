@@ -7,45 +7,25 @@
         <h2 nz-typography class="h2">設備管理頁面</h2>
     </nz-header>
 
-    
+
     <div class="devices-information-container">
         <!-- 搜尋和篩選區域 -->
         <div class="search-filter-bar">
             <div class="search-section">
                 <nz-input-group [nzSuffix]="suffixIconSearch" class="search-input">
-                    <input 
-                        type="text" 
-                        nz-input 
-                        placeholder="輸入設備名稱搜尋" 
-                        [(ngModel)]="searchName"
-                        (keyup.enter)="searchDevices()"
-                    />
+                    <input type="text" nz-input placeholder="輸入設備名稱搜尋" [(ngModel)]="searchName"
+                        (keyup.enter)="searchDevices()" />
                 </nz-input-group>
                 <ng-template #suffixIconSearch>
-                    <span 
-                        nz-icon 
-                        nzType="search" 
-                        class="search-icon"
-                        (click)="searchDevices()"
-                    ></span>
+                    <span nz-icon nzType="search" class="search-icon" (click)="searchDevices()"></span>
                 </ng-template>
-                
-                <button 
-                    nz-button 
-                    nzType="primary" 
-                    class="search-btn"
-                    (click)="searchDevices()"
-                >
+
+                <button nz-button nzType="primary" class="search-btn" (click)="searchDevices()">
                     <i nz-icon nzType="search" nzTheme="outline"></i>
                     搜尋
                 </button>
 
-                <button 
-                    nz-button 
-                    nz-dropdown 
-                    [nzDropdownMenu]="statusMenu" 
-                    class="filter-dropdown"
-                >
+                <button nz-button nz-dropdown [nzDropdownMenu]="statusMenu" class="filter-dropdown">
                     <i nz-icon nzType="filter" nzTheme="outline"></i>
                     {{ filterStatus }}
                     <span nz-icon nzType="down"></span>
@@ -70,6 +50,12 @@
                         </li>
                     </ul>
                 </nz-dropdown-menu>
+                <button nz-button nzType="default" class="clear-btn" (click)="clearEqipmentSearch()"
+                    *ngIf="searchName || filterStatus !== '全部狀態'">
+                    <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                    清除
+                </button>
+
             </div>
 
             <div class="action-section">

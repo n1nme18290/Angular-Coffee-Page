@@ -139,6 +139,19 @@ button[nz-button].btn-styles4 {
                 font-size: 14px;
             }
         }
+        .clear-btn {
+            height: 35px;
+            border-radius: 6px;
+            min-width: 110px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+
+            &:hover {
+                border-color: #ff4d4f;
+                color: #ff4d4f;
+                transform: translateY(-1px);
+            }
+        }
     }
 
     .action-section {

@@ -405,4 +405,11 @@ export class EquipmentComponent {
       this.expandSet.delete(id);
     }
   }
+  //清除按鈕邏輯
+  clearEqipmentSearch(): void {
+  this.searchName = '';
+  this.filterStatus = '全部狀態';
+  this.currentPage = 1;
+  this.getPageDevices();
+}
 }
