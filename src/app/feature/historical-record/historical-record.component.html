@@ -1,5 +1,4 @@
 <nz-layout>
-    <!-- Header -->
     <nz-header>
         <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
             <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
@@ -8,20 +7,88 @@
         <h2 nz-typography class="h2">{{ getCurrentTitle() }}</h2>
     </nz-header>
 
-    <!-- Tabs -->
     <nz-tabset [(nzSelectedIndex)]="selectedIndex" class="tabs">
-        
-<!--使用者使用紀錄-->
+
+        <!-- ================= 使用者使用紀錄 ================= -->
         <nz-tab [nzTitle]="Title01">
             <nz-content>
-                <div nz-row class="row-style">
-                    <div nz-col [nzSpan]="12" class="left-col">
-                        <h2 nz-typography class="boxword">使用者使用紀錄</h2>
+                <!-- 搜尋和篩選區域 -->
+                <div class="search-filter-bar">
+                    <div class="search-section">
+                        <nz-input-group [nzSuffix]="historySearchIcon" class="search-input">
+                            <input 
+                                type="text" 
+                                nz-input 
+                                placeholder="輸入會員名稱搜尋" 
+                                [(ngModel)]="historySearchName"
+                                (keyup.enter)="searchHistory()"
+                            />
+                        </nz-input-group>
+                        <ng-template #historySearchIcon>
+                            <span 
+                                nz-icon 
+                                nzType="search" 
+                                class="search-icon"
+                                (click)="searchHistory()"
+                            ></span>
+                        </ng-template>
+                        
+                        <button 
+                            nz-button 
+                            nzType="primary" 
+                            class="search-btn"
+                            (click)="searchHistory()"
+                        >
+                            <i nz-icon nzType="search" nzTheme="outline"></i>
+                            搜尋
+                        </button>
+
+                        <button 
+                            nz-button 
+                            nz-dropdown 
+                            [nzDropdownMenu]="historyTypeMenu" 
+                            class="filter-dropdown"
+                        >
+                            <i nz-icon nzType="filter" nzTheme="outline"></i>
+                            {{ historyFilterType }}
+                            <span nz-icon nzType="down"></span>
+                        </button>
+                        <nz-dropdown-menu #historyTypeMenu="nzDropdownMenu">
+                            <ul nz-menu>
+                                <li nz-menu-item (click)="onHistoryTypeFilterChange('全部類型')">
+                                    <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                                    全部類型
+                                </li>
+                                <li nz-menu-item (click)="onHistoryTypeFilterChange('exchange_coffee')">
+                                    <i nz-icon nzType="coffee" nzTheme="outline"></i>
+                                    exchange_coffee
+                                </li>
+                                <li nz-menu-item (click)="onHistoryTypeFilterChange('get_points')">
+                                    <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+                                    get_points
+                                </li>
+                                <li nz-menu-item (click)="onHistoryTypeFilterChange('regift_points')">
+                                    <i nz-icon nzType="gift" nzTheme="outline"></i>
+                                    regift_points
+                                </li>
+                            </ul>
+                        </nz-dropdown-menu>
+
+                        <button 
+                            nz-button 
+                            nzType="default" 
+                            class="clear-btn"
+                            (click)="clearHistorySearch()"
+                            *ngIf="historySearchName || historyFilterType !== '全部類型'"
+                        >
+                            <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                            清除
+                        </button>
                     </div>
                 </div>
             </nz-content>
 
-            <div class="point-information-container">
+            <div class="table-container">
                 <nz-table #memberHistoryTable [nzData]="pointsHistoryList" [nzLoading]="historyLoading"
                     [nzBordered]="true" [nzShowPagination]="true" [nzFrontPagination]="false"
                     [nzPageIndex]="historyPageIndex" [nzPageSize]="historyPageSize" [nzTotal]="historyTotal"
@@ -35,25 +102,7 @@
                             <th>會員名稱</th>
                             <th>異動事件</th>
                             <th>點數異動情況</th>
-                            <th>
-                                異動時間
-                                <nz-filter-trigger
-                                    [(nzVisible)]="historyFilterVisible"
-                                    [nzActive]="!!historySelectedDate"
-                                    [nzDropdownMenu]="historyMenu">
-                                    <span nz-icon nzType="calendar"></span>
-                                </nz-filter-trigger>
-
-                                <nz-dropdown-menu #historyMenu="nzDropdownMenu">
-                                    <div style="padding: 8px; width: 220px;">
-                                        <nz-date-picker nzFormat="yyyy-MM-dd" [(ngModel)]="historySelectedDate"></nz-date-picker>
-                                        <div style="margin-top: 8px; text-align: right;">
-                                            <button nz-button nzSize="small" (click)="filterHistoryByDate()" class="btn-styles2">確定</button>
-                                            <button nz-button nzSize="small" (click)="resetHistoryDate()" class="btn-styles2">清除</button>
-                                        </div>
-                                    </div>
-                                </nz-dropdown-menu>
-                            </th>
+                            <th>異動時間</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,11 +118,13 @@
                         }
                         } @else {
                         <tr>
-                            <td colspan="3" class="text-center">
+                            <td colspan="5" class="text-center">
                                 @if (historyLoading) {
-                                載入中...
+                                <nz-spin nzSimple></nz-spin>
+                                <p style="margin-top: 8px;">載入中...</p>
                                 } @else {
-                                暫無資料
+                                <i nz-icon nzType="inbox" nzTheme="outline" style="font-size: 48px; color: #d9d9d9;"></i>
+                                <p style="color: #999;">暫無資料</p>
                                 }
                             </td>
                         </tr>
@@ -83,17 +134,86 @@
             </div>
         </nz-tab>
 
-
-<!--設備使用紀錄-->
+        <!-- ================= 設備使用紀錄 ================= -->
         <nz-tab [nzTitle]="Title02">
             <nz-content>
-                <div nz-row class="row-style">
-                    <div nz-col [nzSpan]="12" class="left-col">
-                        <h2 nz-typography class="boxword">設備使用紀錄</h2>
+                <!-- 搜尋和篩選區域 -->
+                <div class="search-filter-bar">
+                    <div class="search-section">
+                        <nz-input-group [nzSuffix]="deviceSearchIcon" class="search-input">
+                            <input 
+                                type="text" 
+                                nz-input 
+                                placeholder="輸入操作內容搜尋" 
+                                [(ngModel)]="deviceSearchOperation"
+                                (keyup.enter)="searchDevice()"
+                            />
+                        </nz-input-group>
+                        <ng-template #deviceSearchIcon>
+                            <span 
+                                nz-icon 
+                                nzType="search" 
+                                class="search-icon"
+                                (click)="searchDevice()"
+                            ></span>
+                        </ng-template>
+                        
+                        <button 
+                            nz-button 
+                            nzType="primary" 
+                            class="search-btn"
+                            (click)="searchDevice()"
+                        >
+                            <i nz-icon nzType="search" nzTheme="outline"></i>
+                            搜尋
+                        </button>
+
+                        <button 
+                            nz-button 
+                            nz-dropdown 
+                            [nzDropdownMenu]="deviceTypeMenu" 
+                            class="filter-dropdown"
+                        >
+                            <i nz-icon nzType="filter" nzTheme="outline"></i>
+                            {{ deviceFilterType }}
+                            <span nz-icon nzType="down"></span>
+                        </button>
+                        <nz-dropdown-menu #deviceTypeMenu="nzDropdownMenu">
+                            <ul nz-menu>
+                                <li nz-menu-item (click)="onDeviceTypeFilterChange('全部類型')">
+                                    <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                                    全部類型
+                                </li>
+                                <li nz-menu-item (click)="onDeviceTypeFilterChange('check_points')">
+                                    <i nz-icon nzType="transaction" nzTheme="outline"></i>
+                                    check_points
+                                </li>
+                                <li nz-menu-item (click)="onDeviceTypeFilterChange('cleaning_alert')">
+                                    <i nz-icon nzType="tool" nzTheme="outline"></i>
+                                    cleaning_alert
+                                </li>
+                                <li nz-menu-item (click)="onDeviceTypeFilterChange('error_message')">
+                                    <i nz-icon nzType="warning" nzTheme="outline"></i>
+                                    error_message
+                                </li>
+                            </ul>
+                        </nz-dropdown-menu>
+
+                        <button 
+                            nz-button 
+                            nzType="default" 
+                            class="clear-btn"
+                            (click)="clearDeviceSearch()"
+                            *ngIf="deviceSearchOperation || deviceFilterType !== '全部類型'"
+                        >
+                            <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                            清除
+                        </button>
                     </div>
                 </div>
             </nz-content>
-            <div class="point-information-container">
+
+            <div class="table-container">
                 <nz-table #deviceLogTable [nzData]="deviceLogList" [nzBordered]="true" [nzLoading]="deviceLogLoading"
                     [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="devicePageIndex"
                     [nzPageSize]="devicePageSize" [nzTotal]="deviceTotal" [nzShowSizeChanger]="true"
@@ -104,25 +224,7 @@
                             <th>序號</th>
                             <th>操作類型</th>
                             <th>操作內容</th>
-                            <th>
-                                操作時間
-                                <nz-filter-trigger
-                                    [(nzVisible)]="deviceFilterVisible"
-                                    [nzActive]="!!deviceSelectedDate"
-                                    [nzDropdownMenu]="deviceMenu">
-                                    <span nz-icon nzType="calendar"></span>
-                                </nz-filter-trigger>
-
-                                <nz-dropdown-menu #deviceMenu="nzDropdownMenu">
-                                    <div style="padding: 8px; width: 220px;">
-                                        <nz-date-picker nzFormat="yyyy-MM-dd" [(ngModel)]="deviceSelectedDate"></nz-date-picker>
-                                        <div style="margin-top: 8px; text-align: right;">
-                                            <button nz-button nzSize="small" (click)="filterDeviceByDate()" class="btn-styles2">確定</button>
-                                            <button nz-button nzSize="small" (click)="resetDeviceDate()" class="btn-styles2">清除</button>
-                                        </div>
-                                    </div>
-                                </nz-dropdown-menu>
-                            </th>
+                            <th>操作時間</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -139,9 +241,11 @@
                         <tr>
                             <td colspan="4" class="text-center">
                                 @if (deviceLogLoading) {
-                                載入中...
+                                <nz-spin nzSimple></nz-spin>
+                                <p style="margin-top: 8px;">載入中...</p>
                                 } @else {
-                                暫無資料
+                                <i nz-icon nzType="inbox" nzTheme="outline" style="font-size: 48px; color: #d9d9d9;"></i>
+                                <p style="color: #999;">暫無資料</p>
                                 }
                             </td>
                         </tr>
@@ -151,17 +255,55 @@
             </div>
         </nz-tab>
 
-<!--點數使用紀錄-->
+        <!-- ================= 會員點數資訊 ================= -->
         <nz-tab [nzTitle]="Title03">
             <nz-content>
-                <div nz-row class="row-style">
-                    <div nz-col [nzSpan]="12" class="left-col">
-                        <h2 nz-typography class="boxword">會員點數資訊</h2>
+                <!-- 搜尋和篩選區域 -->
+                <div class="search-filter-bar">
+                    <div class="search-section">
+                        <nz-input-group [nzSuffix]="pointsSearchIcon" class="search-input">
+                            <input 
+                                type="text" 
+                                nz-input 
+                                placeholder="輸入會員名稱搜尋" 
+                                [(ngModel)]="pointsSearchName"
+                                (keyup.enter)="searchPoints()"
+                            />
+                        </nz-input-group>
+                        <ng-template #pointsSearchIcon>
+                            <span 
+                                nz-icon 
+                                nzType="search" 
+                                class="search-icon"
+                                (click)="searchPoints()"
+                            ></span>
+                        </ng-template>
+                        
+                        <button 
+                            nz-button 
+                            nzType="primary" 
+                            class="search-btn"
+                            (click)="searchPoints()"
+                        >
+                            <i nz-icon nzType="search" nzTheme="outline"></i>
+                            搜尋
+                        </button>
+
+                        <button 
+                            nz-button 
+                            nzType="default" 
+                            class="clear-btn"
+                            (click)="clearPointsSearch()"
+                            *ngIf="pointsSearchName"
+                        >
+                            <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                            清除
+                        </button>
                     </div>
                 </div>
             </nz-content>
 
-            <div class="point-information-container">
+            <div class="table-container">
                 <nz-table #pointsTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading"
                     [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage"
                     [nzPageSize]="pageSize" [nzTotal]="total" [nzShowSizeChanger]="true"
@@ -208,9 +350,11 @@
                         <tr>
                             <td colspan="4" class="text-center">
                                 @if (loading) {
-                                載入中...
+                                <nz-spin nzSimple></nz-spin>
+                                <p style="margin-top: 8px;">載入中...</p>
                                 } @else {
-                                暫無資料
+                                <i nz-icon nzType="inbox" nzTheme="outline" style="font-size: 48px; color: #d9d9d9;"></i>
+                                <p style="color: #999;">暫無資料</p>
                                 }
                             </td>
                         </tr>

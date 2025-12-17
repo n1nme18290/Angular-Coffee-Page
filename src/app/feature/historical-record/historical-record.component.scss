@@ -1,36 +1,15 @@
 button[nz-button] {
     margin-right: 8px;
     margin-bottom: 12px;
-    height: 40px; //增加上下寬度
-    border-radius: 100px; //圓角設定
-    border: 1px solid #27496D; //邊框設定
-    font-weight: bold; //粗體
-
-    background-color: #ffffff; //顏色設定
-    color: #27496D; //字體顏色
-}
-
-button[nz-button].btn-styles1 {
-    background-color: #FFD014; //顏色設定
-    color: #ffffff; //字體顏色
-}
-
-button[nz-button].btn-styles2 {
-    background-color: #27496D; //顏色設定
-    color: #ffffff; //字體顏色
-    border: 1px solid #ffffff; //邊框設定
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-button[nz-button].btn-styles3 {
-    width: 40px;
-    background-color: #000000; //顏色設定
-    color: #ffffff; //字體顏色
+    height: 40px;
+    border-radius: 100px;
+    border: 1px solid #27496D;
+    font-weight: bold;
+    background-color: #ffffff;
+    color: #27496D;
 }
 
 button[nz-button].btn-styles4 {
-    //icon 圓形
-    //icon btn
     background-color: #27496D;
     color: #ffffff;
     border: 2px solid #27496D;
@@ -38,108 +17,213 @@ button[nz-button].btn-styles4 {
     height: 64px;
 
     .big-icon {
-        font-size: 28px; // 控制 icon 大小
+        font-size: 28px;
     }
 }
 
-
-
-.input-block {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 4px;
-    width: 100%;
-
-    input[nz-input] {
-        border-radius: 10px;
-
-        width: 100%;
-    }
-
-    nz-input-group {
-        margin-top: 5px;
-        border-radius: 10px;
-        width: 100%;
-
-
-        .ant-input-wrapper {
-            border-radius: 10px;
-        }
-    }
-}
-
-.trigger {
-    font-size: 18px;
-    line-height: 64px;
-    padding: 0 24px;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-
-.logo {
-    height: 32px;
-    background-color: #001529;
-    margin: 16px;
-
-}
-
-nz-breadcrumb {
-    margin: 16px 0;
+button[nz-button].btn-styles2 {
+    background-color: #27496D;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .h2 {
     color: #ffffff;
 }
 
-.boxword {
-    color: #27496D;
-    margin: 0;
-    //background-color: #FFB433;
-
-
-}
-
-.row-style {
+// 搜尋和篩選列樣式（與範例一致）
+.search-filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     width: 100%;
-    margin: 0;
 
-    .left-col,
-    .right-col {
-        padding: 16px;
+    .search-section {
+        display: flex;
+        gap: 12px;
+        flex: 1;
+        align-items: center;
+
+        .search-input {
+            max-width: 400px;
+            flex: 1;
+
+            ::ng-deep {
+                .ant-input {
+                    height: 40px;
+                    border-radius: 6px;
+                    font-size: 14px;
+
+                    &:focus {
+                        border-color: #1890ff;
+                        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+                    }
+                }
+
+                .ant-input-suffix {
+                    .search-icon {
+                        color: #8c8c8c;
+                        cursor: pointer;
+                        transition: color 0.3s;
+
+                        &:hover {
+                            color: #1890ff;
+                        }
+                    }
+                }
+            }
+        }
+
+        .search-btn {
+            height: 40px;
+            margin-top: 10px;
+            border-radius: 6px;
+            font-weight: 500;
+            min-width: 90px;
+            box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+
+            &:hover {
+                box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+                transform: translateY(-1px);
+            }
+        }
+
+        .filter-dropdown {
+            height: 40px;
+            border-radius: 6px;
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+
+            &:hover {
+                border-color: #1890ff;
+                color: #1890ff;
+                transform: translateY(-1px);
+            }
+
+            i {
+                font-size: 14px;
+            }
+        }
+
+        .clear-btn {
+            height: 40px;
+            border-radius: 6px;
+            min-width: 80px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+
+            &:hover {
+                border-color: #ff4d4f;
+                color: #ff4d4f;
+                transform: translateY(-1px);
+            }
+        }
     }
+}
 
-    .left-col {
-        //background-color: #00aeff; 
+// 下拉選單樣式
+::ng-deep {
+    .ant-dropdown-menu {
+        border-radius: 6px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        padding: 4px 0;
+
+        .ant-dropdown-menu-item {
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            transition: all 0.2s;
+
+            i {
+                font-size: 16px;
+            }
+
+            &:hover {
+                background-color: #f0f5ff;
+                color: #1890ff;
+            }
+        }
+
+        .ant-dropdown-menu-item-divider {
+            margin: 4px 0;
+        }
     }
-
-    .right-col {
-        //background-color: #ffeeab; 
-    }
 }
 
-
-.point-information-container {
-    margin: 16px;
-    padding: 16px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+// 表格容器樣式（與範例一致）
+.table-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
 }
 
-.send-request {
-    margin-top: 8px;
-    margin-bottom: 8px;
-}
-
-.send-request span {
-    margin-left: 8px;
-}
-
+// Tabs 樣式
 :host ::ng-deep nz-tabset.tabs .ant-tabs-nav {
-  background-color: #27496D;
+    background-color: #27496D;
 }
 
 :host ::ng-deep nz-tabset.tabs .ant-tabs-tab {
-  color: #ffffff;
+    color: #ffffff;
+}
+
+// 表格內容置中
+.text-center {
+    text-align: center;
+    padding: 40px 0;
+    color: #999;
+}
+
+// nz-content 樣式調整
+nz-content {
+    padding: 20px;
+}
+
+// 移除原本的 point-information-container 的 flex 樣式，改為簡單的容器
+.point-information-container {
+    padding: 0 20px 20px 20px;
+}
+
+// 響應式設計
+@media (max-width: 1200px) {
+    .search-filter-bar {
+        flex-direction: column;
+        gap: 16px;
+
+        .search-section {
+            width: 100%;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .search-filter-bar {
+        .search-section {
+            flex-direction: column;
+
+            .search-input {
+                max-width: 100%;
+            }
+
+            .search-btn,
+            .filter-dropdown,
+            .clear-btn {
+                width: 100%;
+            }
+        }
+    }
 }
