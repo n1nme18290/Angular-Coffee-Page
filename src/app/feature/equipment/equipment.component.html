@@ -9,62 +9,6 @@
 
 
     <div class="devices-information-container">
-        <!-- 搜尋和篩選區域 -->
-        <div class="search-filter-bar">
-            <div class="search-section">
-                <nz-input-group [nzSuffix]="suffixIconSearch" class="search-input">
-                    <input type="text" nz-input placeholder="輸入設備名稱搜尋" [(ngModel)]="searchName"
-                        (keyup.enter)="searchDevices()" />
-                </nz-input-group>
-                <ng-template #suffixIconSearch>
-                    <span nz-icon nzType="search" class="search-icon" (click)="searchDevices()"></span>
-                </ng-template>
-
-                <button nz-button nzType="primary" class="search-btn" (click)="searchDevices()">
-                    <i nz-icon nzType="search" nzTheme="outline"></i>
-                    搜尋
-                </button>
-
-                <button nz-button nz-dropdown [nzDropdownMenu]="statusMenu" class="filter-dropdown">
-                    <i nz-icon nzType="filter" nzTheme="outline"></i>
-                    {{ filterStatus }}
-                    <span nz-icon nzType="down"></span>
-                </button>
-                <nz-dropdown-menu #statusMenu="nzDropdownMenu">
-                    <ul nz-menu>
-                        <li nz-menu-item (click)="onStatusFilterChange('全部狀態')">
-                            <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
-                            全部狀態
-                        </li>
-                        <li nz-menu-item (click)="onStatusFilterChange('運作中')">
-                            <i nz-icon nzType="check-circle" nzTheme="outline" style="color: #52c41a;"></i>
-                            運作中
-                        </li>
-                        <li nz-menu-item (click)="onStatusFilterChange('維護中')">
-                            <i nz-icon nzType="tool" nzTheme="outline" style="color: #faad14;"></i>
-                            維護中
-                        </li>
-                        <li nz-menu-item (click)="onStatusFilterChange('離線')">
-                            <i nz-icon nzType="close-circle" nzTheme="outline" style="color: #ff4d4f;"></i>
-                            離線
-                        </li>
-                    </ul>
-                </nz-dropdown-menu>
-                <button nz-button nzType="default" class="clear-btn" (click)="clearEqipmentSearch()"
-                    *ngIf="searchName || filterStatus !== '全部狀態'">
-                    <i nz-icon nzType="close-circle" nzTheme="outline"></i>
-                    清除
-                </button>
-
-            </div>
-
-            <div class="action-section">
-                <button nz-button nzType="primary" (click)="createDeviceModal()" class="create-device-btn">
-                    <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
-                    新增設備
-                </button>
-            </div>
-        </div>
 
         <!-- 設備統計卡片 -->
         <div nz-row [nzGutter]="16" class="stats-row">
@@ -119,6 +63,63 @@
                         </div>
                     </div>
                 </nz-card>
+            </div>
+        </div>
+        
+        <!-- 搜尋和篩選區域 -->
+        <div class="search-filter-bar">
+            <div class="search-section">
+                <nz-input-group [nzSuffix]="suffixIconSearch" class="search-input">
+                    <input type="text" nz-input placeholder="輸入設備名稱搜尋" [(ngModel)]="searchName"
+                        (keyup.enter)="searchDevices()" />
+                </nz-input-group>
+                <ng-template #suffixIconSearch>
+                    <span nz-icon nzType="search" class="search-icon" (click)="searchDevices()"></span>
+                </ng-template>
+
+                <button nz-button nzType="primary" class="search-btn" (click)="searchDevices()">
+                    <i nz-icon nzType="search" nzTheme="outline"></i>
+                    搜尋
+                </button>
+
+                <button nz-button nz-dropdown [nzDropdownMenu]="statusMenu" class="filter-dropdown">
+                    <i nz-icon nzType="filter" nzTheme="outline"></i>
+                    {{ filterStatus }}
+                    <span nz-icon nzType="down"></span>
+                </button>
+                <nz-dropdown-menu #statusMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                        <li nz-menu-item (click)="onStatusFilterChange('全部狀態')">
+                            <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                            全部狀態
+                        </li>
+                        <li nz-menu-item (click)="onStatusFilterChange('運作中')">
+                            <i nz-icon nzType="check-circle" nzTheme="outline" style="color: #52c41a;"></i>
+                            運作中
+                        </li>
+                        <li nz-menu-item (click)="onStatusFilterChange('維護中')">
+                            <i nz-icon nzType="tool" nzTheme="outline" style="color: #faad14;"></i>
+                            維護中
+                        </li>
+                        <li nz-menu-item (click)="onStatusFilterChange('離線')">
+                            <i nz-icon nzType="close-circle" nzTheme="outline" style="color: #ff4d4f;"></i>
+                            離線
+                        </li>
+                    </ul>
+                </nz-dropdown-menu>
+                <button nz-button nzType="default" class="clear-btn" (click)="clearEqipmentSearch()"
+                    *ngIf="searchName || filterStatus !== '全部狀態'">
+                    <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                    清除
+                </button>
+
+            </div>
+
+            <div class="action-section">
+                <button nz-button nzType="primary" (click)="createDeviceModal()" class="create-device-btn">
+                    <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+                    新增設備
+                </button>
             </div>
         </div>
 
