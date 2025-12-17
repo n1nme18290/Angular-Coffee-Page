@@ -142,6 +142,7 @@ export interface IApiResponseDeviceState {
 export interface IApiResponseGetPageDeviceLog {
     id: string
     device_id: string
+    device_name: string
     member_id: string
     operation_type: string
     operation: string

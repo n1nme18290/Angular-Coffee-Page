@@ -16,39 +16,19 @@
                 <div class="search-filter-bar">
                     <div class="search-section">
                         <nz-input-group [nzSuffix]="historySearchIcon" class="search-input">
-                            <input 
-                                type="text" 
-                                nz-input 
-                                placeholder="輸入會員名稱搜尋" 
-                                [(ngModel)]="historySearchName"
-                                (keyup.enter)="searchHistory()"
-                            />
+                            <input type="text" nz-input placeholder="輸入會員名稱搜尋" [(ngModel)]="historySearchName"
+                                (keyup.enter)="searchHistory()" />
                         </nz-input-group>
                         <ng-template #historySearchIcon>
-                            <span 
-                                nz-icon 
-                                nzType="search" 
-                                class="search-icon"
-                                (click)="searchHistory()"
-                            ></span>
+                            <span nz-icon nzType="search" class="search-icon" (click)="searchHistory()"></span>
                         </ng-template>
-                        
-                        <button 
-                            nz-button 
-                            nzType="primary" 
-                            class="search-btn"
-                            (click)="searchHistory()"
-                        >
+
+                        <button nz-button nzType="primary" class="search-btn" (click)="searchHistory()">
                             <i nz-icon nzType="search" nzTheme="outline"></i>
                             搜尋
                         </button>
 
-                        <button 
-                            nz-button 
-                            nz-dropdown 
-                            [nzDropdownMenu]="historyTypeMenu" 
-                            class="filter-dropdown"
-                        >
+                        <button nz-button nz-dropdown [nzDropdownMenu]="historyTypeMenu" class="filter-dropdown">
                             <i nz-icon nzType="filter" nzTheme="outline"></i>
                             {{ historyFilterType }}
                             <span nz-icon nzType="down"></span>
@@ -74,13 +54,8 @@
                             </ul>
                         </nz-dropdown-menu>
 
-                        <button 
-                            nz-button 
-                            nzType="default" 
-                            class="clear-btn"
-                            (click)="clearHistorySearch()"
-                            *ngIf="historySearchName || historyFilterType !== '全部類型'"
-                        >
+                        <button nz-button nzType="default" class="clear-btn" (click)="clearHistorySearch()"
+                            *ngIf="historySearchName || historyFilterType !== '全部類型'">
                             <i nz-icon nzType="close-circle" nzTheme="outline"></i>
                             清除
                         </button>
@@ -112,7 +87,8 @@
                             <td>{{ getSerialNumber(i) }}</td>
                             <td>{{ data.member_name }}</td>
                             <td>{{ data.type }}</td>
-                            <td>{{ data.after_balance >= data.before_balance ? '+' : '-' }}{{ data.amount }} ({{ data.before_balance }} → {{ data.after_balance }})</td>
+                            <td>{{ data.after_balance >= data.before_balance ? '+' : '-' }}{{ data.amount }} ({{
+                                data.before_balance }} → {{ data.after_balance }})</td>
                             <td>{{ data.created_at }}</td>
                         </tr>
                         }
@@ -123,7 +99,8 @@
                                 <nz-spin nzSimple></nz-spin>
                                 <p style="margin-top: 8px;">載入中...</p>
                                 } @else {
-                                <i nz-icon nzType="inbox" nzTheme="outline" style="font-size: 48px; color: #d9d9d9;"></i>
+                                <i nz-icon nzType="inbox" nzTheme="outline"
+                                    style="font-size: 48px; color: #d9d9d9;"></i>
                                 <p style="color: #999;">暫無資料</p>
                                 }
                             </td>
@@ -141,39 +118,19 @@
                 <div class="search-filter-bar">
                     <div class="search-section">
                         <nz-input-group [nzSuffix]="deviceSearchIcon" class="search-input">
-                            <input 
-                                type="text" 
-                                nz-input 
-                                placeholder="輸入操作內容搜尋" 
-                                [(ngModel)]="deviceSearchOperation"
-                                (keyup.enter)="searchDevice()"
-                            />
+                            <input type="text" nz-input placeholder="輸入操作內容搜尋" [(ngModel)]="deviceSearchOperation"
+                                (keyup.enter)="searchDevice()" />
                         </nz-input-group>
                         <ng-template #deviceSearchIcon>
-                            <span 
-                                nz-icon 
-                                nzType="search" 
-                                class="search-icon"
-                                (click)="searchDevice()"
-                            ></span>
+                            <span nz-icon nzType="search" class="search-icon" (click)="searchDevice()"></span>
                         </ng-template>
-                        
-                        <button 
-                            nz-button 
-                            nzType="primary" 
-                            class="search-btn"
-                            (click)="searchDevice()"
-                        >
+
+                        <button nz-button nzType="primary" class="search-btn" (click)="searchDevice()">
                             <i nz-icon nzType="search" nzTheme="outline"></i>
                             搜尋
                         </button>
 
-                        <button 
-                            nz-button 
-                            nz-dropdown 
-                            [nzDropdownMenu]="deviceTypeMenu" 
-                            class="filter-dropdown"
-                        >
+                        <button nz-button nz-dropdown [nzDropdownMenu]="deviceTypeMenu" class="filter-dropdown">
                             <i nz-icon nzType="filter" nzTheme="outline"></i>
                             {{ deviceFilterType }}
                             <span nz-icon nzType="down"></span>
@@ -199,13 +156,8 @@
                             </ul>
                         </nz-dropdown-menu>
 
-                        <button 
-                            nz-button 
-                            nzType="default" 
-                            class="clear-btn"
-                            (click)="clearDeviceSearch()"
-                            *ngIf="deviceSearchOperation || deviceFilterType !== '全部類型'"
-                        >
+                        <button nz-button nzType="default" class="clear-btn" (click)="clearDeviceSearch()"
+                            *ngIf="deviceSearchOperation || deviceFilterType !== '全部類型'">
                             <i nz-icon nzType="close-circle" nzTheme="outline"></i>
                             清除
                         </button>
@@ -222,7 +174,7 @@
                     <thead>
                         <tr>
                             <th>序號</th>
-                            <!-- <th>設備名稱</th> -->
+                            <th>設備名稱</th>
                             <th>操作類型</th>
                             <th>操作內容</th>
                             <th>操作時間</th>
@@ -233,7 +185,7 @@
                         @for (data of deviceLogList; track data.id; let i = $index) {
                         <tr>
                             <td>{{ getSerialNumber(i) }}</td>
-                            <!-- <td>{{ data.device.name }}</td> -->
+                            <td>{{ data.device_name }}</td>
                             <td>{{ data.operation_type }}</td>
                             <td>{{ data.operation }}</td>
                             <td>{{ data.created_at }}</td>
@@ -246,7 +198,8 @@
                                 <nz-spin nzSimple></nz-spin>
                                 <p style="margin-top: 8px;">載入中...</p>
                                 } @else {
-                                <i nz-icon nzType="inbox" nzTheme="outline" style="font-size: 48px; color: #d9d9d9;"></i>
+                                <i nz-icon nzType="inbox" nzTheme="outline"
+                                    style="font-size: 48px; color: #d9d9d9;"></i>
                                 <p style="color: #999;">暫無資料</p>
                                 }
                             </td>
@@ -264,40 +217,20 @@
                 <div class="search-filter-bar">
                     <div class="search-section">
                         <nz-input-group [nzSuffix]="pointsSearchIcon" class="search-input">
-                            <input 
-                                type="text" 
-                                nz-input 
-                                placeholder="輸入會員名稱搜尋" 
-                                [(ngModel)]="pointsSearchName"
-                                (keyup.enter)="searchPoints()"
-                            />
+                            <input type="text" nz-input placeholder="輸入會員名稱搜尋" [(ngModel)]="pointsSearchName"
+                                (keyup.enter)="searchPoints()" />
                         </nz-input-group>
                         <ng-template #pointsSearchIcon>
-                            <span 
-                                nz-icon 
-                                nzType="search" 
-                                class="search-icon"
-                                (click)="searchPoints()"
-                            ></span>
+                            <span nz-icon nzType="search" class="search-icon" (click)="searchPoints()"></span>
                         </ng-template>
-                        
-                        <button 
-                            nz-button 
-                            nzType="primary" 
-                            class="search-btn"
-                            (click)="searchPoints()"
-                        >
+
+                        <button nz-button nzType="primary" class="search-btn" (click)="searchPoints()">
                             <i nz-icon nzType="search" nzTheme="outline"></i>
                             搜尋
                         </button>
 
-                        <button 
-                            nz-button 
-                            nzType="default" 
-                            class="clear-btn"
-                            (click)="clearPointsSearch()"
-                            *ngIf="pointsSearchName"
-                        >
+                        <button nz-button nzType="default" class="clear-btn" (click)="clearPointsSearch()"
+                            *ngIf="pointsSearchName">
                             <i nz-icon nzType="close-circle" nzTheme="outline"></i>
                             清除
                         </button>
@@ -319,19 +252,20 @@
                             <th>點數數量</th>
                             <th>
                                 上次變動時間
-                                <nz-filter-trigger
-                                    [(nzVisible)]="pointsFilterVisible"
-                                    [nzActive]="!!pointsSelectedDate"
+                                <nz-filter-trigger [(nzVisible)]="pointsFilterVisible" [nzActive]="!!pointsSelectedDate"
                                     [nzDropdownMenu]="pointsMenu">
                                     <span nz-icon nzType="calendar"></span>
                                 </nz-filter-trigger>
 
                                 <nz-dropdown-menu #pointsMenu="nzDropdownMenu">
                                     <div style="padding: 8px; width: 220px;">
-                                        <nz-date-picker nzFormat="yyyy-MM-dd" [(ngModel)]="pointsSelectedDate"></nz-date-picker>
+                                        <nz-date-picker nzFormat="yyyy-MM-dd"
+                                            [(ngModel)]="pointsSelectedDate"></nz-date-picker>
                                         <div style="margin-top: 8px; text-align: right;">
-                                            <button nz-button nzSize="small" (click)="filterPointsByDate()" class="btn-styles2">確定</button>
-                                            <button nz-button nzSize="small" (click)="resetPointsDate()" class="btn-styles2">清除</button>
+                                            <button nz-button nzSize="small" (click)="filterPointsByDate()"
+                                                class="btn-styles2">確定</button>
+                                            <button nz-button nzSize="small" (click)="resetPointsDate()"
+                                                class="btn-styles2">清除</button>
                                         </div>
                                     </div>
                                 </nz-dropdown-menu>
@@ -355,7 +289,8 @@
                                 <nz-spin nzSimple></nz-spin>
                                 <p style="margin-top: 8px;">載入中...</p>
                                 } @else {
-                                <i nz-icon nzType="inbox" nzTheme="outline" style="font-size: 48px; color: #d9d9d9;"></i>
+                                <i nz-icon nzType="inbox" nzTheme="outline"
+                                    style="font-size: 48px; color: #d9d9d9;"></i>
                                 <p style="color: #999;">暫無資料</p>
                                 }
                             </td>
