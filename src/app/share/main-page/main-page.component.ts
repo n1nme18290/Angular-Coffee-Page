@@ -66,14 +66,6 @@ export class MainPageComponent {
     // 定義系統管理子選單
     const allSystemItems: MenuItem[] = [
       { 
-        path: '/backend-management', 
-        label: '兌換資料分析頁面', 
-        icon: 'bar-chart',
-        permissions: [],
-        // permissions: ['view_analytics', 'manage_backend'],
-        method: () => this.GoBackendManagement()
-      },
-      { 
         path: '/equipment', 
         label: '設備管理頁面', 
         icon: 'laptop',
@@ -81,6 +73,15 @@ export class MainPageComponent {
         // permissions: ['view_devices', 'manage_devices'],
         method: () => this.GoEquipment()
       },
+      { 
+        path: '/backend-management', 
+        label: '兌換資料分析頁面', 
+        icon: 'bar-chart',
+        permissions: [],
+        // permissions: ['view_analytics', 'manage_backend'],
+        method: () => this.GoBackendManagement()
+      },
+      
       { 
         path: '/permission-management', 
         label: '使用者管理', 

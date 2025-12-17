@@ -51,7 +51,7 @@ button[nz-button].btn-styles2 {
         align-items: center;
 
         .search-input {
-            max-width: 400px;
+            max-width: 200px;
             flex: 1;
 
             ::ng-deep {
@@ -81,11 +81,11 @@ button[nz-button].btn-styles2 {
         }
 
         .search-btn {
-            height: 40px;
+            height: 35px;
             margin-top: 10px;
             border-radius: 6px;
             font-weight: 500;
-            min-width: 90px;
+            min-width: 110px;
             box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
 
             &:hover {
@@ -95,9 +95,9 @@ button[nz-button].btn-styles2 {
         }
 
         .filter-dropdown {
-            height: 40px;
+            height: 35px;
             border-radius: 6px;
-            min-width: 140px;
+            min-width: 160px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -117,9 +117,9 @@ button[nz-button].btn-styles2 {
         }
 
         .clear-btn {
-            height: 40px;
+            height: 35px;
             border-radius: 6px;
-            min-width: 80px;
+            min-width: 110px;
             margin-top: 10px;
             transition: all 0.3s ease;
 

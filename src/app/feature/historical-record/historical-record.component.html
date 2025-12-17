@@ -118,7 +118,7 @@
                 <div class="search-filter-bar">
                     <div class="search-section">
                         <nz-input-group [nzSuffix]="deviceSearchIcon" class="search-input">
-                            <input type="text" nz-input placeholder="輸入操作內容搜尋" [(ngModel)]="deviceSearchOperation"
+                            <input type="text" nz-input placeholder="輸入設備名稱搜尋" [(ngModel)]="deviceSearchName"
                                 (keyup.enter)="searchDevice()" />
                         </nz-input-group>
                         <ng-template #deviceSearchIcon>
@@ -157,7 +157,7 @@
                         </nz-dropdown-menu>
 
                         <button nz-button nzType="default" class="clear-btn" (click)="clearDeviceSearch()"
-                            *ngIf="deviceSearchOperation || deviceFilterType !== '全部類型'">
+                            *ngIf="deviceSearchName || deviceFilterType !== '全部類型'">
                             <i nz-icon nzType="close-circle" nzTheme="outline"></i>
                             清除
                         </button>
@@ -193,7 +193,7 @@
                         }
                         } @else {
                         <tr>
-                            <td colspan="4" class="text-center">
+                            <td colspan="5" class="text-center">
                                 @if (deviceLogLoading) {
                                 <nz-spin nzSimple></nz-spin>
                                 <p style="margin-top: 8px;">載入中...</p>

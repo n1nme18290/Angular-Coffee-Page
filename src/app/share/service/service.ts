@@ -150,12 +150,12 @@ export class LogService extends BaseService {
   operationType?: string | null,
   sortOrder?: 'asc' | 'desc' | null
 ) {
-
+  // 準備 query parameters
   const params = new URLSearchParams();
   params.set('page', String(page));
   params.set('perPage', String(perpage));
   
-
+  // 準備 request body
   const requestBody: any = {};
   
   if (deviceName) {
