@@ -304,13 +304,14 @@ button[nz-button].btn-styles4 {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
     ::ng-deep {
+
         // 強制固定表格佈局
         .ant-table {
             table-layout: fixed !important;
         }
 
         // 表頭置中
-        .ant-table-thead > tr > th {
+        .ant-table-thead>tr>th {
             text-align: center !important;
             white-space: normal !important;
             word-wrap: break-word !important;
@@ -319,7 +320,7 @@ button[nz-button].btn-styles4 {
         }
 
         // 表身置中
-        .ant-table-tbody > tr > td {
+        .ant-table-tbody>tr>td {
             text-align: center !important;
             white-space: normal !important;
             word-wrap: break-word !important;
@@ -331,58 +332,65 @@ button[nz-button].btn-styles4 {
         // 每列固定寬度
         $column-widths: (
             1: 100px,
+            // 序號（含展開按鈕）
             2: 150px,
+            // 名稱
             3: 140px,
+            // 地點
             4: 110px,
+            // 狀態
             5: 120px,
+            // 累積兌換杯數
             6: 150px,
-            7: 220px
+            // 上次清潔時間
+            7: 220px // 操作
         );
 
-        @each $index, $width in $column-widths {
-            .ant-table-thead > tr > th:nth-child(#{$index}),
-            .ant-table-tbody > tr > td:nth-child(#{$index}) {
-                width: $width !important;
-                min-width: $width !important;
-                max-width: $width !important;
-            }
-        }
+    @each $index, $width in $column-widths {
 
-        // 展開內容樣式
-        .expand-content {
-            padding: 16px;
-            background: #fafafa;
-            border-radius: 4px;
-            text-align: center;
-            
-            strong {
-                color: #262626;
-                font-weight: 600;
-            }
-        }
-
-        // 第一列特殊處理
-        .ant-table-tbody > tr > td:first-child {
-            padding: 4px 8px !important;
+        .ant-table-thead>tr>th:nth-child(#{$index}),
+        .ant-table-tbody>tr>td:nth-child(#{$index}) {
+            width: $width !important;
+            min-width: $width !important;
+            max-width: $width !important;
         }
     }
 
-    .device-id,
-    .device-ip {
-        background: #f5f5f5;
-        padding: 4px 8px;
+    // 展開內容樣式
+    .expand-content {
+        padding: 16px;
+        background: #fafafa;
         border-radius: 4px;
-        font-family: 'Monaco', 'Menlo', monospace;
-        font-size: 12px;
-        color: #666;
-        display: inline-block;
+        text-align: center;
+
+        strong {
+            color: #262626;
+            font-weight: 600;
+        }
     }
 
-    .text-center {
-        text-align: center;
-        padding: 40px 0;
-        color: #999;
+    // 第一列（序號+展開按鈕）特殊處理
+    .ant-table-tbody>tr>td:first-child {
+        padding: 4px 8px !important;
     }
+}
+
+.device-id,
+.device-ip {
+    background: #f5f5f5;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 12px;
+    color: #666;
+    display: inline-block;
+}
+
+.text-center {
+    text-align: center;
+    padding: 40px 0;
+    color: #999;
+}
 }
 
 // Modal 表單樣式
@@ -418,6 +426,43 @@ button[nz-button].btn-styles4 {
 
 // 清潔確認內容
 .clean-confirm-content {
+    text-align: center;
+    padding: 20px;
+
+    .confirm-icon {
+        font-size: 64px;
+        margin-bottom: 16px;
+
+        i {
+            font-size: 64px;
+        }
+    }
+
+    h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #262626;
+    }
+
+    p {
+        font-size: 14px;
+        color: #595959;
+        margin-bottom: 8px;
+
+        &.hint {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-top: 12px;
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+    }
+}
+
+// 確認刪除內容
+.delete-confirm-content {
     text-align: center;
     padding: 20px;
 

@@ -36,9 +36,9 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
   selector: 'app-equipment',
   standalone: true,
   imports: [
-    CommonModule, NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, 
-    NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, 
-    NzPageHeaderModule, NzDrawerModule, NzGridModule, NzRadioModule, NzModalModule, NzTableModule, 
+    CommonModule, NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule,
+    NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule,
+    NzPageHeaderModule, NzDrawerModule, NzGridModule, NzRadioModule, NzModalModule, NzTableModule,
     NzDividerModule, NzCheckboxModule, NzCardModule, NzBadgeModule, NzSpinModule, NzTagModule, NzMenuModule
   ],
   templateUrl: './equipment.component.html',
@@ -65,8 +65,10 @@ export class EquipmentComponent {
   total = 0;
 
   createDeviceVisible = false;
+  deleteDeviceVisible = false;
   updateDeviceVisible = false;
   cleanedDeviceVisible = false;
+  deviceTotalCount: number = 0;
   deviceOnLineCount: number = 0;
   deviceFixCount: number = 0;
   deviceOffLineCount: number = 0;
@@ -89,7 +91,7 @@ export class EquipmentComponent {
   }
 
   ngAfterViewInit() { }
-  
+
   // 計算流水號的方法
   getSerialNumber(index: number): number {
     return (this.currentPage - 1) * this.pageSize + index + 1;
@@ -116,12 +118,12 @@ export class EquipmentComponent {
     this.getPageDevices();
   }
 
-  
+
   // 新增設備Modal
   createDeviceModal() {
     this.createDeviceVisible = true;
   }
-  
+
   // 新增設備
   createDevice() {
     this.deviceService.createDevice(this.deviceName, this.deviceLocation, this.deviceStatus, this.machine_id, this.machine_ip).subscribe({
@@ -129,13 +131,38 @@ export class EquipmentComponent {
         this.createDeviceVisible = false;
         this.resetDeviceForm();
         this.getPageDevices();
+        this.getAllDevicesState();
       },
       error: (error) => {
         console.error('Error creating device:', error);
+        this.getPageDevices();
+        this.getAllDevicesState();
       }
     });
   }
-
+  // 刪除設備Modal
+  deleteDeviceModal(device: IApiResponseDevice) {
+    this.editingDeviceId = device.id;
+    this.deleteDeviceVisible = true;
+  }
+  // 刪除設備
+  deleteDevice() {
+    if (!this.editingDeviceId) return;
+    this.deviceService.deleteDevice(this.editingDeviceId).subscribe({
+      next: (res) => {
+        // Handle successful deletion
+        this.deleteDeviceVisible = false;
+        this.getPageDevices();
+        this.getAllDevicesState();
+      },
+      error: (error) => {
+        // Handle error
+        console.error('Error deleting device:', error);
+        this.getPageDevices();
+        this.getAllDevicesState();
+      }
+    });
+  }
   // 編輯設備Modal
   updateDeviceModal(device: IApiResponseDevice) {
     this.editingDeviceId = device.id;
@@ -162,9 +189,11 @@ export class EquipmentComponent {
         this.updateDeviceVisible = false;
         this.resetDeviceForm();
         this.getPageDevices();
+        this.getAllDevicesState();
       },
       error: (error) => {
         this.resetDeviceForm();
+        this.getAllDevicesState();
         console.error('Error updating device:', error);
       }
     });
@@ -178,7 +207,6 @@ export class EquipmentComponent {
     this.machine_id = '';
     this.machine_ip = '';
   }
-
   // 設備清潔按鈕Modal
   deviceCleanedModal(device: IApiResponseDevice) {
     this.cleanedDeviceVisible = true;
@@ -212,43 +240,39 @@ export class EquipmentComponent {
   }
 
   // 當前頁面數據變更時
-  onCurrentPageDataChange(listOfCurrentPageData: readonly IApiResponseDevice[]): void {
-    this.listOfCurrentPageData = listOfCurrentPageData;
-    this.refreshCheckedStatus();
-  }
-
+  // onCurrentPageDataChange(listOfCurrentPageData: readonly IApiResponseDevice[]): void {
+  //   this.listOfCurrentPageData = listOfCurrentPageData;
+  //   this.refreshCheckedStatus();
+  // }
   // 刷新選取狀態
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData.filter(({ id }) => id !== undefined);
     this.checked = listOfEnabledData.every(({ id }) => this.setOfCheckedId.has(id));
     this.indeterminate = listOfEnabledData.some(({ id }) => this.setOfCheckedId.has(id)) && !this.checked;
   }
-
   // 單項選取狀態變更時
-  onItemChecked(id: string, checked: boolean): void {
-    this.updateCheckedSet(id, checked);
-    this.refreshCheckedStatus();
-  }
-
+  // onItemChecked(id: string, checked: boolean): void {
+  //   this.updateCheckedSet(id, checked);
+  //   this.refreshCheckedStatus();
+  // }
   // 全選狀態變更時
-  onAllChecked(checked: boolean): void {
-    this.listOfCurrentPageData
-      .filter(({ id }) => id !== undefined)
-      .forEach(({ id }) => this.updateCheckedSet(id, checked));
-    this.refreshCheckedStatus();
-  }
-
-  // 發送請求
-  sendRequest(): void {
-    this.loading = true;
-    const requestData = this.devicesList.filter(data => this.setOfCheckedId.has(String(data.id)));
-    setTimeout(() => {
-      this.setOfCheckedId.clear();
-      this.refreshCheckedStatus();
-      this.loading = false;
-    }, 1000);
-  }
-
+  // onAllChecked(checked: boolean): void {
+  //   this.listOfCurrentPageData
+  //     .filter(({ id }) => id !== undefined)
+  //     .forEach(({ id }) => this.updateCheckedSet(id, checked));
+  //   this.refreshCheckedStatus();
+  // }
+  // 發送請求，後續要修改為有用的功能或是拿掉
+  // sendRequest(): void {
+  //   this.loading = true;
+  //   const requestData = this.devicesList.filter(data => this.setOfCheckedId.has(String(data.id)));
+  //   // console.log('Selected data:', requestData);
+  //   setTimeout(() => {
+  //     this.setOfCheckedId.clear();
+  //     this.refreshCheckedStatus();
+  //     this.loading = false;
+  //   }, 1000);
+  // }
   // 當前頁面數據變更時
   onPageIndexChange(pageIndex: number): void {
     this.currentPage = pageIndex;
@@ -268,8 +292,9 @@ export class EquipmentComponent {
     this.deviceService.getAllDeviceState().subscribe({
       next: (res) => {
         if (res && res.data) {
+          this.deviceTotalCount = res.data.total || 0;
           this.deviceOnLineCount = res.data.online || 0;
-          this.deviceFixCount = res.data.fix || 0;
+          this.deviceFixCount = res.data.maintenance || 0;
           this.deviceOffLineCount = res.data.offline || 0;
         }
         this.loading = false;
@@ -287,22 +312,20 @@ export class EquipmentComponent {
   // 取得分頁設備
   getPageDevices() {
     this.loading = true;
-    
+
     // 準備篩選參數 (只在有值時才傳入，避免傳空字串)
     const deviceName = this.searchName && this.searchName.trim() ? this.searchName.trim() : undefined;
     const deviceLocation = undefined; // 目前沒有使用地點篩選
     const state = this.filterStatus !== '全部狀態' ? this.filterStatus : undefined;
-    
+
     this.deviceService.getPageDevice(this.currentPage, this.pageSize, deviceName, deviceLocation, state).subscribe({
       next: (res) => {
         if (res && res.data) {
-          const allData = res.data.data || [];
-          
-          // 更新顯示資料
-          this.devicesList = allData;
-          this.total = res.data.total || allData.length;
-          this.setOfCheckedId.clear();
-          this.refreshCheckedStatus();
+          this.devicesList = res.data.data || [];
+          this.total = res.data.total || 0;
+          // 清除當前頁的選取狀態
+          // this.setOfCheckedId.clear();
+          // this.refreshCheckedStatus();
         }
         this.loading = false;
       },
@@ -351,6 +374,9 @@ export class EquipmentComponent {
   }
 
   // 統計方法
+  getTotalDeviceCount(): number {
+    return this.deviceTotalCount;
+  }
   getActiveDeviceCount(): number {
     return this.deviceOnLineCount;
   }
@@ -362,7 +388,7 @@ export class EquipmentComponent {
   getOfflineDeviceCount(): number {
     return this.deviceOffLineCount;
   }
-  
+
   // 切換側邊欄展開/收起狀態
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();

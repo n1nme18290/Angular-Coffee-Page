@@ -1,7 +1,7 @@
 import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
 import { inject, Injectable, Type } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog, IApiResponseMemberSSOLogin, IApiResponseSecurityRole, IApiResponseDeviceState } from './model';
+import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog, IApiResponseMemberSSOLogin, IApiResponseSecurityRole, IApiResponseDeviceState, IApiResponseNormal2 } from './model';
 import { IApiResponsePoints } from './model';
 import { TokenService } from '../service/token.service';
 
@@ -109,7 +109,7 @@ export class LogService extends BaseService {
   getMemberLog(memberId: string, page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
     const apiUrl = `${this.url}${this.LogUrl}get_member_log?page=${page}&perPage=${perPage}`;
     const requestBody = {
-      memberId: memberId,
+      id: memberId,
     };
     return this.http.post<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl, requestBody);
   }
@@ -456,6 +456,14 @@ export class DeviceService extends BaseService {
     };
     return this.http.post<IApiResponse<IApiResponseDevice>>(apiUrl, requestBody);
   }
+  // 刪除設備
+  deleteDevice(deviceId: string): Observable<IApiResponseNormal2> {
+    const apiUrl = `${this.url}${this.DeviceUrl}delete_device`;
+    const requestBody = {
+      deviceId: deviceId
+    };
+    return this.http.put<IApiResponseNormal2>(apiUrl, requestBody);
+  }
   // 更新設備資訊
   updateDevice(device_id: string, name: string, location: string, status: string, machine_id: string, machine_ip: string): Observable<IApiResponse<IApiResponseDevice>> {
     const apiUrl = `${this.url}${this.DeviceUrl}update_device`;
@@ -471,7 +479,7 @@ export class DeviceService extends BaseService {
   }
   // 取得所有設備狀態
   getAllDeviceState(): Observable<IApiResponse<IApiResponseDeviceState>> {
-    const apiUrl = `${this.url}${this.DeviceUrl}device_state`;
+    const apiUrl = `${this.url}${this.DeviceUrl}get_state_num`;
     return this.http.get<IApiResponse<IApiResponseDeviceState>>(apiUrl);
   }
   // 分頁查詢設備項目
@@ -555,5 +563,13 @@ export class SecurityService extends BaseService {
       replace: replace
     };
     return this.http.put<IApiResponse<any>>(apiUrl, requestBody);
+  }
+  // 取得角色權限，未介接實際apiUrl
+  getRolePermission(memberId: string): Observable<IApiResponse<IApiResponseSecurityRole[]>> {
+    const apiUrl = `${this.url}${this.SecurityUrl}get_role_permissions`;
+    const requestBody = {
+      memberId: memberId
+    };
+    return this.http.post<IApiResponse<IApiResponseSecurityRole[]>>(apiUrl, requestBody);
   }
 }

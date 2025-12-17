@@ -222,6 +222,7 @@
                     <thead>
                         <tr>
                             <th>序號</th>
+                            <!-- <th>設備名稱</th> -->
                             <th>操作類型</th>
                             <th>操作內容</th>
                             <th>操作時間</th>
@@ -232,6 +233,7 @@
                         @for (data of deviceLogList; track data.id; let i = $index) {
                         <tr>
                             <td>{{ getSerialNumber(i) }}</td>
+                            <!-- <td>{{ data.device.name }}</td> -->
                             <td>{{ data.operation_type }}</td>
                             <td>{{ data.operation }}</td>
                             <td>{{ data.created_at }}</td>
