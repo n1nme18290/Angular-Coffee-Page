@@ -411,4 +411,18 @@ export class HistoricalRecordComponent {
     this.getPagePoints();
     this.pointsFilterVisible = false;
   }
+  
+
+  //映射
+  typeMap: { [key: string]: string } = {
+    exchange_coffee: '兌換咖啡',
+    get_points: '取得點數',
+    regift_points: '轉贈點數'
+  };
+    typeMapEquipment: { [key: string]: string } = {
+    check_points: '查詢點數',
+    error_message: '錯誤訊息',
+    cleaning_alert: '清潔警示'
+  };
+
 }

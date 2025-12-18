@@ -41,15 +41,15 @@
                                 </li>
                                 <li nz-menu-item (click)="onHistoryTypeFilterChange('exchange_coffee')">
                                     <i nz-icon nzType="coffee" nzTheme="outline"></i>
-                                    exchange_coffee
+                                    兌換咖啡
                                 </li>
                                 <li nz-menu-item (click)="onHistoryTypeFilterChange('get_points')">
                                     <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
-                                    get_points
+                                    取得點數
                                 </li>
                                 <li nz-menu-item (click)="onHistoryTypeFilterChange('regift_points')">
                                     <i nz-icon nzType="gift" nzTheme="outline"></i>
-                                    regift_points
+                                    轉贈點數
                                 </li>
                             </ul>
                         </nz-dropdown-menu>
@@ -86,7 +86,7 @@
                         <tr>
                             <td>{{ getSerialNumber(i) }}</td>
                             <td>{{ data.member_name }}</td>
-                            <td>{{ data.type }}</td>
+                            <td>{{ typeMap[data.type] }}</td>
                             <td>{{ data.after_balance >= data.before_balance ? '+' : '-' }}{{ data.amount }} ({{
                                 data.before_balance }} → {{ data.after_balance }})</td>
                             <td>{{ data.created_at }}</td>
@@ -143,15 +143,15 @@
                                 </li>
                                 <li nz-menu-item (click)="onDeviceTypeFilterChange('check_points')">
                                     <i nz-icon nzType="transaction" nzTheme="outline"></i>
-                                    check_points
+                                    查詢點數
                                 </li>
                                 <li nz-menu-item (click)="onDeviceTypeFilterChange('cleaning_alert')">
                                     <i nz-icon nzType="tool" nzTheme="outline"></i>
-                                    cleaning_alert
+                                    清潔警示
                                 </li>
                                 <li nz-menu-item (click)="onDeviceTypeFilterChange('error_message')">
                                     <i nz-icon nzType="warning" nzTheme="outline"></i>
-                                    error_message
+                                    錯誤訊息
                                 </li>
                             </ul>
                         </nz-dropdown-menu>
@@ -186,7 +186,7 @@
                         <tr>
                             <td>{{ getSerialNumber(i) }}</td>
                             <td>{{ data.device_name }}</td>
-                            <td>{{ data.operation_type }}</td>
+                            <td>{{ typeMapEquipment[data.operation_type] }}</td>
                             <td>{{ data.operation }}</td>
                             <td>{{ data.created_at }}</td>
                         </tr>
