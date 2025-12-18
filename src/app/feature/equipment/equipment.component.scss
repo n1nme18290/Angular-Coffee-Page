@@ -1,6 +1,6 @@
 button[nz-button] {
     margin-right: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 1px;
     height: 40px;
     border-radius: 100px;
     border: 1px solid #27496D;
@@ -15,6 +15,7 @@ button[nz-button].btn-styles4 {
     border: 2px solid #27496D;
     width: 64px;
     height: 64px;
+    margin-bottom: 12px;
 
     .big-icon {
         font-size: 28px;
@@ -105,7 +106,6 @@ button[nz-button].btn-styles4 {
 
         .search-btn {
             height: 35px;
-            margin-top: 10px;
             border-radius: 6px;
             font-weight: 500;
             min-width: 110px;
@@ -127,7 +127,7 @@ button[nz-button].btn-styles4 {
             gap: 8px;
             font-weight: 500;
             transition: all 0.3s ease;
-            margin-top: 10px;
+
 
             &:hover {
                 border-color: #1890ff;
@@ -139,11 +139,11 @@ button[nz-button].btn-styles4 {
                 font-size: 14px;
             }
         }
+
         .clear-btn {
             height: 35px;
             border-radius: 6px;
             min-width: 110px;
-            margin-top: 10px;
             transition: all 0.3s ease;
 
             &:hover {
@@ -166,7 +166,6 @@ button[nz-button].btn-styles4 {
             box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
             transition: all 0.3s ease;
             font-weight: 500;
-            margin-top: 10px;
             min-width: 130px;
 
             i {
@@ -344,9 +343,9 @@ button[nz-button].btn-styles4 {
             white-space: normal !important;
             word-wrap: break-word !important;
             padding: 8px 8px !important;
-            line-height: 2.0 !important;
+            //line-height: 2.0 !important;
             vertical-align: middle !important;
-            font-size: 16px; 
+            font-size: 16px;
             font-weight: 500;
         }
 
@@ -565,4 +564,7 @@ button[nz-button].btn-styles4 {
             }
         }
     }
+
+
+
 }

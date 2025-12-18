@@ -116,8 +116,8 @@
             </div>
 
             <div class="action-section">
-                <button nz-button nzType="primary" (click)="createDeviceModal()" class="create-device-btn">
-                    <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+                <button nz-button nzType="primary"  (click)="createDeviceModal()" class="create-device-btn">
+                    <i nz-icon nzType="plus-circle"  nzTheme="outline"></i>
                     新增設備
                 </button>
             </div>
@@ -168,7 +168,7 @@
                         {{ data.cleaned_at || '尚未清潔' }}
                     </td>
                     <td>
-                        <button nz-button nzType="link" nzSize="small" (click)="deviceCleanedModal(data)">
+                        <button nz-button nzType="link" nzSize="small"  (click)="deviceCleanedModal(data)">
                             <i nz-icon nzType="tool" nzTheme="outline"></i>
                             已清潔
                         </button>
@@ -224,7 +224,7 @@
 
     <!-- 新增設備 Modal -->
     <nz-modal [(nzVisible)]="createDeviceVisible" nzTitle="新增設備" [nzFooter]="createDeviceFooter" nzWidth="600px"
-        nzCentered [nzClosable]="true" (nzOnCancel)="resetDeviceForm()">
+        nzCentered [nzClosable]="true" (nzOnCancel)="resetDeviceForm()"  [nzClosable]="false">
         <ng-container *nzModalContent>
             <div class="modal-form">
                 <div class="form-item">
@@ -290,8 +290,8 @@
         </ng-template>
     </nz-modal>
     <!-- 刪除設備 Modal -->
-    <nz-modal [(nzVisible)]="deleteDeviceVisible" nzTitle="刪除設備" [nzFooter]="deleteDeviceFooter" nzWidth="600px"
-        nzCentered [nzClosable]="true">
+    <nz-modal [(nzVisible)]="deleteDeviceVisible" nzTitle="刪除設備"  [nzFooter]="deleteDeviceFooter" nzWidth="600px"
+        nzCentered [nzClosable]="true"  [nzClosable]="false" >
         <ng-container *nzModalContent>
             <div class="delete-confirm-content">
                 <div class="confirm-icon">
@@ -315,7 +315,7 @@
 
     <!-- 編輯設備 Modal -->
     <nz-modal [(nzVisible)]="updateDeviceVisible" nzTitle="編輯設備" [nzFooter]="updateDeviceFooter" nzWidth="600px"
-        nzCentered [nzClosable]="true" (nzOnCancel)="resetDeviceForm()">
+        nzCentered [nzClosable]="true" (nzOnCancel)="resetDeviceForm()"  [nzClosable]="false">
         <ng-container *nzModalContent>
             <div class="modal-form">
                 <div class="form-item">
@@ -384,7 +384,7 @@
 
     <!-- 設備清潔確認 Modal -->
     <nz-modal [(nzVisible)]="cleanedDeviceVisible" [nzFooter]="cleanedDeviceFooter" nzWidth="400px" nzCentered
-        [nzClosable]="true">
+        [nzClosable]="true"  [nzClosable]="false">
         <ng-container *nzModalContent>
             <div class="clean-confirm-content">
                 <div class="confirm-icon">
