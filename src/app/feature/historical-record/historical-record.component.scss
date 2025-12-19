@@ -88,9 +88,12 @@ button[nz-button].btn-styles2 {
             min-width: 110px;
             box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
 
+
             &:hover {
                 box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
                 transform: translateY(-1px);
+                border-color: #1890ff;
+                color: #1890ff;
             }
         }
 

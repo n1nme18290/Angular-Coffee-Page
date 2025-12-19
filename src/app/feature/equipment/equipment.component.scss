@@ -115,6 +115,8 @@ button[nz-button].btn-styles4 {
             &:hover {
                 box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
                 transform: translateY(-1px);
+                border-color: #1890ff;
+                color: #1890ff;
             }
         }
 
@@ -145,6 +147,8 @@ button[nz-button].btn-styles4 {
             border-radius: 6px;
             min-width: 110px;
             transition: all 0.3s ease;
+            color: rgb(170, 20, 20);
+            border-color: rgb(170, 20, 20);
 
             &:hover {
                 border-color: #ff4d4f;
@@ -175,6 +179,8 @@ button[nz-button].btn-styles4 {
             &:hover {
                 box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
                 transform: translateY(-1px);
+                border-color: #1890ff;
+                color: #1890ff;
             }
         }
     }
@@ -352,7 +358,7 @@ button[nz-button].btn-styles4 {
         // 每列固定寬度
         $column-widths: (
             1: 100px,
-            // 序號（含展開按鈕）
+            // 序號(含展開按鈕)
             2: 150px,
             // 名稱
             3: 140px,
@@ -389,7 +395,7 @@ button[nz-button].btn-styles4 {
         }
     }
 
-    // 第一列（序號+展開按鈕）特殊處理
+    // 第一列(序號+展開按鈕)特殊處理
     .ant-table-tbody>tr>td:first-child {
         padding: 4px 8px !important;
     }
@@ -411,6 +417,60 @@ button[nz-button].btn-styles4 {
     padding: 40px 0;
     color: #999;
 }
+}
+
+// 操作按鈕統一樣式
+.action-btn {
+    height: 35px;
+    border-radius: 6px;
+    min-width: 80px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &.clean-btn {
+        background-color: #ffffff;
+        color: rgb(14, 57, 98);
+        border-color: rgb(14, 57, 98);
+        box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+
+        &:hover {
+            background-color: #ffffff;
+            border-color: #40a9ff;
+            color: #40a9ff;
+            box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+            transform: translateY(-1px);
+        }
+    }
+
+    &.edit-btn {
+        background-color: #ffffff;
+        color: rgb(14, 57, 98);
+        border-color: rgb(14, 57, 98);
+        box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+
+        &:hover {
+            background-color: #ffffff;
+            border-color: #40a9ff;
+            color: #40a9ff;
+            box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+            transform: translateY(-1px);
+        }
+    }
+
+    &.delete-btn {
+        background-color: #ffffff;
+        color: rgb(170, 20, 20);
+        border-color: rgb(170, 20, 20);
+        box-shadow: 0 2px 4px rgba(255, 24, 24, 0.2);
+
+        &:hover {
+            background-color: #ffffff;
+            border-color: #ff4040;
+            color: #ff4040;
+            box-shadow: 0 4px 8px rgba(255, 24, 24, 0.3);
+            transform: translateY(-1px);
+        }
+    }
 }
 
 // Modal 表單樣式
@@ -439,6 +499,62 @@ button[nz-button].btn-styles4 {
             .required {
                 color: #ff4d4f;
                 margin-left: 4px;
+            }
+        }
+    }
+}
+
+// Modal 底部按鈕樣式
+::ng-deep {
+    .ant-modal-footer {
+        display: flex;
+        gap: 0;
+        padding: 16px;
+        border-top: 1px solid #f0f0f0;
+
+        button {
+
+            flex: 1;
+            height: 40px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+
+            &:first-child {
+                margin-left: 8px;
+                background-color: #ffffff;
+                color: rgb(170, 20, 20);
+                border-color: rgb(170, 20, 20);
+                box-shadow: 0 2px 4px rgba(255, 24, 24, 0.2);
+
+                &:hover {
+                    background-color: #ffffff;
+                    border-color: #ff4040;
+                    color: #ff4040;
+                    box-shadow: 0 4px 8px rgba(255, 24, 24, 0.3);
+                    transform: translateY(-1px);
+                }
+            }
+
+            &:last-child {
+                margin-left: 8px;
+                background-color: #ffffff;
+                color: rgb(14, 57, 98);
+                border-color: rgb(14, 57, 98);
+                box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+
+                &:hover {
+                    background-color: #40a9ff;
+                    border-color: #40a9ff;
+                    color: #ffffff;
+                    box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+            }
+
+            i {
+                margin-right: 6px;
             }
         }
     }
@@ -565,6 +681,9 @@ button[nz-button].btn-styles4 {
         }
     }
 
+}
 
-
+//彈窗置中
+.center-txt {
+    text-align: center;
 }
