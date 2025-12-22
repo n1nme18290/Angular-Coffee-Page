@@ -39,7 +39,10 @@
                         <td>{{ data.permission }}</td>
                         <td>{{ data.status }}</td>
                         <td>
-                            <button nz-button nzType="link" (click)="editNormalAdminModal(data)">編輯</button>
+                            <button nz-button nzType="primary" class="action-btn edit-btn" (click)="editNormalAdminModal(data)">
+                                <i nz-icon nzType="edit" nzTheme="outline"></i>
+                                編輯
+                            </button>
                         </td>
                     </tr>
                     }
@@ -59,10 +62,10 @@
         </div>
     </div>
 
-    <!-- ✅ 將 Modal 移到 table 外面，只保留一個 Modal -->
+
     <nz-modal [(nzVisible)]="editNormalAdminVisible" [nzTitle]="'編輯權限 - ' + (currentEditAdmin?.name || '')"
-        [nzFooter]="editNormalAdminFooter" nzWidth=" 720px" nzCentered [nzClosable]="true"
-        (nzOnCancel)="editNormalAdminhandleCancel()"  [nzClosable]="false"> 
+        [nzFooter]="editNormalAdminFooter" nzWidth="720px" nzCentered [nzClosable]="true"
+        (nzOnCancel)="editNormalAdminhandleCancel()" [nzClosable]="false"> 
         <ng-container *nzModalContent>
             <!-- 顯示當前編輯的管理員資訊 -->
             <div style="margin-bottom: 16px; padding: 12px; background: #f5f5f5; border-radius: 4px;">
@@ -119,9 +122,13 @@
         </ng-container>
 
         <ng-template #editNormalAdminFooter>
-            <button nz-button (click)="editNormalAdminhandleCancel()">取消</button>
-            <button nz-button nzType="primary" class="btn-styles2" [nzLoading]="roleListLoading"
+            <button nz-button (click)="editNormalAdminhandleCancel()">
+                <i nz-icon nzType="close" nzTheme="outline"></i>
+                取消
+            </button>
+            <button nz-button nzType="primary"  [nzLoading]="roleListLoading"
                 (click)="editNormalAdminhandleOk()">
+                <i nz-icon nzType="check" nzTheme="outline"></i>
                 完成設定
             </button>
         </ng-template>
@@ -163,7 +170,10 @@
                         <td>{{ data.status }}</td>
                         <td>{{ data.identityLev }}</td>
                         <td>
-                            <button nz-button nzType="link" (click)="sendPoints()">發送點數</button>
+                            <button nz-button nzType="primary" class="action-btn send-points-btn" (click)="sendPoints()">
+                                <i nz-icon nzType="gift" nzTheme="outline"></i>
+                                發送點數
+                            </button>
                         </td>
                     </tr>
                     }
