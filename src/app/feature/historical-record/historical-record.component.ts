@@ -1,4 +1,4 @@
-import { Component ,inject} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -19,7 +19,7 @@ import { CommonModule } from '@angular/common';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { PointService } from '../../share/service/service';
-import { NzTableModule} from 'ng-zorro-antd/table';
+import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzGridModule } from 'ng-zorro-antd/grid';
@@ -36,7 +36,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
-    NzRadioModule, NzModalModule, CommonModule,NzSpinModule,
+    NzRadioModule, NzModalModule, CommonModule, NzSpinModule,
     NzTableModule, NzDividerModule, NzCheckboxModule, NzGridModule, NzCollapseModule, NzDatePickerModule],
   templateUrl: './historical-record.component.html',
   styleUrl: './historical-record.component.scss'
@@ -47,12 +47,12 @@ export class HistoricalRecordComponent {
   constructor(
     public logService: LogService) { }
 
-//==================================== 共用服務 =====================================================
+  //==================================== 共用服務 =====================================================
   router = inject(Router);
   sidebarService = inject(SidebarService); // 側邊欄控制
   pointService = inject(PointService); // 點數服務
 
-// =================================== Tab切換 ===================================
+  // =================================== Tab切換 ===================================
   selectedIndex = 0;
   Title01 = '使用者使用紀錄';
   Title02 = '設備使用紀錄';
@@ -67,7 +67,7 @@ export class HistoricalRecordComponent {
       default: return '';
     }
   }
-  
+
   ngOnInit() {
     // 使用各自的 page/index 初始值
     this.getPagePoints();
@@ -84,7 +84,7 @@ export class HistoricalRecordComponent {
   getSerialNumber(index: number): number {
     let page: number;
     let size: number;
-    
+
     switch (this.selectedIndex) {
       case 0: // 使用者使用紀錄
         page = this.historyPageIndex;
@@ -102,12 +102,12 @@ export class HistoricalRecordComponent {
         page = 1;
         size = 5;
     }
-    
+
     return (page - 1) * size + index + 1;
   }
- 
 
-//==================================== 使用者使用紀錄 =====================================================
+
+  //==================================== 使用者使用紀錄 =====================================================
   // 使用者使用紀錄相關屬性
   pointsHistoryList: IApiResponsePointsHistory[] = [];
   historyLoading = false;
@@ -124,13 +124,13 @@ export class HistoricalRecordComponent {
   // 使用者使用紀錄搜尋篩選
   historySearchName: string = '';
   historyFilterType: string = '全部類型';
-  
+
   // 使用者分頁事件
   onHistoryPageIndexChange(pageIndex: number): void {
     this.historyPageIndex = pageIndex;
     this.getPagePointsHistory();
   }
-  
+
   onHistoryPageSizeChange(pageSize: number): void {
     this.historyPageSize = pageSize;
     this.historyPageIndex = 1;
@@ -163,7 +163,7 @@ export class HistoricalRecordComponent {
     this.historyListOfCurrentPageData = listOfCurrentPageData;
     this.refreshHistoryCheckedStatus();
   }
-  
+
   // 使用者使用紀錄更新選取的ID集合
   updateHistoryCheckedSet(id: string, checked: boolean): void {
     if (checked) {
@@ -172,15 +172,15 @@ export class HistoricalRecordComponent {
       this.historySetOfCheckedId.delete(id);
     }
   }
-  
+
   // 取得使用者使用紀錄
   getPagePointsHistory(): void {
     this.historyLoading = true;
-    
+
     // 準備搜尋條件
     const name = this.historySearchName && this.historySearchName.trim() ? this.historySearchName.trim() : undefined;
     const type = this.historyFilterType !== '全部類型' ? this.historyFilterType : undefined;
-    
+
     this.logService.searchPointLog(this.historyPageIndex, this.historyPageSize, name, type).subscribe({
       next: (res) => {
         console.log('Points History API Response:', res);
@@ -206,7 +206,7 @@ export class HistoricalRecordComponent {
     this.updateHistoryCheckedSet(id, checked);
     this.refreshHistoryCheckedStatus();
   }
-  
+
   // 刷新選取狀態
   refreshHistoryCheckedStatus(): void {
     const listOfEnabledData = this.historyListOfCurrentPageData;
@@ -214,18 +214,18 @@ export class HistoricalRecordComponent {
     this.historyIndeterminate = listOfEnabledData.some(({ id }) => this.historySetOfCheckedId.has(id)) && !this.historyChecked;
   }
 
-//==================================== 設備使用紀錄 =====================================================
+  //==================================== 設備使用紀錄 =====================================================
   // 設備操作紀錄相關屬性
   deviceLogList: IApiResponseGetPageDeviceLog[] = [];
   deviceLogLoading = false;
   deviceLogChecked = false;
   deviceLogIndeterminate = false;
-  
+
   // 設備分頁屬性
   devicePageIndex = 1;
   devicePageSize = 5;
   deviceTotal = 0;
-  
+
   // 設備搜尋篩選
   deviceSearchName: string = '';
   deviceFilterType: string = '全部類型';
@@ -235,7 +235,7 @@ export class HistoricalRecordComponent {
     this.devicePageIndex = pageIndex;
     this.getPageDeviceLog();
   }
-  
+
   onDevicePageSizeChange(pageSize: number): void {
     this.devicePageSize = pageSize;
     this.devicePageIndex = 1;
@@ -266,14 +266,14 @@ export class HistoricalRecordComponent {
   // 取得設備操作紀錄
   getPageDeviceLog(): void {
     this.deviceLogLoading = true;
-    
+
     // 準備搜尋條件
     const deviceName = this.deviceSearchName && this.deviceSearchName.trim() ? this.deviceSearchName.trim() : null;
     const operationType = this.deviceFilterType !== '全部類型' ? this.deviceFilterType : null;
-    
+
     this.logService.getPageDeviceLog(
-      this.devicePageIndex, 
-      this.devicePageSize, 
+      this.devicePageIndex,
+      this.devicePageSize,
       deviceName,
       operationType,
       null
@@ -295,7 +295,7 @@ export class HistoricalRecordComponent {
     });
   }
 
-//================================ 會員點數資訊 =================================================
+  //================================ 會員點數資訊 =================================================
   // 點數資訊相關屬性
   pointsList: IApiResponsePoints[] = [];
   checked = false;
@@ -303,26 +303,26 @@ export class HistoricalRecordComponent {
   indeterminate = false;
   listOfCurrentPageData: readonly IApiResponsePoints[] = [];
   setOfCheckedId = new Set<string>();
-  
+
   // 點數資訊分頁屬性
   currentPage = 1;
   pageSize = 5;
   total = 0;
-  
+
   // 點數資訊搜尋篩選
   pointsSearchName: string = '';
-  
+
   // 點數使用紀錄日期篩選
   pointsFilterVisible = false;
   pointsSelectedDate: Date | null = null;
   pointsFilteredDate: string | null = null;
-  
+
   // 點數分頁事件
   onPageIndexChange(pageIndex: number): void {
     this.currentPage = pageIndex;
     this.getPagePoints();
   }
-  
+
   onPageSizeChange(pageSize: number): void {
     this.pageSize = pageSize;
     this.currentPage = 1;
@@ -347,7 +347,7 @@ export class HistoricalRecordComponent {
     this.listOfCurrentPageData = listOfCurrentPageData;
     this.refreshCheckedStatus();
   }
-  
+
   // 刷新選取狀態
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData.filter(({ balance }) => balance >= 0);
@@ -362,15 +362,15 @@ export class HistoricalRecordComponent {
       next: (res) => {
         if (res && res.data) {
           let dataList = res.data.data || [];
-          
+
           // 前端篩選：名稱搜尋
           if (this.pointsSearchName && this.pointsSearchName.trim()) {
             const searchLower = this.pointsSearchName.toLowerCase().trim();
-            dataList = dataList.filter(item => 
+            dataList = dataList.filter(item =>
               item.member_name.toLowerCase().includes(searchLower)
             );
           }
-          
+
           // 前端篩選：日期篩選
           if (this.pointsFilteredDate) {
             dataList = dataList.filter((item: IApiResponsePoints) => {
@@ -378,7 +378,7 @@ export class HistoricalRecordComponent {
               return itemDate === this.pointsFilteredDate;
             });
           }
-          
+
           this.pointsList = dataList;
           this.total = dataList.length;
           this.setOfCheckedId.clear();
@@ -394,7 +394,7 @@ export class HistoricalRecordComponent {
       }
     });
   }
-  
+
   filterPointsByDate(): void {
     if (this.pointsSelectedDate) {
       this.pointsFilteredDate = this.pointsSelectedDate.toLocaleDateString('en-CA');
@@ -411,18 +411,24 @@ export class HistoricalRecordComponent {
     this.getPagePoints();
     this.pointsFilterVisible = false;
   }
-  
+
 
   //映射
   typeMap: { [key: string]: string } = {
     exchange_coffee: '兌換咖啡',
     get_points: '取得點數',
-    regift_points: '轉贈點數'
+    regift_points: '轉出點數',
+    card_collect: '卡面簽到退'
   };
-    typeMapEquipment: { [key: string]: string } = {
+
+
+  typeMapEquipment: { [key: string]: string } = {
     check_points: '查詢點數',
     error_message: '錯誤訊息',
-    cleaning_alert: '清潔警示'
+    cleaning_alert: '機器需要清潔',
+    device_clean: '機器已經清洗過',
+    exchange_coffee: '兌換咖啡',
+    card_collect: '卡面簽到退'
   };
 
 }
