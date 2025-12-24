@@ -11,17 +11,35 @@ button[nz-button] {
 
 /* Header 左側按鈕 */
 button[nz-button].btn-styles4 {
-    background-color: #27496D;
-    color: #ffffff;
-    border: 0.5px solid #27496D;
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+    border: none;
     width: 64px;
     height: 64px;
     margin-bottom: 12px;
+    border-radius: 50%;
+    font-weight: 500;
+    transition: all 0.3s ease;
 
     .big-icon {
         font-size: 28px;
+        transition: all 0.3s ease;
     }
+
+    &:hover {
+        color: #40a9ff;
+        background-color: rgba(24, 144, 255, 0.08);
+        box-shadow: 0 4px 10px rgba(24, 144, 255, 0.25);
+        transform: translateY(-1px);
+    }
+
+    &:hover .big-icon {
+        transform: scale(1.1);
+    }
+
 }
+
+
 
 /* 一般按鈕樣式 */
 button[nz-button].btn-styles1 {
@@ -52,6 +70,7 @@ button[nz-button].btn-styles5 {
     border: 0.5px solid #000000;
     width: 32px;
     height: 32px;
+
 
     .big-icon {
         font-size: 28px;

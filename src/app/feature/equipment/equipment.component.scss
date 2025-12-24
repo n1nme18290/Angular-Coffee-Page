@@ -10,17 +10,35 @@ button[nz-button] {
 }
 
 button[nz-button].btn-styles4 {
-    background-color: #27496D;
-    color: #ffffff;
-    border: 2px solid #27496D;
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+    border: none;
     width: 64px;
     height: 64px;
     margin-bottom: 12px;
+    border-radius: 50%;
+    font-weight: 500;
+    transition: all 0.3s ease;
 
     .big-icon {
         font-size: 28px;
+        transition: all 0.3s ease;
     }
+
+    &:hover {
+        color: #40a9ff;
+        background-color: rgba(24, 144, 255, 0.08);
+        box-shadow: 0 4px 10px rgba(24, 144, 255, 0.25);
+        transform: translateY(-1px);
+    }
+
+    &:hover .big-icon {
+        transform: scale(1.1);
+    }
+
 }
+
+
 
 .h2 {
     color: #ffffff;
