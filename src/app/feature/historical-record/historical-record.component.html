@@ -49,7 +49,11 @@
                                 </li>
                                 <li nz-menu-item (click)="onHistoryTypeFilterChange('regift_points')">
                                     <i nz-icon nzType="gift" nzTheme="outline"></i>
-                                    轉贈點數
+                                    轉出點數
+                                </li>
+                                <li nz-menu-item (click)="onHistoryTypeFilterChange('card_collect')">
+                                    <i nz-icon nzType="idcard" nzTheme="outline"></i>
+                                    卡面簽到退
                                 </li>
                             </ul>
                         </nz-dropdown-menu>
@@ -147,12 +151,27 @@
                                 </li>
                                 <li nz-menu-item (click)="onDeviceTypeFilterChange('cleaning_alert')">
                                     <i nz-icon nzType="tool" nzTheme="outline"></i>
-                                    清潔警示
+                                    機器需要清潔
                                 </li>
                                 <li nz-menu-item (click)="onDeviceTypeFilterChange('error_message')">
                                     <i nz-icon nzType="warning" nzTheme="outline"></i>
                                     錯誤訊息
                                 </li>
+                                <li nz-menu-item (click)="onDeviceTypeFilterChange('device_clean')">
+                                    <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                                    機器已經清洗過
+                                </li>
+
+                                <li nz-menu-item (click)="onDeviceTypeFilterChange('exchange_coffee')">
+                                    <i nz-icon nzType="coffee" nzTheme="outline"></i>
+                                    兌換咖啡
+                                </li>
+
+                                <li nz-menu-item (click)="onDeviceTypeFilterChange('card_collect')">
+                                    <i nz-icon nzType="idcard" nzTheme="outline"></i>
+                                    卡面簽到退
+                                </li>
+
                             </ul>
                         </nz-dropdown-menu>
 

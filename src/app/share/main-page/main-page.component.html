@@ -1,47 +1,51 @@
 <nz-layout>
-  <nz-sider nzCollapsible [(nzCollapsed)]="sidebarService.isCollapsed" [nzTrigger]="null" [nzWidth]="300">
-    <div class="logo"></div>
-    <div class="menu-container">
-      <ul nz-menu nzTheme="dark" nzMode="inline" class="main-menu">
-        <!-- 個人資訊選單（所有人可見） -->
-        @for (item of menuItems; track item.path) {
-          <li nz-menu-item (click)="item.method && item.method()">
-            <span nz-icon [nzType]="item.icon"></span>
-            <span class="menu-item-large">{{ item.label }}</span>
-          </li>
-        }
+  <!-- 側邊欄：根據 showSidebar 決定是否顯示 -->
+  @if (showSidebar) {
+    <nz-sider nzCollapsible [(nzCollapsed)]="sidebarService.isCollapsed" [nzTrigger]="null" [nzWidth]="300">
+      <div class="logo"></div>
+      <div class="menu-container">
+        <ul nz-menu nzTheme="dark" nzMode="inline" class="main-menu">
+          <!-- 個人資訊選單（所有人可見） -->
+          @for (item of menuItems; track item.path) {
+            <li nz-menu-item (click)="item.method && item.method()">
+              <span nz-icon [nzType]="item.icon"></span>
+              <span class="menu-item-large">{{ item.label }}</span>
+            </li>
+          }
+          
+          <!-- 系統管理子選單（根據權限顯示） -->
+          @if (isSystemManagementVisible()) {
+            <li nz-submenu nzTitle="系統管理" nzIcon="setting" class="menu-item-large">
+              <ul>
+                @for (item of systemManagementItems; track item.path) {
+                  <li nz-menu-item class="menu-item-large" (click)="item.method && item.method()">
+                    <span nz-icon [nzType]="item.icon" style="margin-right: 8px;"></span>
+                    {{ item.label }}
+                  </li>
+                }
+                
+                <!-- 如果沒有任何子項目可見，顯示提示 -->
+                @if (systemManagementItems.length === 0) {
+                  <li nz-menu-item class="menu-item-large" [nzDisabled]="true">
+                    <span style="color: #8c8c8c;">暫無可用功能</span>
+                  </li>
+                }
+              </ul>
+            </li>
+          }
+        </ul>
         
-        <!-- 系統管理子選單（根據權限顯示） -->
-        @if (isSystemManagementVisible()) {
-          <li nz-submenu nzTitle="系統管理" nzIcon="setting" class="menu-item-large">
-            <ul>
-              @for (item of systemManagementItems; track item.path) {
-                <li nz-menu-item class="menu-item-large" (click)="item.method && item.method()">
-                  <span nz-icon [nzType]="item.icon" style="margin-right: 8px;"></span>
-                  {{ item.label }}
-                </li>
-              }
-              
-              <!-- 如果沒有任何子項目可見，顯示提示 -->
-              @if (systemManagementItems.length === 0) {
-                <li nz-menu-item class="menu-item-large" [nzDisabled]="true">
-                  <span style="color: #8c8c8c;">暫無可用功能</span>
-                </li>
-              }
-            </ul>
+        <!-- 登出選單（固定在底部） -->
+        <ul nz-menu nzTheme="dark" nzMode="inline" class="logout-menu">
+          <li nz-menu-item>
+            <span nz-icon nzType="logout"></span>
+            <span class="menu-item-large" (click)="GoLogIn()">登出</span>
           </li>
-        }
-      </ul>
-      
-      <!-- 登出選單（固定在底部） -->
-      <ul nz-menu nzTheme="dark" nzMode="inline" class="logout-menu">
-        <li nz-menu-item>
-          <span nz-icon nzType="logout"></span>
-          <span class="menu-item-large" (click)="GoLogIn()">登出</span>
-        </li>
-      </ul>
-    </div>
-  </nz-sider>
+        </ul>
+      </div>
+    </nz-sider>
+  }
+  
   <nz-layout>
     <router-outlet></router-outlet>
   </nz-layout>
