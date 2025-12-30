@@ -20,6 +20,8 @@ import { Router } from '@angular/router';
 import { SidebarService } from '../service/sidebar.service';
 import { PermissionService } from '../service/permission.service';
 import { HasPermissionDirective } from '../../feature/auth/permission-directive';
+import { MAIN_MENU_ITEMS, SYSTEM_MANAGEMENT_ITEMS, MenuItemConfig } from '../../core/config/role-permissions.config';
+
 
 @Component({
   selector: 'app-main-page',
@@ -68,73 +70,52 @@ export class MainPageComponent {
   }
   
   updateVisibleMenuItems() {
-    // 定義所有選單項目
-    const allMenuItems: MenuItem[] = [
-      { 
-        path: '/personal-info', 
-        label: '個人資訊', 
-        icon: 'user',
-        permissions: [], // 所有人都可見
-        method: () => this.GoPersonalInfo()
-      }
-    ];
+    // 使用配置檔案中的選單項目
+    const allMenuItems: MenuItem[] = MAIN_MENU_ITEMS.map(item => ({
+      ...item,
+      method: () => this.navigateTo(item.path)
+    }));
 
-    // 定義系統管理子選單
-    const allSystemItems: MenuItem[] = [
-      { 
-        path: '/equipment', 
-        label: '設備管理頁面', 
-        icon: 'laptop',
-        permissions: [],
-        // permissions: ['view_devices', 'manage_devices'],
-        method: () => this.GoEquipment()
-      },
-      { 
-        path: '/backend-management', 
-        label: '兌換資料分析頁面', 
-        icon: 'bar-chart',
-        permissions: [],
-        // permissions: ['view_analytics', 'manage_backend'],
-        method: () => this.GoBackendManagement()
-      },
-      
-      { 
-        path: '/permission-management', 
-        label: '使用者管理', 
-        icon: 'team',
-        permissions: [],
-        // permissions: ['manage_permissions', 'manage_users'],
-        method: () => this.GoPermissionManagement()
-      },
-      { 
-        path: '/historical-record', 
-        label: '歷史紀錄頁面', 
-        icon: 'history',
-        permissions: [],
-        // permissions: ['view_logs'],
-        method: () => this.GoHistoricalRecord()
-      }
-    ];
+    const allSystemItems: MenuItem[] = SYSTEM_MANAGEMENT_ITEMS.map(item => ({
+      ...item,
+      method: () => this.navigateTo(item.path)
+    }));
 
     // 過濾出可見的選單項目
     this.menuItems = allMenuItems.filter(item => 
-      this.checkPermission(item.permissions)
+      this.checkPermission(item.permissions, item.roles)
     );
 
     // 過濾出可見的系統管理子項目
     this.systemManagementItems = allSystemItems.filter(item => 
-      this.checkPermission(item.permissions)
+      this.checkPermission(item.permissions, item.roles)
     );
+    
     console.log('✅ 可見的主選單項目:', this.menuItems.length);
     console.log('✅ 可見的系統管理項目:', this.systemManagementItems.length);
+    console.log('👤 用戶角色:', this.permissionService.getRoles());
+    console.log('🔑 用戶權限:', this.permissionService.getPermissions());
   }
 
-  // 檢查權限（無權限要求或擁有任一權限即可）
-  checkPermission(permissions: string[]): boolean {
+  // 檢查權限（無權限要求、擁有任一權限或擁有指定角色即可）
+  checkPermission(permissions: string[], roles?: string[]): boolean {
+    // 如果指定了角色，優先檢查角色
+    if (roles && roles.length > 0) {
+      if (this.permissionService.hasAnyRole(roles)) {
+        return true;
+      }
+    }
+
+    // 檢查權限
     if (!permissions || permissions.length === 0) {
       return true; // 無權限要求，所有人可見
     }
     return this.permissionService.hasAnyPermission(permissions);
+  }
+
+  // 通用導航方法
+  navigateTo(path: string): void {
+    this.router.navigate([path]);
   }
 
   // 檢查系統管理選單是否可見（至少有一個子項目可見）
@@ -174,6 +155,7 @@ interface MenuItem {
   label: string;
   icon: string;
   permissions: string[];
+  roles?: string[]; // 新增：可選的角色要求
   method?: () => void;
   children?: MenuItem[];
 }

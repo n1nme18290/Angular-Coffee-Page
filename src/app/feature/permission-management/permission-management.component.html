@@ -26,7 +26,8 @@
                 <thead>
                     <tr>
                         <th>名稱</th>
-                        <th>授權</th>
+                        <th>Email</th>
+                        <th>角色</th>
                         <th>狀態</th>
                         <th>操作</th>
                     </tr>
@@ -36,19 +37,28 @@
                     @for (data of adminList; track data.id) {
                     <tr>
                         <td>{{ data.name }}</td>
-                        <td>{{ data.permission }}</td>
-                        <td>{{ data.status }}</td>
+                        <td>{{ data.email }}</td>
                         <td>
-                            <button nz-button nzType="primary" class="action-btn edit-btn" (click)="editNormalAdminModal(data)">
-                                <i nz-icon nzType="edit" nzTheme="outline"></i>
-                                編輯
+                            <nz-tag [nzColor]="'blue'">
+                                {{ getAdminRoleNames(data) }}
+                            </nz-tag>
+                        </td>
+                        <td>
+                            <nz-tag [nzColor]="data.status === 'active' ? 'green' : 'red'">
+                                {{ data.status === 'active' ? '啟用' : '停用' }}
+                            </nz-tag>
+                        </td>
+                        <td>
+                            <button nz-button nzType="primary" class="action-btn edit-btn" (click)="editAdminRoleModal(data)">
+                                <i nz-icon nzType="team" nzTheme="outline"></i>
+                                管理角色
                             </button>
                         </td>
                     </tr>
                     }
                     } @else {
                     <tr>
-                        <td colspan="4" class="text-center">
+                        <td colspan="5" class="text-center">
                             @if (loading) {
                             載入中...
                             } @else {
@@ -63,73 +73,126 @@
     </div>
 
 
-    <nz-modal [(nzVisible)]="editNormalAdminVisible" [nzTitle]="'編輯權限 - ' + (currentEditAdmin?.name || '')"
-        [nzFooter]="editNormalAdminFooter" nzWidth="720px" nzCentered [nzClosable]="true"
-        (nzOnCancel)="editNormalAdminhandleCancel()" [nzClosable]="false"> 
+    <!-- 編輯管理員角色 Modal -->
+    <nz-modal 
+        [(nzVisible)]="editAdminRoleVisible" 
+        [nzTitle]="'管理角色 - ' + (currentEditAdmin?.name || '')"
+        [nzFooter]="editAdminRoleFooter" 
+        nzWidth="900px" 
+        nzCentered 
+        (nzOnCancel)="cancelEditAdminRole()">
         <ng-container *nzModalContent>
-            <!-- 顯示當前編輯的管理員資訊 -->
-            <div style="margin-bottom: 16px; padding: 12px; background: #f5f5f5; border-radius: 4px;">
-                <p style="margin: 0;"><strong>管理員：</strong>{{ currentEditAdmin?.name }}</p>
-                <p style="margin: 0;"><strong>ID：</strong>{{ currentEditAdmin?.id }}</p>
-                <p style="margin: 0;"><strong>Email：</strong>{{ currentEditAdmin?.email }}</p>
-                <p style="margin: 0;"><strong>已選擇權限數：</strong>{{ setOfCheckedId.size }}</p>
+            <!-- 管理員資訊卡片 -->
+            <div style="margin-bottom: 20px; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white;">
+                <div nz-row [nzGutter]="16">
+                    <div nz-col [nzSpan]="12">
+                        <p style="margin: 4px 0;">
+                            <i nz-icon nzType="user" nzTheme="outline"></i>
+                            <strong style="margin-left: 8px;">管理員：</strong>{{ currentEditAdmin?.name }}
+                        </p>
+                        <p style="margin: 4px 0;">
+                            <i nz-icon nzType="mail" nzTheme="outline"></i>
+                            <strong style="margin-left: 8px;">Email：</strong>{{ currentEditAdmin?.email }}
+                        </p>
+                    </div>
+                    <div nz-col [nzSpan]="12">
+                        <p style="margin: 4px 0;">
+                            <i nz-icon nzType="idcard" nzTheme="outline"></i>
+                            <strong style="margin-left: 8px;">ID：</strong>{{ currentEditAdmin?.id }}
+                        </p>
+                        <p style="margin: 4px 0;">
+                            <i nz-icon nzType="team" nzTheme="outline"></i>
+                            <strong style="margin-left: 8px;">已選角色數：</strong>{{ setOfCheckedRoleId.size }}
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            <!-- 權限列表 -->
-            <nz-table #roleListsTable [nzData]="roleList || []" [nzLoading]="roleListLoading" [nzBordered]="true"
-                [nzShowPagination]="true" [nzPageSize]="10" [nzFrontPagination]="true" [nzHideOnSinglePage]="false">
+            <!-- 角色列表 -->
+            <nz-table 
+                #roleTable 
+                [nzData]="availableRoles" 
+                [nzLoading]="roleListLoading" 
+                [nzBordered]="true"
+                [nzShowPagination]="false"
+                [nzScroll]="{ y: '400px' }">
                 <thead>
                     <tr>
-                        <th nzShowCheckbox [nzChecked]="checked" [nzIndeterminate]="indeterminate"
-                            (nzCheckedChange)="onAllChecked($event)">
+                        <th 
+                            nzWidth="60px"
+                            nzShowCheckbox 
+                            [nzChecked]="checked" 
+                            [nzIndeterminate]="indeterminate"
+                            (nzCheckedChange)="onAllRolesChecked($event)">
                         </th>
-                        <th>ID</th>
-                        <th>名稱</th>
-                        <th>說明</th>
-                        <th>狀態</th>
+                        <th nzWidth="150px">角色名稱</th>
+                        <th nzWidth="200px">說明</th>
+                        <th>權限列表</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (roleList && roleList.length > 0) {
-                    @for (data of roleList; track data.id) {
-                    <tr>
-                        <td nzShowCheckbox [nzChecked]="setOfCheckedId.has(data.id)"
-                            (nzCheckedChange)="onItemChecked(data.id, $event)">
-                        </td>
-                        <td>{{ data.id }}</td>
-                        <td>{{ data.name }}</td>
-                        <td>{{ data.description }}</td>
-                        <td>
-                            <nz-tag [nzColor]="data.status === 'active' ? 'green' : 'red'">
-                                {{ data.status }}
-                            </nz-tag>
-                        </td>
-                    </tr>
-                    }
+                    @if (availableRoles && availableRoles.length > 0) {
+                        @for (role of availableRoles; track role.role_id) {
+                        <tr>
+                            <td 
+                                nzShowCheckbox 
+                                [nzChecked]="setOfCheckedRoleId.has(role.role_id)"
+                                (nzCheckedChange)="onRoleItemChecked(role.role_id, $event)">
+                            </td>
+                            <td>
+                                <nz-tag [nzColor]="'blue'">{{ role.role_name }}</nz-tag>
+                            </td>
+                            <td>{{ role.description }}</td>
+                            <td>
+                                @if (getRolePermissions(role.role_name).length > 0) {
+                                    @for (permission of getRolePermissions(role.role_name); track permission) {
+                                        <nz-tag [nzColor]="permission === '*' ? 'red' : 'green'" style="margin: 2px;">
+                                            {{ permission }}
+                                        </nz-tag>
+                                    }
+                                } @else {
+                                    <span style="color: #999;">未定義權限</span>
+                                }
+                            </td>
+                        </tr>
+                        }
                     } @else {
-                    <tr>
-                        <td colspan="5" class="text-center">
-                            @if (roleListLoading) {
-                            載入中...
-                            } @else {
-                            暫無可用權限
-                            }
-                        </td>
-                    </tr>
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                @if (roleListLoading) {
+                                    載入中...
+                                } @else {
+                                    暫無可用角色
+                                }
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </nz-table>
+
+            <!-- 提示訊息 -->
+            <div style="margin-top: 16px; padding: 12px; background: #e6f7ff; border-left: 4px solid #1890ff; border-radius: 4px;">
+                <p style="margin: 0; color: #0050b3;">
+                    <i nz-icon nzType="info-circle" nzTheme="outline"></i>
+                    <strong style="margin-left: 8px;">提示：</strong>
+                    可以為管理員分配多個角色，權限將自動合併。SuperAdmin 擁有所有權限（*）。
+                </p>
+            </div>
         </ng-container>
 
-        <ng-template #editNormalAdminFooter>
-            <button nz-button (click)="editNormalAdminhandleCancel()">
+        <ng-template #editAdminRoleFooter>
+            <button nz-button (click)="cancelEditAdminRole()">
                 <i nz-icon nzType="close" nzTheme="outline"></i>
                 取消
             </button>
-            <button nz-button nzType="primary"  [nzLoading]="roleListLoading"
-                (click)="editNormalAdminhandleOk()">
+            <button 
+                nz-button 
+                nzType="primary" 
+                [nzLoading]="roleListLoading"
+                [disabled]="setOfCheckedRoleId.size === 0"
+                (click)="saveAdminRoles()">
                 <i nz-icon nzType="check" nzTheme="outline"></i>
-                完成設定
+                儲存角色
             </button>
         </ng-template>
     </nz-modal>
@@ -168,9 +231,13 @@
                         <td>{{ data.name }}</td>
                         <td>{{ data.title }}</td>
                         <td>{{ data.status }}</td>
-                        <td>{{ data.identityLev }}</td>
                         <td>
-                            <button nz-button nzType="primary" class="action-btn send-points-btn" (click)="sendPoints()">
+                            <nz-tag [nzColor]="data.identityLev === 1 ? 'purple' : 'blue'">
+                                {{ data.identityLev === 1 ? '一般會員' : '特殊會員' }}
+                            </nz-tag>
+                        </td>
+                        <td>
+                            <button nz-button nzType="primary" class="action-btn send-points-btn" (click)="sendPointsToMember(data)">
                                 <i nz-icon nzType="gift" nzTheme="outline"></i>
                                 發送點數
                             </button>
