@@ -22,6 +22,7 @@ import { PermissionService } from '../service/permission.service';
 import { HasPermissionDirective } from '../../feature/auth/permission-directive';
 import { MAIN_MENU_ITEMS, SYSTEM_MANAGEMENT_ITEMS, MenuItemConfig } from '../../core/config/role-permissions.config';
 
+
 @Component({
   selector: 'app-main-page',
   standalone: true,
@@ -40,6 +41,9 @@ export class MainPageComponent {
   menuItems: MenuItem[] = [];
   systemManagementItems: MenuItem[] = [];
   
+  // 是否顯示側邊欄（根據使用者角色決定）
+  showSidebar: boolean = true;
+  
   constructor() { }
 
   ngOnInit() {
@@ -47,10 +51,22 @@ export class MainPageComponent {
     this.permissionService.permissions$.subscribe(permissions => {
       console.log('📋 權限已更新，重新計算可見選單', permissions);
       this.updateVisibleMenuItems();
+      this.checkSidebarVisibility();
     });
     
     // 初始載入權限
     this.permissionService.loadUserPermissions();
+  }
+  
+  // 顯示側邊欄
+  checkSidebarVisibility() {
+    // 判斷是否為一般使用者
+    const isRegularUser = this.systemManagementItems.length === 0 && this.menuItems.length <= 1;
+    
+    
+    this.showSidebar = !isRegularUser;
+    
+    console.log('側邊欄顯示狀態:', this.showSidebar ? '顯示' : '隱藏');
   }
   
   updateVisibleMenuItems() {
