@@ -1,9 +1,14 @@
 <nz-header>
-    <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-        <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-            class="big-icon"></span>
+    <div class="header-left">
+        <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
+            <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
+                class="big-icon"></span>
+        </button>
+        <h2 nz-typography class="h2">{{username}}</h2>
+    </div>
+    <button nz-button nzType="primary" class="btn-styles6" (click)="GoLogIn()">
+        <h3 nz-typography>登出</h3>
     </button>
-    <h2 nz-typography class="h2">{{username}}</h2>
 </nz-header>
 
 <nz-content>
@@ -104,7 +109,8 @@
                 <br>
                 <div style="text-align: right;">
                     <button nz-button nzType="default" (click)="addpointhandleCancel()">取消</button>
-                    <button nz-button nzType="primary" class="btn-styles2" (click)="addpointhandleOk(addpointselectedValue, pointvalue)">確認轉贈</button>
+                    <button nz-button nzType="primary" class="btn-styles2"
+                        (click)="addpointhandleOk(addpointselectedValue, pointvalue)">確認轉贈</button>
                 </div>
             </ng-container>
         </nz-modal>

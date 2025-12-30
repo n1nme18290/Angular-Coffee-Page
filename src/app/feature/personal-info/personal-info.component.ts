@@ -14,6 +14,7 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
@@ -48,6 +49,7 @@ import { TokenService } from '../../share/service/token.service';
 export class PersonalInfoComponent implements OnInit, OnDestroy {
   private memberIdSubscription?: Subscription;
   private currentMemberId: string = '';
+  private router = inject(Router);
 
   constructor(
     public sidebarService: SidebarService,
@@ -102,6 +104,11 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
       '試試轉贈點數給朋友',
       '趕緊兌換咖啡吧！'
     ];
+  }
+
+  //登出
+    GoLogIn() {
+    this.router.navigate(['/log-in']);
   }
 
   // 透過 MemberId 取得點數
