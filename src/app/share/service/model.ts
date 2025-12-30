@@ -150,12 +150,26 @@ export interface IApiResponseGetPageDeviceLog {
     created_at: string
 }
 export interface IApiResponseSecurityRole {
-    created_at: string
+    role_id: string
+    role_name: string
     description: string
+    is_owned: boolean
+}
+
+export interface IApiResponseAdminRole {
     id: string
     name: string
+    description: string
     status: string
-    updated_at: string
+}
+
+export interface IApiResponseRoleListItem {
+    id: string
+    name: string
+    description: string
+    status: string
+    created_at?: string
+    updated_at?: string
 }
 // export interface IApiResponseCreateSecurityRole {
 //     id: string

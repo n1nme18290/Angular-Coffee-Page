@@ -11,8 +11,10 @@ import { TokenService } from '../service/token.service';
 // 基底服務類別
 export abstract class BaseService {
   protected http = inject(HttpClient);
-  // protected readonly url = 'http://10.25.1.172:5054';
-  protected readonly url = 'http://163.17.136.69:11538';
+  // 建升的伺服器
+  protected readonly url = 'http://10.25.1.101:5054';
+  // 峻嘉的伺服器
+  // protected readonly url = 'http://163.17.136.69:11538';
   protected readonly PointsUrl = "/Points/Points/";
   protected readonly LogUrl = "/Logs/Log/";
   protected readonly ProductUrl = "/Product/Product/";
@@ -21,6 +23,7 @@ export abstract class BaseService {
   protected readonly MemberUrl = "/Member/Member/";
   protected readonly DeviceUrl = "/Device/Device/";
   protected readonly SecurityUrl = "/Security/Role/";
+  protected readonly AccessUrl = "/Security/Access/";
 }
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -349,7 +352,8 @@ export class AuthService extends BaseService {
     const ssoUrl = this.url + this.AuthUrl + 'sso_login';
     const requestBody = {
       "provider": "member",
-      "student_id": "1811432008",
+      // "student_id": "1811432008",
+      "student_id": "s1811432018",
     }
     return this.http.post<IApiResponse<IApiResponseMemberSSOLogin>>(ssoUrl, requestBody);
   }
@@ -528,10 +532,10 @@ export class SecurityService extends BaseService {
   constructor() {
     super();
   }
-  // 取得所有權限角色
-  getAllRolesList(): Observable<IApiResponse<IApiResponsePages<IApiResponseSecurityRole>>> {
+  // 取得所有權限角色（與 getRolePermission 回傳相同結構）
+  getAllRolesList(): Observable<IApiResponse<IApiResponseSecurityRole[]>> {
     const apiUrl = `${this.url}${this.SecurityUrl}list`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponseSecurityRole>>>(apiUrl);
+    return this.http.get<IApiResponse<IApiResponseSecurityRole[]>>(apiUrl);
   }
   // 創建權限角色
   createRole(name: string, description: string, status: string): Observable<IApiResponse<IApiResponseSecurityRole[]>> {
@@ -554,22 +558,28 @@ export class SecurityService extends BaseService {
     };
     return this.http.put<IApiResponse<null>>(apiUrl, requestBody);
   }
-  // 設定權限角色
-  setPermissions(role_id: string, permissions: string[], replace: boolean): Observable<IApiResponse<any>> {
-    const apiUrl = `${this.url}${this.SecurityUrl}set_permissions`;
-    const requestBody = {
-      role_id: role_id,
-      permissions: permissions,
-      replace: replace
-    };
-    return this.http.put<IApiResponse<any>>(apiUrl, requestBody);
+  // 設定權限
+  // setPermissions(role_id: string, permissions: string[], replace: boolean): Observable<IApiResponse<any>> {
+  //   const apiUrl = `${this.url}${this.SecurityUrl}set_permissions`;
+  //   const requestBody = {
+  //     role_id: role_id,
+  //     permissions: permissions,
+  //     replace: replace
+  //   };
+  //   return this.http.put<IApiResponse<any>>(apiUrl, requestBody);
+  // }
+  // 取得管理員的所有角色（包含 is_owned 狀態）
+  getRolePermission(adminId: string): Observable<IApiResponse<IApiResponseSecurityRole[]>> {
+    const apiUrl = `${this.url}${this.AccessUrl}get_roles_status_by_admin?admin_id=${adminId}`;
+    return this.http.get<IApiResponse<IApiResponseSecurityRole[]>>(apiUrl);
   }
-  // 取得角色權限，未介接實際apiUrl
-  getRolePermission(memberId: string): Observable<IApiResponse<IApiResponseSecurityRole[]>> {
-    const apiUrl = `${this.url}${this.SecurityUrl}get_role_permissions`;
+  // 為管理員分配角色
+  assignRolesToAdmin(adminId: string, roleIds: string[]): Observable<IApiResponse<any>> {
+    const apiUrl = `${this.url}${this.SecurityUrl}assign_roles`;
     const requestBody = {
-      memberId: memberId
+      admin_id: adminId,
+      role_ids: roleIds
     };
-    return this.http.post<IApiResponse<IApiResponseSecurityRole[]>>(apiUrl, requestBody);
+    return this.http.post<IApiResponse<any>>(apiUrl, requestBody);
   }
 }
