@@ -111,14 +111,22 @@ nz-sider.ant-layout-sider-collapsed {
     width: 80px;
 }
 
-nz-layout > nz-layout { //選nz-layout裡面的
+// ========== 修正重點：根據側邊欄顯示狀態調整主內容區 ==========
+
+// 當有側邊欄時的主內容區
+nz-layout.with-sidebar > nz-layout {
     margin-left: 300px;
-    transition: margin-left 0.2s; // 動畫
+    transition: margin-left 0.2s;
 }
 
-//主內容區 
-nz-sider.ant-layout-sider-collapsed + nz-layout { //選同時有 nz-sider   ant-layout-sider-collapsed
+// 當側邊欄收合時的主內容區
+nz-layout.with-sidebar > nz-sider.ant-layout-sider-collapsed + nz-layout {
     margin-left: 80px;
+}
+
+// 當沒有側邊欄時的主內容區（撐滿）
+nz-layout.without-sidebar > nz-layout {
+    margin-left: 0;
 }
 
 // ========== 新增的互動效果 ==========

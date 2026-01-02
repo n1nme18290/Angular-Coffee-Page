@@ -105,7 +105,7 @@ export class PersonalInfoComponent implements OnInit, OnDestroy {
       '趕緊兌換咖啡吧！'
     ];
   }
-
+  
   //登出
     GoLogIn() {
     this.router.navigate(['/log-in']);

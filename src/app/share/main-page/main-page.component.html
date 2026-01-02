@@ -1,4 +1,4 @@
-<nz-layout>
+<nz-layout [class.with-sidebar]="showSidebar" [class.without-sidebar]="!showSidebar">
   <!-- 側邊欄：根據 showSidebar 決定是否顯示 -->
   @if (showSidebar) {
     <nz-sider nzCollapsible [(nzCollapsed)]="sidebarService.isCollapsed" [nzTrigger]="null" [nzWidth]="300">
