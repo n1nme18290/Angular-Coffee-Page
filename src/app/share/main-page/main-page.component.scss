@@ -79,7 +79,6 @@ nz-breadcrumb {
 
 .menu-item-large {
     font-size: 24px; 
-    transition: all 0.3s ease;
 }
 
 .menu-container {
@@ -111,121 +110,12 @@ nz-sider.ant-layout-sider-collapsed {
     width: 80px;
 }
 
-// ========== 修正重點：根據側邊欄顯示狀態調整主內容區 ==========
-
-// 當有側邊欄時的主內容區
-nz-layout.with-sidebar > nz-layout {
+nz-layout > nz-layout { //選nz-layout裡面的
     margin-left: 300px;
-    transition: margin-left 0.2s;
+    transition: margin-left 0.2s; // 動畫
 }
 
-// 當側邊欄收合時的主內容區
-nz-layout.with-sidebar > nz-sider.ant-layout-sider-collapsed + nz-layout {
+//主內容區 
+nz-sider.ant-layout-sider-collapsed + nz-layout { //選同時有 nz-sider   ant-layout-sider-collapsed
     margin-left: 80px;
-}
-
-// 當沒有側邊欄時的主內容區（撐滿）
-nz-layout.without-sidebar > nz-layout {
-    margin-left: 0;
-}
-
-// ========== 新增的互動效果 ==========
-
-// 選單項目的 hover 效果
-ul.main-menu li[nz-menu-item],
-ul.logout-menu li[nz-menu-item] {
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    
-    &:hover {
-        background-color: rgba(39, 73, 109, 0.2) !important; // 藍色
-        transform: scale(1.01); 
-        box-shadow: 0 4px 12px rgba(39, 73, 109, 0.3); // 添加陰影增強浮空感
-    }
-    
-    // 點擊時的效果
-    &:active {
-        background-color: rgba(39, 73, 109, 0.35) !important;
-        transform: scale(1.01); // 點擊時稍微縮小
-    }
-}
-
-// 子選單的 hover 效果
-li[nz-submenu] {
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    
-    &:hover {
-        background-color: rgba(39, 73, 109, 0.2) !important;
-        transform: scale(1.01); // 放大 1%
-        box-shadow: 0 4px 12px rgba(39, 73, 109, 0.3);
-    }
-}
-
-// 子選單標題的 hover 效果
-li[nz-submenu]:hover .ant-menu-submenu-title {
-    color: #9cccff !important;
-    font-weight: bold;
-}
-
-// 子選單內的項目
-li[nz-submenu] ul li[nz-menu-item] {
-    transition: all 0.3s ease;
-    
-    &:hover {
-        background-color: rgba(39, 73, 109, 0.25) !important;
-        transform: scale(1.03); 
-        box-shadow: 0 2px 8px rgba(39, 73, 109, 0.2);
-        color: #9cccff !important;
-    }
-    
-    &:active {
-        background-color: rgba(39, 73, 109, 0.4) !important;
-        transform: scale(1.01);
-    }
-}
-
-// 圖示的 hover 效果
-span[nz-icon] {
-    transition: all 0.3s ease;
-}
-
-li[nz-menu-item]:hover span[nz-icon],
-li[nz-submenu]:hover span[nz-icon] {
-    transform: scale(1.15); // 圖示放大
-    color: #9cccff; // 變成藍色
-}
-
-// 文字的 hover 效果
-li[nz-menu-item]:hover .menu-item-large {
-    color: #9cccff !important; // 文字變藍色
-    font-weight: bold;
-}
-
-// 登出按鈕特殊效果
-.logout-menu li[nz-menu-item]:hover {
-    background-color: rgba(255, 77, 79, 0.15) !important; // 紅色警告效果
-    
-    span[nz-icon] {
-        color: #ff4d4f !important;
-    }
-    
-    .menu-item-large {
-        color: #ff4d4f !important;
-    }
-}
-
-// 摺疊狀態下的效果優化
-nz-sider.ant-layout-sider-collapsed {
-    li[nz-menu-item]:hover,
-    li[nz-submenu]:hover {
-        transform: scale(1.1); // 摺疊時也是放大效果
-        
-        span[nz-icon] {
-            transform: scale(1.3) rotate(360deg); // 圖示放大並旋轉
-        }
-    }
 }
