@@ -103,7 +103,6 @@ button[nz-button].btn-styles3 {
     border: 0.1px solid #F0F2F5;
     height: 40px;
     display: flex;
-    align-items: flex-end;
     justify-content: center;
 }
 
@@ -900,56 +899,143 @@ h3 {
         h5 {
             margin-bottom: 10px;
             font-weight: 600;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .quantity-info {
-            font-size: 12px;
-            color: #999;
-            margin: 0;
+            color: #262626;
         }
     }
+}
 
-    .points-info {
-        .points-row {
+// 規則內容
+.rules-content {
+    .rule-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: #fff;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: #e6f7ff;
+            transform: translateX(4px);
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        .rule-icon {
+            font-size: 18px;
+            color: #52c41a;
+        }
+
+        .rule-text {
+            font-size: 14px;
+            color: #595959;
+            font-weight: 500;
+        }
+    }
+}
+
+// 歷史紀錄表格
+.history-table-wrapper {
+    ::ng-deep .ant-table {
+        .event-type {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-weight: bold;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
 
-            &.now {
-                font-weight: 600;
-                color: #3ca2a7;
+            i {
+                color: #1890ff;
             }
+        }
 
-            &.total {
-                font-weight: 600;
-                color: #ad1013;
-                border-top: 1px solid #f0f0f0;
-                padding-top: 8px;
-                margin-top: 8px;
-            }
+        .points-change {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
 
-            &.remaining {
-                font-weight: 600;
+            .points-increase {
                 color: #52c41a;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .points-decrease {
+                color: #ff4d4f;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .points-balance {
+                font-size: 12px;
+                color: #8c8c8c;
             }
         }
 
-        .points-required,
-        .points-total {
-            color: #ad1013;
-            font-weight: 600;
+        .time-text {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #595959;
+            font-size: 13px;
+
+            i {
+                color: #8c8c8c;
+            }
         }
 
-        .points-current {
-            color: #3ca2a7;
-            font-weight: 600;
+        .empty-data {
+            text-align: center;
+            padding: 60px 20px;
+
+            .empty-icon {
+                font-size: 48px;
+                color: #d9d9d9;
+                display: block;
+                margin-bottom: 12px;
+            }
+
+            p {
+                margin: 12px 0 0 0;
+                color: #8c8c8c;
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+// Modal 表單樣式
+.modal-form {
+    .current-points-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px;
+        background: #e6f7ff;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        border-left: 4px solid #1890ff;
+
+        i {
+            font-size: 20px;
+            color: #1890ff;
+        }
+
+        span {
+            color: #595959;
+        }
+
+        strong {
+            color: #1890ff;
+            font-size: 18px;
+            margin-left: auto;
         }
 
         .points-remaining {

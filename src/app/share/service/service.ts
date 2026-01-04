@@ -370,6 +370,10 @@ export class AuthService extends BaseService {
             if (response.data.member_id) {
               this.tokenService.setMemberId(response.data.member_id);
             }
+            // 儲存 admin_id
+            if (response.data.admin_id) {
+              this.tokenService.setCurrentAdminId(response.data.admin_id);
+            }
           }
           observer.next(response);
           observer.complete();
@@ -383,7 +387,7 @@ export class AuthService extends BaseService {
   // 登出
   logout(): void {
     this.tokenService.removeToken();
-    this.tokenService.remonveMemberId();
+    this.tokenService.removeMemberId();
   }
 }
 // Member 相關API

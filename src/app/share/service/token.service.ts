@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class TokenService {
     private baseTokenKey = 'coffee_auth_token';
     private baseMemberIdKey = 'coffee_member_id';
+    private baseAdminIdKey = 'coffee_admin_id';
 
     private tokenSubject = new BehaviorSubject<string | null>(this.getToken());
     private memberIdSubject = new BehaviorSubject<string | null>(this.getMemberId());
@@ -24,10 +25,20 @@ export class TokenService {
         const currentUserMemberId = `${this.baseMemberIdKey}`;
         return currentUserMemberId;
     }
+    // 獲取當前管理員的 admin ID key
+    private getAdminIdKey(): string {
+        const currentUserAdminId = `${this.baseAdminIdKey}`;
+        return currentUserAdminId;
+    }
 
     // 獲取當前用戶 ID
     getCurrentUserId(name?: string): string | null {
         return localStorage.getItem(name ? `${this.baseMemberIdKey}_${name}` : this.baseMemberIdKey);
+    }
+
+    // 獲取當前管理員 ID
+    getCurrentAdminId(name?: string): string | null {
+        return localStorage.getItem(name ? `${this.baseAdminIdKey}_${name}` : this.baseAdminIdKey);
     }
 
     // Token 相關方法
@@ -56,12 +67,17 @@ export class TokenService {
         localStorage.setItem(memberIdKey, memberId);
     }
 
+    setCurrentAdminId(adminId: string): void {
+        const adminIdKey = this.getAdminIdKey();
+        localStorage.setItem(adminIdKey, adminId);
+    }
+
     getMemberId(): string {
         const memberIdKey = this.getMemberIdKey();
         return localStorage.getItem(memberIdKey) || '';
     }
 
-    remonveMemberId(): void {
+    removeMemberId(): void {
         const memberIdKey = this.getMemberIdKey();
         localStorage.removeItem(memberIdKey);
     }

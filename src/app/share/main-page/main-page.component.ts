@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -24,16 +24,16 @@ import { HasPermissionDirective } from '../../feature/auth/permission-directive'
   selector: 'app-main-page',
   standalone: true,
   imports: [RouterOutlet, NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule,
-    NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule, CommonModule, HasPermissionDirective,
+    NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule, CommonModule,
     NzRadioModule, NzMenuModule],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.scss'
 })
-export class MainPageComponent {
+export class MainPageComponent implements OnInit {
   private permissionService = inject(PermissionService);
   private router = inject(Router);
   public sidebarService = inject(SidebarService);
-  
+
   // 選單項目配置
   menuItems: MenuItem[] = [];
   systemManagementItems: MenuItem[] = [];
@@ -46,7 +46,7 @@ export class MainPageComponent {
       console.log('📋 權限已更新，重新計算可見選單', permissions);
       this.updateVisibleMenuItems();
     });
-    
+
     // 初始載入權限
     this.permissionService.loadUserPermissions();
   }
@@ -143,10 +143,10 @@ export class MainPageComponent {
   GoBackendManagement() {
     this.router.navigate(['/backend-management'])
   }
-  GoHistoricalRecord(){
+  GoHistoricalRecord() {
     this.router.navigate(['/historical-record'])
   }
-  GoPermissionManagement(){
+  GoPermissionManagement() {
     this.router.navigate(['/permission-management'])
   }
 }

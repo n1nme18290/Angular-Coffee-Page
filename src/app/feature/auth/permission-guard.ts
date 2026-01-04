@@ -37,16 +37,16 @@ export const permissionGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // 取得當前用戶 I
-  const memberId = tokenService.getCurrentUserId();
-  if (!memberId) {
-    console.log('❌ 無法取得用戶 ID');
+  // 取得當前用戶 adminId
+  const adminId = tokenService.getCurrentUserId();
+  if (!adminId) {
+    console.log('❌ 無法取得用戶 adminId');
     router.navigate(['/log-in']);
     return false;
   }
 
   // 檢查用戶權限
-  return securityService.getRolePermission(memberId).pipe(
+  return securityService.getRolePermission(adminId).pipe(
     map(response => {
       if (response.isSuccess && response.data) {
         const userPermissions = response.data.map((role: any) => role.name || role.permission_name);

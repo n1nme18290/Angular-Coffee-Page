@@ -1,4 +1,5 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -12,386 +13,297 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { Router } from '@angular/router';
-import { RouterOutlet } from '@angular/router';
-import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
-import { CommonModule } from '@angular/common';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { MemberService, PointService, LogService } from '../../share/service/service';
+import { IApiResponseMember, IApiResponsePointsHistory } from '../../share/service/model';
 import { SidebarService } from '../../share/service/sidebar.service';
-import { Observable, of, Subscription } from 'rxjs';
-import { IApiResponse, IApiResponsePoints, IApiResponseMember, IApiResponsePointsHistory, IApiResponseGetPageProduct, IApiResponseGetProduct } from '../../share/service/model';
-import { PointService, MemberService, AdminService, LogService, ProductService, AuthService, } from '../../share/service/service';
 import { TokenService } from '../../share/service/token.service';
-
-
 
 @Component({
   selector: 'app-personal-info',
   standalone: true,
   imports: [
-    NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule,
-    NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule, NzInputNumberModule,
-    NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzRadioModule, NzModalModule, NzCardModule,
-    CommonModule, NzDividerModule, NzGridModule, NzCarouselModule, NzQRCodeModule, NzTableModule, NzCollapseModule
+    CommonModule,
+    NzLayoutModule,
+    NzButtonModule,
+    NzIconModule,
+    NzInputModule,
+    NzTypographyModule,
+    NzDropDownModule,
+    FormsModule,
+    NzSelectModule,
+    NzSwitchModule,
+    NzAvatarModule,
+    NzTabsModule,
+    NzPageHeaderModule,
+    NzDrawerModule,
+    NzGridModule,
+    NzRadioModule,
+    NzModalModule,
+    NzTableModule,
+    NzDividerModule,
+    NzCheckboxModule,
+    NzCardModule,
+    NzBadgeModule,
+    NzCarouselModule,
+    NzCollapseModule,
+    NzInputNumberModule,
+    NzSpinModule
   ],
   templateUrl: './personal-info.component.html',
   styleUrl: './personal-info.component.scss'
 })
+export class PersonalInfoComponent implements OnInit {
+  // ✅ 注入服務
+  public sidebarService = inject(SidebarService);
+  private memberService = inject(MemberService);
+  private pointsService = inject(PointService);
+  private logService = inject(LogService); // ✅ 新增 LogService
+  private tokenService = inject(TokenService);
+  private message = inject(NzMessageService);
 
-export class PersonalInfoComponent implements OnInit, OnDestroy {
-  private memberIdSubscription?: Subscription;
-  private currentMemberId: string = '';
-  private router = inject(Router);
+  // 輪播訊息
+  carouselMessages = [
+    '🎉 歡迎使用咖啡點數系統',
+    '☕ 每消費一次即可累積點數',
+    '🎁 20 點即可兌換一杯免費咖啡'
+  ];
 
-  constructor(
-    public sidebarService: SidebarService,
-    public pointService: PointService,
-    public memberService: MemberService,
-    public adminservice: AdminService,
-    public logservice: LogService,
-    public productService: ProductService,
-    public tokenService: TokenService
-  ) { }
-
-  ngOnInit(): void {
-    const memberId = this.tokenService.getMemberId();
-    this.getPointByMemberId(memberId || undefined);
-    this.getMember(memberId || undefined);
-    // this.getAllMembers();
-    this.getMemberLog(memberId || undefined, 1, 10);
-    // this.getMemPageProduct(memberId);
-    // 載入商品清單
-    // this.loadProducts();
-  }
-  // 取消訂閱
-  ngOnDestroy(): void {
-    if (this.memberIdSubscription) {
-      this.memberIdSubscription.unsubscribe();
-    }
-  }
-
-  toggleCollapsed(): void {
-    this.sidebarService.toggleCollapsed();
-  }
-
+  // 使用者資訊
   username: string = '';
+  email: string = '';
   userpoint: number = 0;
+  memberId: string = '';
 
-  productList: IApiResponseGetPageProduct[] = [];
-  memberProductList: IApiResponseGetProduct[] = [];
-
-  // 輪換通知
-  get coffeeCount(): number {
-    return Math.floor(this.userpoint / 20);
-  }
-  get pointsToNextCoffee(): number {
-    return 20 - (this.userpoint % 20);
-  }
-  get isExact(): boolean {
-    return this.userpoint % 20 === 0;
-  }
-  get carouselMessages(): string[] {
-    return [
-      `目前可兌換 ${this.coffeeCount} 杯咖啡`,
-      '試試轉贈點數給朋友',
-      '趕緊兌換咖啡吧！'
-    ];
-  }
-  
-  //登出
-    GoLogIn() {
-    this.router.navigate(['/log-in']);
-  }
-
-  // 透過 MemberId 取得點數
-  getPointByMemberId(memberId?: string) {
-    const targetId = memberId || this.currentMemberId;
-    if (!targetId) {
-      console.error('無法取得會員ID');
-      return;
-    }
-
-    this.pointService.getPointByMemberId(targetId).subscribe({
-      next: (response) => {
-        this.userpoint = response.data.balance;
-      },
-      error: (error) => {
-        console.error('Error fetching point data:', error);
-      }
-    });
-  }
-
-  // 依 id 查詢會員名稱 
-  getMember(id?: string) {
-    const targetId = id || this.currentMemberId;
-    if (!targetId) {
-      console.error('無法取得會員ID');
-      return;
-    }
-
-    this.memberService.getMember(targetId).subscribe({
-      next: (response) => {
-        this.username = response.data.name;
-      },
-      error: (error) => {
-        console.error('Error fetching member:', error);
-      }
-    });
-  }
-
-  //取得所有成員
-  members: IApiResponseMember[] = [];
-
-  getAllMembers() {
-    this.memberService.getAllMembers().subscribe({
-      next: (response) => {
-        // console.log("Member data:", response);
-        this.members = (response as any).data || [];
-      },
-      error: (error) => {
-        console.error("error get all member:", error);
-        this.members = [];
-      }
-    });
-  }
-
-  //點數異動紀錄 -- 查詢指定會員的點數異動紀錄
-
-  memberPointsHistoryList: IApiResponsePointsHistory[] = [];
-  memberHistoryLoading = false;
-
-  // 取得會員點數異動紀錄
-  getMemberLog(memberId?: string, page: number = 1, perPage: number = 5): void {
-    const targetId = memberId || this.currentMemberId;
-    if (!targetId) {
-      console.error('無法取得會員ID');
-      return;
-    }
-    this.memberHistoryLoading = true;
-    this.logservice.getMemberLog(targetId, page, perPage).subscribe({
-      next: (response) => {
-        console.log('Member Log API Response:', response);
-        if (response.isSuccess && response.data) {
-          this.memberPointsHistoryList = response.data.data || [];
-        } else {
-          console.error('Error fetching member log:', response.message);
-          this.memberPointsHistoryList = [];
-        }
-        this.memberHistoryLoading = false;
-      },
-      error: (error) => {
-        console.error('Error fetching member log:', error);
-        this.memberPointsHistoryList = [];
-        this.memberHistoryLoading = false;
-      }
-    });
-  }
-  // 轉贈點數彈跳視窗
+  // Modal 控制
+  reviseisVisible = false;
   addpointisVisible = false;
+  passwordVisible = false;
+
+  // 表單值
+  namevalue: string = '';
+  passwordvalue: string = '';
   addpointselectedValue: string = '';
   pointvalue: number = 0;
-  addpointModal(): void {
-    this.addpointisVisible = true;
-  }
-  // 確認轉贈
-  // 增加點數或轉贈點數
-  addpointhandleOk(targetMemberId: string, balance: number) {
-    this.currentMemberId = this.tokenService.getMemberId() || '';
-    if (!this.currentMemberId) {
-      console.error('無法取得會員ID');
-      return;
-    }
-    this.pointService.addMemberpoints(this.currentMemberId, targetMemberId, balance).subscribe({
-      next: (response) => {
-        console.log('Add member points response:', response);
-        alert('轉贈成功！');
-        // 重新載入點數和異動紀錄
-        this.getPointByMemberId();
-        this.getMemberLog();
-      },
-      error: (error) => {
-        console.error('Error adding member points:', error);
-        alert('轉贈失敗，請稍後再試');
-      }
-    });
-    this.addpointisVisible = false;
-  }
-  // 取消轉贈
-  addpointhandleCancel(): void {
-    this.addpointisVisible = false;
-  }
 
-  // 兌換點數彈跳視窗
-  usepointisVisible = false;
-  usepointselectedValue: string | null = null;
-  capvalue?: number;
-
-  usepointModal(): void {
-    this.usepointisVisible = true;
-  }
-
-  usepointhandleCancel(): void {
-    this.usepointisVisible = false;
-  }
-
-  //修改資料彈窗
-  reviseisVisible = false;
-  reviseselectedValue: string | null = null;
-  passwordvalue?: string;
-  namevalue?: string;
-
-  reviseModal(): void {
-    this.reviseisVisible = true;
-  }
-
-  revisehandleOk(): void {
-    this.reviseisVisible = false;
-
-  }
-
-  revisehandleCancel(): void {
-    this.reviseisVisible = false;
-  }
-
-  // 載入商品清單
-  // loadProducts(): void {
-  //   this.productService.getPageProduct(1, 5).subscribe({
-  //     next: (response) => {
-  //       if (response && response.data && response.data.data) {
-  //         this.productList = response.data.data;
-  //       }
-  //     },
-  //     error: (error) => {
-  //       console.error('載入商品失敗:', error);
-  //       this.productList = [];
-  //     }
-  //   });
-  // }
-  // 取得商品列表
-  // getPageProduct(): void {
-  //   this.productService.getPageProduct(1, 5).subscribe({
-  //     next: (response) => {
-  //       this.productList = response.data.data || [];
-  //     },
-  //     error: (error) => {
-  //       console.error('Error fetching product data:', error);
-  //     }
-  //   });
-  // }
-
-  // exchangeConfirmVisible = false;
-  // selectedProduct: IApiResponseGetPageProduct | null = null;
-  // exchangeQuantity: number = 1;
-  // // 點擊飲品卡片
-  // onDrinkSelect(product: IApiResponseGetPageProduct): void {
-  //   console.log('你點擊了:', product);
-  //   this.selectedProduct = product;
-  //   this.exchangeQuantity = 1;
-
-  //   // 檢查點數是否足夠
-  //   if (this.userpoint < product.points_required) {
-  //     alert(`點數不足！需要 ${product.points_required} 點，您目前有 ${this.userpoint} 點`);
-  //     return;
-  //   }
-
-  //   // 顯示兌換確認彈窗
-  //   this.exchangeConfirmVisible = true;
-  // }
-  // 增加數量
-  // increaseQuantity(): void {
-  //   if (!this.selectedProduct) return;
-  //   const maxQuantity = Math.floor(this.userpoint / this.selectedProduct.points_required);
-  //   if (this.exchangeQuantity < maxQuantity) {
-  //     this.exchangeQuantity++;
-  //   }
-  // }
-  // 減少數量
-  // decreaseQuantity(): void {
-  //   if (this.exchangeQuantity > 1) {
-  //     this.exchangeQuantity--;
-  //   }
-  // }
-  // 計算總點數
-  // getTotalPoints(): number {
-  //   if (!this.selectedProduct) return 0;
-  //   return this.selectedProduct.points_required * this.exchangeQuantity;
-  // }
-  // 計算最大可兌換數量
-  // getMaxQuantity(): number {
-  //   if (!this.selectedProduct) return 0;
-  //   return Math.floor(this.userpoint / this.selectedProduct.points_required);
-  // }
-  // 檢查數量是否有效
-  // isQuantityValid(): boolean {
-  //   return this.exchangeQuantity >= 1 && this.exchangeQuantity <= this.getMaxQuantity();
-  // }
-  // 確認兌換
-  // confirmExchange(productId: string, pointsRequired: number): void {
-  //   if (!this.selectedProduct || !this.isQuantityValid()) {
-  //     alert('請選擇有效的兌換數量');
-  //     return;
-  //   }
-  //   this.currentMemberId = '9aa162f8-5ceb-4783-be85-274fed2ecb8e'; // 測試用
-  //   this.pointService.exchangeProduct(this.currentMemberId, productId, this.exchangeQuantity).subscribe({
-  //     next: (response) => {
-  //       console.log('兌換成功:', response);
-  //       alert(`成功兌換 ${this.exchangeQuantity} 張「${this.selectedProduct?.name}」！`);
-  //       this.exchangeConfirmVisible = false;
-  //       this.selectedProduct = null;
-  //       this.exchangeQuantity = 1;
-
-  //       // 重新載入資料
-  //       this.getPointByMemberId("9aa162f8-5ceb-4783-be85-274fed2ecb8e");
-  //       this.getMemberLog("9aa162f8-5ceb-4783-be85-274fed2ecb8e", 1, 10);
-  //     },
-  //     error: (error) => {
-  //       console.error('兌換失敗:', error);
-  //       alert('兌換失敗，請稍後再試');
-  //     }
-  //   });
-  // }
-  // 取消兌換確認
-  // cancelExchange(): void {
-  //   this.exchangeConfirmVisible = false;
-  //   this.selectedProduct = null;
-  //   this.exchangeQuantity = 1;
-  // }
-
-  // 取得會員商品列表
-  // getMemPageProduct(memberId?: string): void {
-  //   const currentMemberId = memberId || this.currentMemberId;
-  //   this.productService.getMemPageProduct(currentMemberId, 1, 5).subscribe({
-  //     next: (response) => {
-  //       this.memberProductList = response.data || [];
-  //       console.log('會員商品列表:', this.memberProductList);
-  //     },
-  //     error: (error) => {
-  //       console.error('Error fetching member product data:', error);
-  //     }
-  //   });
-  // }
-
-  //異動折疊
-  pointpanels = [
-    {
-      active: true,
-      name: '點數異動紀錄',
-      disabled: false
-    }
-  ]
+  // 折疊面板
   rulepanels = [
     {
       active: true,
       name: '點數使用與規則說明',
       disabled: false
     }
-  ]
+  ];
+
+  pointpanels = [
+    {
+      active: true,
+      name: '點數異動紀錄',
+      disabled: false
+    }
+  ];
+
+  // 點數異動紀錄
+  memberPointsHistoryList: IApiResponsePointsHistory[] = [];
+  memberHistoryLoading = false;
+
+  constructor() {}
+
+  ngOnInit() {
+    // 先取得會員 ID
+    this.memberId = this.tokenService.getCurrentUserId() || '';
+    
+    if (!this.memberId) {
+      console.error('❌ 無法取得會員 ID');
+      this.message.error('無法取得會員資訊，請重新登入');
+      return;
+    }
+
+    // 載入資料
+    this.loadMemberInfo();
+    this.loadMemberPoints();
+    this.loadMemberLog(); // ✅ 使用正確的方法
+  }
+
+  // ✅ 切換側邊欄
+  toggleCollapsed() {
+    this.sidebarService.toggleCollapsed();
+  }
+
+  // 載入會員基本資訊
+  loadMemberInfo() {
+    this.memberService.getMember(this.memberId).subscribe({
+      next: (res) => {
+        if (res.isSuccess && res.data) {
+          this.username = res.data.name || '';
+          this.email = res.data.email || '';
+          console.log('✅ 會員資訊載入成功');
+        } else {
+          console.error('❌ 會員資訊載入失敗:', res.message);
+          this.message.error(res.message || '載入會員資訊失敗');
+        }
+      },
+      error: (err) => {
+        console.error('❌ 載入會員資訊錯誤:', err);
+        this.message.error('載入會員資訊時發生錯誤');
+      }
+    });
+  }
+
+  // ✅ 載入會員點數
+  loadMemberPoints() {
+    this.pointsService.getPointByMemberId(this.memberId).subscribe({
+      next: (res) => {
+        if (res.isSuccess && res.data) {
+          this.userpoint = res.data.balance || 0;
+          console.log('✅ 會員點數載入成功:', this.userpoint);
+        } else {
+          console.warn('⚠️ 查無點數資料:', res.message);
+          this.userpoint = 0;
+        }
+      },
+      error: (err) => {
+        console.error('❌ 載入會員點數錯誤:', err);
+        this.userpoint = 0;
+      }
+    });
+  }
+
+  // ✅ 載入會員點數異動紀錄（使用 LogService）
+  loadMemberLog(page: number = 1, perPage: number = 10) {
+    if (!this.memberId) {
+      console.error('❌ 無法取得會員ID');
+      return;
+    }
+
+    this.memberHistoryLoading = true;
+    this.logService.getMemberLog(this.memberId, page, perPage).subscribe({
+      next: (response) => {
+        console.log('📋 Member Log API Response:', response);
+        
+        if (response.isSuccess && response.data) {
+          // 處理分頁結構的資料
+          this.memberPointsHistoryList = response.data.data || [];
+          console.log('✅ 點數異動紀錄載入成功:', this.memberPointsHistoryList.length);
+        } else {
+          console.warn('⚠️ 查無異動紀錄:', response.message);
+          this.memberPointsHistoryList = [];
+        }
+        
+        this.memberHistoryLoading = false;
+      },
+      error: (error) => {
+        console.error('❌ 載入點數異動紀錄失敗:', error);
+        this.memberPointsHistoryList = [];
+        this.memberHistoryLoading = false;
+        this.message.error('載入點數異動紀錄時發生錯誤');
+      }
+    });
+  }
+
+  // 根據事件類型返回圖示
+  getEventIcon(type: string): string {
+    const iconMap: { [key: string]: string } = {
+      'earn': 'plus-circle',
+      'transfer_in': 'arrow-down',
+      'transfer_out': 'arrow-up',
+      'exchange': 'shopping',
+      'redeem': 'gift',
+      'refund': 'undo',
+      'admin_adjust': 'tool',
+      'expire': 'clock-circle'
+    };
+    return iconMap[type] || 'file-text';
+  }
+
+  // Modal 方法
+  reviseModal() {
+    this.namevalue = this.username;
+    this.passwordvalue = '';
+    this.reviseisVisible = true;
+  }
+
+  revisehandleOk() {
+    if (!this.namevalue && !this.passwordvalue) {
+      this.message.warning('請至少填寫一項要修改的內容');
+      return;
+    }
+
+    // TODO: 呼叫 API 更新會員資訊
+    console.log('修改個人資料:', { name: this.namevalue, password: this.passwordvalue });
+    this.message.success('個人資料修改成功');
+    this.reviseisVisible = false;
+    
+    // 重新載入會員資訊
+    if (this.namevalue) {
+      this.username = this.namevalue;
+    }
+  }
+
+  revisehandleCancel() {
+    this.reviseisVisible = false;
+  }
+
+  addpointModal() {
+    this.addpointselectedValue = '';
+    this.pointvalue = 0;
+    this.addpointisVisible = true;
+  }
+
+  addpointhandleOk(receiverId: string, points: number) {
+    if (!receiverId || !points || points <= 0) {
+      this.message.warning('請填寫完整的轉贈資訊');
+      return;
+    }
+
+    if (points > this.userpoint) {
+      this.message.error('點數不足，無法轉贈');
+      return;
+    }
+
+    // ✅ 呼叫轉贈點數 API
+    this.pointsService.addMemberpoints(this.memberId, receiverId, points).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.message.success('點數轉贈成功！');
+          this.addpointisVisible = false;
+          
+          // 重新載入點數和紀錄
+          this.loadMemberPoints();
+          this.loadMemberLog();
+        } else {
+          this.message.error(res.message || '點數轉贈失敗');
+        }
+      },
+      error: (err) => {
+        console.error('❌ 點數轉贈錯誤:', err);
+        this.message.error('點數轉贈時發生錯誤');
+      }
+    });
+  }
+
+  LogOut() {
+    this.tokenService.removeToken();
+    this.tokenService.removeMemberId();
+    window.location.reload();
+  }
+
+  addpointhandleCancel() {
+    this.addpointisVisible = false;
+  }
+
+  // Modal Footer Template
+  revisemodalFooter = null;
 }
