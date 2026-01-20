@@ -70,16 +70,9 @@ export class PersonalInfoComponent implements OnInit {
   public sidebarService = inject(SidebarService);
   private memberService = inject(MemberService);
   private pointsService = inject(PointService);
-  private logService = inject(LogService); // ✅ 新增 LogService
+  private logService = inject(LogService);
   private tokenService = inject(TokenService);
   private message = inject(NzMessageService);
-
-  // 輪播訊息
-  carouselMessages = [
-    '🎉 歡迎使用咖啡點數系統',
-    '☕ 每消費一次即可累積點數',
-    '🎁 20 點即可兌換一杯免費咖啡'
-  ];
 
   // 使用者資訊
   username: string = '';
@@ -88,32 +81,13 @@ export class PersonalInfoComponent implements OnInit {
   memberId: string = '';
 
   // Modal 控制
-  reviseisVisible = false;
   addpointisVisible = false;
-  passwordVisible = false;
+  rulesModalVisible = false;
+  historyModalVisible = false;
 
   // 表單值
-  namevalue: string = '';
-  passwordvalue: string = '';
   addpointselectedValue: string = '';
   pointvalue: number = 0;
-
-  // 折疊面板
-  rulepanels = [
-    {
-      active: true,
-      name: '點數使用與規則說明',
-      disabled: false
-    }
-  ];
-
-  pointpanels = [
-    {
-      active: true,
-      name: '點數異動紀錄',
-      disabled: false
-    }
-  ];
 
   // 點數異動紀錄
   memberPointsHistoryList: IApiResponsePointsHistory[] = [];
@@ -127,19 +101,43 @@ export class PersonalInfoComponent implements OnInit {
     
     if (!this.memberId) {
       console.error('❌ 無法取得會員 ID');
-      this.message.error('無法取得會員資訊，請重新登入');
+      this.message.error('無法取得會員資訊,請重新登入');
       return;
     }
 
     // 載入資料
     this.loadMemberInfo();
     this.loadMemberPoints();
-    this.loadMemberLog(); // ✅ 使用正確的方法
+    this.loadMemberLog();
   }
 
   // ✅ 切換側邊欄
   toggleCollapsed() {
     this.sidebarService.toggleCollapsed();
+  }
+
+  // ✅ 開啟規則說明 Modal
+  openRulesModal() {
+    this.rulesModalVisible = true;
+  }
+
+  // ✅ 關閉規則說明 Modal
+  closeRulesModal() {
+    this.rulesModalVisible = false;
+  }
+
+  // ✅ 開啟點數異動紀錄 Modal
+  openHistoryModal() {
+    this.historyModalVisible = true;
+    // 如果還沒載入過資料，則載入
+    if (this.memberPointsHistoryList.length === 0) {
+      this.loadMemberLog();
+    }
+  }
+
+  // ✅ 關閉點數異動紀錄 Modal
+  closeHistoryModal() {
+    this.historyModalVisible = false;
   }
 
   // 載入會員基本資訊
@@ -213,49 +211,7 @@ export class PersonalInfoComponent implements OnInit {
     });
   }
 
-  // 根據事件類型返回圖示
-  getEventIcon(type: string): string {
-    const iconMap: { [key: string]: string } = {
-      'earn': 'plus-circle',
-      'transfer_in': 'arrow-down',
-      'transfer_out': 'arrow-up',
-      'exchange': 'shopping',
-      'redeem': 'gift',
-      'refund': 'undo',
-      'admin_adjust': 'tool',
-      'expire': 'clock-circle'
-    };
-    return iconMap[type] || 'file-text';
-  }
-
   // Modal 方法
-  reviseModal() {
-    this.namevalue = this.username;
-    this.passwordvalue = '';
-    this.reviseisVisible = true;
-  }
-
-  revisehandleOk() {
-    if (!this.namevalue && !this.passwordvalue) {
-      this.message.warning('請至少填寫一項要修改的內容');
-      return;
-    }
-
-    // TODO: 呼叫 API 更新會員資訊
-    console.log('修改個人資料:', { name: this.namevalue, password: this.passwordvalue });
-    this.message.success('個人資料修改成功');
-    this.reviseisVisible = false;
-    
-    // 重新載入會員資訊
-    if (this.namevalue) {
-      this.username = this.namevalue;
-    }
-  }
-
-  revisehandleCancel() {
-    this.reviseisVisible = false;
-  }
-
   addpointModal() {
     this.addpointselectedValue = '';
     this.pointvalue = 0;
@@ -294,16 +250,13 @@ export class PersonalInfoComponent implements OnInit {
     });
   }
 
+  addpointhandleCancel() {
+    this.addpointisVisible = false;
+  }
+
   LogOut() {
     this.tokenService.removeToken();
     this.tokenService.removeMemberId();
     window.location.reload();
   }
-
-  addpointhandleCancel() {
-    this.addpointisVisible = false;
-  }
-
-  // Modal Footer Template
-  revisemodalFooter = null;
 }

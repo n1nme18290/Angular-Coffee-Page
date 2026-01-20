@@ -84,560 +84,219 @@ button[nz-button].btn-styles6 {
     }
 }
 
-/* 一般按鈕樣式 */
-button[nz-button].btn-styles1 {
-    background-color: #FFD014;
-    color: #ffffff;
-}
-
-button[nz-button].btn-styles2 {
-    background-color: #27496D;
-    color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-button[nz-button].btn-styles3 {
-    background-color: #F0F2F5;
-    color: #27496D;
-    box-shadow: none;
-    border: 0.1px solid #F0F2F5;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-}
-
-button[nz-button].btn-styles5 {
-    background-color: #000000;
-    color: #ffffff;
-    border: 0.5px solid #000000;
-    width: 32px;
-    height: 32px;
-
-    .big-icon {
-        font-size: 28px;
-    }
-}
-
 /* ===== 主容器樣式 ===== */
 .user-page-container {
     padding: 20px;
     width: 100%;
     max-width: 100%;
+    height: calc(100vh - 64px);
+    overflow: hidden;
 }
 
 nz-content {
     width: 100%;
     max-width: 100%;
+    height: 100%;
 }
 
-/* ===== 輪播區域樣式 (保留註解) ===== */
-/* .carousel-section {
-    margin-bottom: 24px;
+/* ===== 左右分欄布局 ===== */
+.main-content-row {
+    height: 100%;
+    
+    .left-column,
+    .right-column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        height: 100%;
+    }
+}
 
-    nz-carousel {
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+/* ===== 左側：我的點數卡片 ===== */
+.stat-card {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
     }
 
-    [nz-carousel-content] {
+    ::ng-deep .ant-card-body {
+        padding: 32px;
+    }
+
+    .stat-content {
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 50px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: #ffffff;
-        text-align: center;
+        gap: 24px;
 
-        h3 {
-            color: #ffffff;
-            margin: 0;
-            font-size: 16px;
-            font-weight: 500;
-            padding: 0 20px;
-            line-height: 1.4;
-        }
-    }
-} */
-
-/* ===== 統計卡片樣式 ===== */
-.stats-row {
-    margin-bottom: 24px;
-    display: flex;
-    justify-content: center;  // 卡片本身置中
-
-    .stat-card {
-        border-radius: 8px;
-        border: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-        width: 100%;  // 確保卡片寬度一致
-
-        &:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-            transform: translateY(-2px);
-        }
-
-        ::ng-deep .ant-card-body {
-            padding: 24px;
-        }
-
-        .stat-content {
+        .stat-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            justify-content: center;  // 卡片內容置中
-            gap: 20px;
-
-            .stat-icon {
-                width: 64px;
-                height: 64px;
-                border-radius: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 32px;
-                flex-shrink: 0;
-            }
-
-            .stat-info {
-                flex: 1;
-
-                .stat-label {
-                    font-size: 14px;
-                    color: #8c8c8c;
-                    margin-bottom: 8px;
-                    font-weight: 500;
-                }
-
-                .stat-value {
-                    font-size: 36px;
-                    font-weight: 600;
-                    line-height: 1;
-                }
-            }
+            justify-content: center;
+            font-size: 40px;
+            flex-shrink: 0;
         }
 
-        &.points-card {
-            .stat-icon {
-                background: linear-gradient(135deg, #FFD014 0%, #FFA000 100%);
-                color: #fff;
+        .stat-info {
+            flex: 1;
+
+            .stat-label {
+                font-size: 16px;
+                color: #8c8c8c;
+                margin-bottom: 12px;
+                font-weight: 500;
             }
 
             .stat-value {
-                color: #FFD014;
+                font-size: 48px;
+                font-weight: 600;
+                line-height: 1;
             }
         }
+    }
 
-        &.voucher-card {
-            .stat-icon {
-                background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
-                color: #fff;
-            }
+    &.points-card {
+        .stat-icon {
+            background: linear-gradient(135deg, #FFD014 0%, #FFA000 100%);
+            color: #fff;
+        }
 
-            .voucher-list {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-
-                .voucher-item {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    font-size: 14px;
-                    color: #262626;
-
-                    i {
-                        color: #52c41a;
-                        font-size: 16px;
-                    }
-
-                    span {
-                        flex: 1;
-                    }
-                }
-            }
+        .stat-value {
+            color: #FFD014;
         }
     }
 }
 
-/* ===== 操作按鈕區域 ===== */
-.action-buttons-section {
+/* ===== 轉贈點數按鈕 ===== */
+button[nz-button].action-btn {
+    width: 100%;
+    height: 50px;
+    font-size: 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    background-color: #ffffff;
+    border: 1px solid rgb(14, 57, 98);
+    color: rgb(14, 57, 98);
+
+    i {
+        font-size: 22px;
+        margin-right: 8px;
+    }
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: #1890ff;
+        border-color: #1890ff;
+    }
+}
+
+
+
+/* ===== 右側：按鈕區域 ===== */
+.right-column {
     display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
 
-    .action-btn {
-        flex: 1;
-        max-width: 300px;
-        height: 50px;
-        font-size: 16px;
-        border-radius: 8px;
-        font-weight: 600;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-
-        i {
-            font-size: 18px;
-            margin-right: 8px;
-        }
+    .rules-btn,
+    .history-btn {
+        background-color: #ffffff;
+        color: rgb(14, 57, 98);
+        border-color: rgb(14, 57, 98);
 
         &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        &.transfer-btn {
             background-color: #ffffff;
-            color: rgb(14, 57, 98);
-            border-color: rgb(14, 57, 98);
-
-            &:hover {
-                background-color: #ffffff;
-                color: #1890ff;
-                border-color: #1890ff;
-            }
-        }
-
-        &.exchange-btn {
-            background-color: #ffffff;
-            color: #52c41a;
-            border-color: #52c41a;
-
-            &:hover {
-                background-color: #52c41a;
-                color: #ffffff;
-                border-color: #52c41a;
-            }
+            color: #1890ff;
+            border-color: #1890ff;
         }
     }
 }
 
-/* ===== 摺疊面板樣式 ===== */
-.info-collapse {
-    margin-bottom: 20px;
+/* ===== 規則說明 Modal 內容 ===== */
+.rules-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 8px 0;
 
-    ::ng-deep {
-        .ant-collapse {
-            border-radius: 8px;
-            border: none;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            background: #fff;
-        }
-
-        .ant-collapse-item {
-            border-bottom: none;
-            
-            &:last-child {
-                border-radius: 0 0 8px 8px;
-            }
-        }
-
-        .ant-collapse-header {
-            padding: 20px 24px !important;
-            background: #fafafa;
-            transition: all 0.3s ease;
-
-            &:hover {
-                background: #f0f0f0;
-            }
-
-            .headerbox {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-
-                span[nz-icon] {
-                    font-size: 16px;
-                    transition: transform 0.3s ease;
-                }
-
-                .headerword {
-                    margin: 0;
-                    font-size: 16px;
-                    font-weight: 600;
-                    color: #262626;
-                }
-            }
-        }
-
-        .ant-collapse-content {
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .ant-collapse-content-box {
-            padding: 0;
-        }
-    }
-
-    .rulebox {
+    .rule-item {
         display: flex;
-        flex-direction: column;
-        padding: 0;
-        background: #fff;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background: #fafafa;
+        border-radius: 8px;
+        transition: all 0.3s ease;
 
-        .rule-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 24px;
-            border-bottom: 1px solid #f0f0f0;
-
-            &:last-child {
-                border-bottom: none;
-            }
-
-            i {
-                color: #52c41a;
-                font-size: 16px;
-            }
-
-            span {
-                font-size: 14px;
-                color: #595959;
-            }
-        }
-    }
-
-    .point-information-container {
-        padding: 0;
-        background-color: #ffffff;
-        border-radius: 0;
-        box-shadow: none;
-
-        ::ng-deep {
-            .ant-table {
-                border-radius: 0;
-            }
-
-            .ant-table-thead > tr > th {
-                background: #fafafa;
-                font-weight: 600;
-                color: #262626;
-                text-align: center;
-            }
-
-            .ant-table-tbody > tr > td {
-                text-align: center;
-                vertical-align: middle;
-            }
-
-            .ant-table-pagination {
-                margin: 16px 24px;
-            }
+        &:hover {
+            background: #e6f7ff;
+            transform: translateX(4px);
         }
 
-        .text-green {
+        i {
             color: #52c41a;
-            font-weight: 600;
-            font-size: 16px;
+            font-size: 20px;
+            flex-shrink: 0;
         }
 
-        .text-red {
-            color: #ff4d4f;
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .text-center {
-            text-align: center;
-            padding: 40px 0;
-            color: #999;
+        span {
+            font-size: 15px;
+            color: #595959;
+            font-weight: 500;
         }
     }
 }
 
-/* ===== 點數與商品券框 (原始樣式保留) ===== */
-.pointbox,
-.pointbox2,
-.rulebox {
-    width: 100%;
-    background-color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 16px 32px 16px 16px;
-    border-radius: 8px;
-    box-sizing: border-box;
-}
-
-.pointbox {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 150px;
-    margin-top: 16px;
-}
-
-.pointbox2 {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-    height: 150px;
-    margin-top: 16px;
-}
-
-.rulebox {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 8px;
-}
-
-/* 標題盒子 */
-.titlebox {
-    width: 100%;
-    display: flex;
-    justify-content: left;
-    align-items: center;
-    gap: 10px;
-}
-
-/* 個人資訊標題與數值 */
-.boxword {
-    color: #27496D;
-    margin: 0;
-}
-
-.boxnum {
-    color: #FFD014;
-    margin: 0;
-    font-size: 64px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-.h1box {
-    color: #27496D;
-    margin: 0;
-}
-
-/* 版面排版 */
-.row-style {
-    width: 100%;
-    margin: 0;
-}
-
-/* 點數到期文字 */
-.pointdate {
-    color: #d67070;
-    margin: 0;
-}
-
-/* 按鈕群組 */
-.button-group {
-    margin: 16px 0;
-    display: flex;
-    justify-content: center;
-}
-
-/* 標題文字 */
-.h4 {
-    font-weight: bold;
-}
-
-/* 商品資訊 */
-.ProductFont {
-    font-weight: bold;
-    color: #27496D;
-    font-size: 16px;
-    margin: 0;
-}
-
-.product-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
-}
-
-.product-item svg {
-    flex-shrink: 0;
-    color: #27496D;
-}
-
-/* 摺疊區 Header (原始樣式保留) */
-.headerword {
-    font-weight: bold;
-    color: #27496D;
-}
-
-.headerbox {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding-left: 12px;
-}
-
-/* Input 欄位樣式 */
-.input-block {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 4px;
-    width: 100%;
-
-    input[nz-input] {
-        border-radius: 10px;
-        width: 100%;
-    }
-
-    nz-input-group {
-        margin-top: 5px;
-        border-radius: 10px;
-        width: 100%;
-
-        .ant-input-wrapper {
-            border-radius: 10px;
-        }
-    }
-}
-
-/* 文字輪播 (保留註解) */
-/* [nz-carousel-content] {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 25px;
-    min-height: 25px;
-    background: #FFD014;
-    color: #ffffff;
-    text-align: center;
-    overflow: hidden;
-    padding: 10px;
-    border-radius: 8px;
-    box-sizing: border-box;
-}
-
-nz-carousel {
-    width: 100%;
-    overflow: hidden;
-}
-
-nz-carousel h3 {
-    width: 100%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-} */
-
-h3 {
-    color: #ffffff;
-    margin: 0;
-    user-select: none;
-    line-height: 1.4;
-    font-size: 16px;
-    word-break: break-word;
-}
-
-/* 點數異動紀錄容器 (原始樣式保留) */
+/* ===== 點數異動紀錄 Modal 內容 ===== */
 .point-information-container {
-    padding: 16px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    ::ng-deep {
+        .ant-table-thead > tr > th {
+            background: #fafafa;
+            font-weight: 600;
+            color: #262626;
+            text-align: center;
+        }
+
+        .ant-table-tbody > tr > td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .ant-table-pagination {
+            margin: 16px 0 0 0;
+        }
+    }
+
+    .text-green {
+        color: #52c41a;
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .text-red {
+        color: #ff4d4f;
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .text-center {
+        text-align: center;
+        padding: 40px 0;
+        color: #999;
+    }
 }
 
 /* ===== Modal 表單樣式 ===== */
@@ -687,360 +346,6 @@ h3 {
                 color: #1890ff;
                 font-weight: 500;
             }
-        }
-    }
-
-    .quantity-controls {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-
-        button {
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        nz-input-number {
-            flex: 1;
-        }
-    }
-
-    .quantity-hint {
-        margin-top: 8px;
-        font-size: 12px;
-        color: #8c8c8c;
-    }
-
-    .exchange-product-info {
-        padding: 16px;
-        background: #fafafa;
-        border-radius: 6px;
-        margin-bottom: 20px;
-
-        .product-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
-
-            i {
-                font-size: 24px;
-                color: #1890ff;
-            }
-
-            h3 {
-                margin: 0;
-                font-size: 18px;
-                font-weight: 600;
-                color: #262626;
-            }
-        }
-
-        .product-desc {
-            margin: 0;
-            color: #595959;
-            font-size: 14px;
-        }
-    }
-
-    .points-summary {
-        background: #fafafa;
-        padding: 16px;
-        border-radius: 6px;
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 14px;
-
-            &:last-child {
-                margin-bottom: 0;
-            }
-
-            span:first-child {
-                color: #595959;
-            }
-
-            .value {
-                font-weight: 600;
-                color: #262626;
-            }
-
-            &.total {
-                border-top: 1px solid #d9d9d9;
-                padding-top: 12px;
-                margin-top: 8px;
-
-                .value {
-                    color: #ff4d4f;
-                    font-size: 16px;
-                }
-            }
-
-            &.current {
-                .value {
-                    color: #1890ff;
-                }
-            }
-
-            &.remaining {
-                .value {
-                    color: #52c41a;
-                }
-            }
-        }
-    }
-
-    .voucher-summary {
-        margin-bottom: 20px;
-
-        h4 {
-            margin-bottom: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #262626;
-        }
-
-        .voucher-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px;
-
-            .voucher-card-small {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                padding: 12px;
-                background: #fafafa;
-                border-radius: 6px;
-                border: 1px solid #f0f0f0;
-
-                i {
-                    color: #52c41a;
-                    font-size: 18px;
-                }
-
-                span {
-                    flex: 1;
-                    font-size: 14px;
-                    color: #262626;
-                }
-            }
-        }
-    }
-
-    .product-grid {
-        .product-card {
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-
-            &:hover {
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                transform: translateY(-2px);
-            }
-
-            .product-category {
-                font-size: 12px;
-                color: #8c8c8c;
-                margin-bottom: 4px;
-            }
-
-            .product-name {
-                font-size: 16px;
-                font-weight: 600;
-                color: #262626;
-                margin-bottom: 8px;
-            }
-
-            .product-description {
-                font-size: 14px;
-                color: #595959;
-                margin-bottom: 12px;
-            }
-
-            .product-points {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                color: #ff4d4f;
-                font-weight: 600;
-                font-size: 14px;
-
-                i {
-                    font-size: 16px;
-                }
-            }
-        }
-    }
-}
-
-/* 轉贈 / 兌換 Modal 內樣式 (原始樣式保留) */
-.exchange-confirm {
-    .product-info {
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #f0f0f0;
-
-        h4 {
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-    }
-
-    .quantity-section {
-        margin-bottom: 20px;
-
-        h5 {
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: #262626;
-        }
-    }
-}
-
-// 規則內容
-.rules-content {
-    .rule-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 16px;
-        background: #fff;
-        border-radius: 8px;
-        margin-bottom: 12px;
-        transition: all 0.3s ease;
-
-        &:hover {
-            background: #e6f7ff;
-            transform: translateX(4px);
-        }
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-
-        .rule-icon {
-            font-size: 18px;
-            color: #52c41a;
-        }
-
-        .rule-text {
-            font-size: 14px;
-            color: #595959;
-            font-weight: 500;
-        }
-    }
-}
-
-// 歷史紀錄表格
-.history-table-wrapper {
-    ::ng-deep .ant-table {
-        .event-type {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-
-            i {
-                color: #1890ff;
-            }
-        }
-
-        .points-change {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-
-            .points-increase {
-                color: #52c41a;
-                font-weight: 600;
-                display: flex;
-                align-items: center;
-                gap: 4px;
-            }
-
-            .points-decrease {
-                color: #ff4d4f;
-                font-weight: 600;
-                display: flex;
-                align-items: center;
-                gap: 4px;
-            }
-
-            .points-balance {
-                font-size: 12px;
-                color: #8c8c8c;
-            }
-        }
-
-        .time-text {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #595959;
-            font-size: 13px;
-
-            i {
-                color: #8c8c8c;
-            }
-        }
-
-        .empty-data {
-            text-align: center;
-            padding: 60px 20px;
-
-            .empty-icon {
-                font-size: 48px;
-                color: #d9d9d9;
-                display: block;
-                margin-bottom: 12px;
-            }
-
-            p {
-                margin: 12px 0 0 0;
-                color: #8c8c8c;
-                font-size: 14px;
-            }
-        }
-    }
-}
-
-// Modal 表單樣式
-.modal-form {
-    .current-points-info {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 16px;
-        background: #e6f7ff;
-        border-radius: 8px;
-        margin-bottom: 24px;
-        border-left: 4px solid #1890ff;
-
-        i {
-            font-size: 20px;
-            color: #1890ff;
-        }
-
-        span {
-            color: #595959;
-        }
-
-        strong {
-            color: #1890ff;
-            font-size: 18px;
-            margin-left: auto;
-        }
-
-        .points-remaining {
-            color: #52c41a;
-            font-weight: 600;
         }
     }
 }
@@ -1100,35 +405,37 @@ h3 {
     }
 }
 
+h3 {
+    color: #ffffff;
+    margin: 0;
+    user-select: none;
+    line-height: 1.4;
+    font-size: 16px;
+    word-break: break-word;
+}
+
 /* ===== 響應式設計 ===== */
+@media (max-width: 992px) {
+    .main-content-row {
+        .left-column,
+        .right-column {
+            margin-bottom: 20px;
+        }
+    }
+}
+
 @media (max-width: 768px) {
     .user-page-container {
         padding: 16px;
+        height: auto;
     }
 
-    .stats-row {
-        [nz-col] {
-            margin-bottom: 16px;
+    .main-content-row {
+        height: auto;
 
-            &:last-child {
-                margin-bottom: 0;
-            }
-        }
-    }
-
-    .action-buttons-section {
-        flex-direction: column;
-
-        .action-btn {
-            max-width: 100%;
-        }
-    }
-
-    .modal-form {
-        .product-grid {
-            [nz-col] {
-                margin-bottom: 16px;
-            }
+        .left-column,
+        .right-column {
+            height: auto;
         }
     }
 }
@@ -1161,21 +468,24 @@ h3 {
         }
     }
 
-    .stats-row {
-        .stat-card {
-            .stat-content {
-                .stat-icon {
-                    width: 48px;
-                    height: 48px;
-                    font-size: 24px;
-                }
+    .stat-card {
+        .stat-content {
+            .stat-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+            }
 
-                .stat-info {
-                    .stat-value {
-                        font-size: 28px;
-                    }
+            .stat-info {
+                .stat-value {
+                    font-size: 36px;
                 }
             }
         }
+    }
+
+    .action-btn {
+        height: 50px;
+        font-size: 16px;
     }
 }
