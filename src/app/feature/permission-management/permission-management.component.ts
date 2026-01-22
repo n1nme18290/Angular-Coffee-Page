@@ -178,7 +178,7 @@ export class PermissionManagementComponent {
     this.setOfCheckedRoleId.clear();
     this.roleListLoading = true;
     
-    // 載入該管理員現有的角色（使用 getRolePermission 取得 is_owned 為 true 的角色）
+    // 載入該管理員現有的角色
     this.securityService.getRolePermission(admin.id).subscribe({
       next: (res) => {
         console.log('🔍 管理員角色資料:', res);

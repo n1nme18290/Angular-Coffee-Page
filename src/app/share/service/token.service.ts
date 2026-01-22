@@ -61,7 +61,7 @@ export class TokenService {
         return !!this.getToken();
     }
 
-    // Member ID 相關方法（修改為支援多用戶）
+    // Member ID 相關方法
     setMemberId(memberId: string): void {
         const memberIdKey = this.getMemberIdKey();
         localStorage.setItem(memberIdKey, memberId);

@@ -61,15 +61,15 @@ export class PermissionService {
 
     // 載入用戶角色和權限
     loadUserPermissions(): Observable<string[]> {
-        const memberId = this.tokenService.getCurrentUserId();
+        const adminId = this.tokenService.getCurrentAdminId();
 
-        if (!memberId) {
+        if (!adminId) {
             this.permissionsSubject.next([]);
             this.rolesSubject.next([]);
             return this.permissions$;
         }
 
-        this.securityService.getRolePermission(memberId).subscribe({
+        this.securityService.getRolePermission(adminId).subscribe({
             next: (response) => {
                 if (response.isSuccess && response.data) {
                     // 過濾出用戶擁有的角色（is_owned: true）
