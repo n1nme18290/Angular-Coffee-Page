@@ -1,193 +1,123 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
 import { SecurityService } from './service';
 import { TokenService } from './token.service';
-
-// 角色介面定義
-interface UserRole {
-    role_id: string;
-    role_name: string;
-    description: string;
-    is_owned: boolean;
-}
+import { IApiResponseSecurityRole } from './model';
+import { ROLE_PERMISSIONS } from '../../core/config/role-permissions.config';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PermissionService {
     private permissionsSubject = new BehaviorSubject<string[]>([]);
-    public permissions$ = this.permissionsSubject.asObservable();
-    
     private rolesSubject = new BehaviorSubject<string[]>([]);
-    public roles$ = this.rolesSubject.asObservable();
 
-    // 角色到權限的映射表
-    private readonly ROLE_PERMISSIONS_MAP: { [roleName: string]: string[] } = {
-        'SuperAdmin': ['*'], // 超級管理員擁有所有權限
-        'Admin': [
-            'view_analytics',
-            'manage_backend',
-            'view_devices',
-            'manage_devices',
-            'view_logs',
-            'manage_permissions',
-            'manage_users',
-            'manage_points'
-        ],
-        '管理人員': [
-            'view_analytics',
-            'manage_backend',
-            'view_devices',
-            'manage_devices',
-            'manage_points'
-        ],
-        'Log Viewer': [
-            'view_logs',
-            'view_analytics'
-        ],
-        '學生': [
-            'view_personal',
-            'view_own_points'
-        ],
-        'CoffeeMachine': [
-            'machine_access'
-        ]
-    };
+    public permissions$ = this.permissionsSubject.asObservable();
+    public roles$ = this.rolesSubject.asObservable();
 
     constructor(
         private securityService: SecurityService,
         private tokenService: TokenService
     ) { }
 
-    // 載入用戶角色和權限
-    loadUserPermissions(): Observable<string[]> {
+    loadUserPermissions(): Observable<void> {
         const adminId = this.tokenService.getCurrentAdminId();
 
         if (!adminId) {
-            this.permissionsSubject.next([]);
-            this.rolesSubject.next([]);
-            return this.permissions$;
+            this.setDefaultPermissions();
+            return of(void 0);
         }
 
-        this.securityService.getRolePermission(adminId).subscribe({
-            next: (response) => {
-                if (response.isSuccess && response.data) {
-                    // 過濾出用戶擁有的角色（is_owned: true）
-                    const ownedRoles = response.data
-                        .filter((role: UserRole) => role.is_owned)
-                        .map((role: UserRole) => role.role_name);
-                    
-                    console.log('👤 用戶擁有的角色:', ownedRoles);
+        return this.securityService.getRolePermission(adminId).pipe(
+            switchMap((res) => {
+                if (res.isSuccess && res.data) {
+                    // 過濾出使用者擁有的角色（is_owned: true）
+                    const ownedRoles = res.data
+                        .filter((role: IApiResponseSecurityRole) => role.is_owned)
+                        .map((role: IApiResponseSecurityRole) => role.role_name);
+
                     this.rolesSubject.next(ownedRoles);
 
-                    // 根據角色映射取得對應的權限
+                    // 根據角色映射權限
                     const permissions = this.mapRolesToPermissions(ownedRoles);
-                    console.log('📋 用戶權限已載入:', permissions);
                     this.permissionsSubject.next(permissions);
                 } else {
-                    this.permissionsSubject.next([]);
-                    this.rolesSubject.next([]);
+                    this.setDefaultPermissions();
                 }
-            },
-            error: (error) => {
-                console.error('❌ 載入權限失敗:', error);
-                this.permissionsSubject.next([]);
-                this.rolesSubject.next([]);
-            }
-        });
-
-        return this.permissions$;
+                return of(void 0);
+            })
+        );
     }
 
-    // 將角色映射為權限清單
+    private setDefaultPermissions(): void {
+        // 設定預設角色為「學生」
+        this.rolesSubject.next(['學生']);
+        this.permissionsSubject.next(ROLE_PERMISSIONS['學生'] || []);
+    }
+
     private mapRolesToPermissions(roles: string[]): string[] {
-        const permissionsSet = new Set<string>();
+        const permissions = new Set<string>();
 
         roles.forEach(role => {
-            const rolePermissions = this.ROLE_PERMISSIONS_MAP[role] || [];
-            
-            // 如果角色有 '*' 權限（超級管理員），返回所有權限
-            if (rolePermissions.includes('*')) {
-                permissionsSet.add('*');
-                permissionsSet.add('super_admin');
-                return;
-            }
+            const rolePermissions = ROLE_PERMISSIONS[role];
 
-            rolePermissions.forEach(permission => {
-                permissionsSet.add(permission);
-            });
+            if (rolePermissions) {
+                // 萬用權限 (*) 直接新增
+                if (rolePermissions.includes('*')) {
+                    permissions.add('*');
+                } else {
+                    rolePermissions.forEach(permission => permissions.add(permission));
+                }
+            }
         });
 
-        return Array.from(permissionsSet);
+        return Array.from(permissions);
     }
 
-    // 檢查是否有特定權限
-    hasPermission(permission: string): boolean {
-        const permissions = this.permissionsSubject.value;
-        
-        // 超級管理員擁有所有權限
-        if (permissions.includes('*') || permissions.includes('super_admin')) {
+    hasAnyPermission(requiredPermissions: string[]): boolean {
+        const userPermissions = this.permissionsSubject.value;
+
+        // 萬用權限檢查
+        if (userPermissions.includes('*')) {
             return true;
         }
-        
-        return permissions.includes(permission);
+
+        return requiredPermissions.some(permission =>
+            userPermissions.includes(permission)
+        );
     }
 
-    // 檢查是否有任一權限
-    hasAnyPermission(permissions: string[]): boolean {
-        // 如果沒有權限要求，返回 true
-        if (!permissions || permissions.length === 0) {
+    hasAllPermissions(requiredPermissions: string[]): boolean {
+        const userPermissions = this.permissionsSubject.value;
+
+        if (userPermissions.includes('*')) {
             return true;
         }
-        return permissions.some(p => this.hasPermission(p));
+
+        return requiredPermissions.every(permission =>
+            userPermissions.includes(permission)
+        );
     }
 
-    // 檢查是否有所有權限
-    hasAllPermissions(permissions: string[]): boolean {
-        return permissions.every(p => this.hasPermission(p));
+    hasRole(role: string): boolean {
+        return this.rolesSubject.value.includes(role);
     }
 
-    // 取得當前權限列表
+    hasAnyRole(roles: string[]): boolean {
+        const userRoles = this.rolesSubject.value;
+        return roles.some(role => userRoles.includes(role));
+    }
+
     getPermissions(): string[] {
         return this.permissionsSubject.value;
     }
 
-    // 取得當前角色列表
     getRoles(): string[] {
         return this.rolesSubject.value;
     }
 
-    // 檢查是否有特定角色
-    hasRole(roleName: string): boolean {
-        const roles = this.rolesSubject.value;
-        return roles.includes(roleName);
-    }
-
-    // 檢查是否有任一角色
-    hasAnyRole(roleNames: string[]): boolean {
-        const roles = this.rolesSubject.value;
-        return roleNames.some(roleName => roles.includes(roleName));
-    }
-
-    // 清除權限和角色
     clearPermissions(): void {
         this.permissionsSubject.next([]);
         this.rolesSubject.next([]);
-    }
-
-    // 是否為超級管理員
-    isSuperAdmin(): boolean {
-        return this.hasPermission('*') || 
-               this.hasPermission('super_admin') || 
-               this.hasRole('SuperAdmin') ||
-               this.hasRole('Admin');
-    }
-
-    // 取得用戶角色的詳細資訊（用於除錯）
-    getUserInfo(): { roles: string[]; permissions: string[] } {
-        return {
-            roles: this.getRoles(),
-            permissions: this.getPermissions()
-        };
     }
 }
