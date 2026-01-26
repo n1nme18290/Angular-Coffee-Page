@@ -85,11 +85,10 @@ export class PermissionManagementComponent {
             description: role.description,
             is_owned: false // 這裡的 is_owned 只是預設值，實際狀態由 getRolePermission 取得
           }));
-          console.log('✅ 可用角色載入成功:', this.availableRoles);
         }
       },
       error: (err) => {
-        console.error('❌ 載入角色列表失敗', err);
+        console.error('載入角色列表失敗:', err);
         this.message.error('載入角色列表失敗');
       }
     });
@@ -123,7 +122,7 @@ export class PermissionManagementComponent {
         this.loading = false;
       },
       error: (err) => {
-        console.error('❌ 取得管理員列表失敗', err);
+        console.error('取得管理員列表失敗:', err);
         this.message.error('取得管理員列表失敗');
         this.adminList = [];
         this.totalAdmin = 0;
@@ -159,7 +158,7 @@ export class PermissionManagementComponent {
         this.loading = false;
       },
       error: (err) => {
-        console.error('❌ 取得會員列表失敗', err);
+        console.error('取得會員列表失敗:', err);
         this.message.error('取得會員列表失敗');
         this.memberlist = [];
         this.totalMember = 0;
@@ -181,11 +180,9 @@ export class PermissionManagementComponent {
     // 載入該管理員現有的角色
     this.securityService.getRolePermission(admin.id).subscribe({
       next: (res) => {
-        console.log('🔍 管理員角色資料:', res);
         if (res?.data && Array.isArray(res.data)) {
           // 篩選出 is_owned 為 true 的角色，並預先勾選
           const ownedRoles = res.data.filter((role: IApiResponseSecurityRole) => role.is_owned);
-          console.log('✅ 已擁有的角色:', ownedRoles);
           
           ownedRoles.forEach((role: IApiResponseSecurityRole) => {
             this.setOfCheckedRoleId.add(role.role_id);
@@ -196,7 +193,7 @@ export class PermissionManagementComponent {
         this.refreshCheckedStatus();
       },
       error: (err) => {
-        console.error('❌ 取得管理員角色失敗', err);
+        console.error('取得管理員角色失敗:', err);
         this.message.warning('無法載入現有角色，將顯示空白');
         this.roleListLoading = false;
         this.editAdminRoleVisible = true;
@@ -223,7 +220,6 @@ export class PermissionManagementComponent {
       selectedRoleIds
     ).subscribe({
       next: (res) => {
-        console.log('✅ 角色設定成功:', res);
         this.message.success('角色設定成功！');
         this.editAdminRoleVisible = false;
         this.setOfCheckedRoleId.clear();
@@ -232,7 +228,7 @@ export class PermissionManagementComponent {
         this.roleListLoading = false;
       },
       error: (err) => {
-        console.error('❌ 設定角色失敗:', err);
+        console.error('設定角色失敗:', err);
         this.message.error('角色設定失敗：' + (err.error?.message || '請稍後再試'));
         this.roleListLoading = false;
       }
@@ -245,15 +241,35 @@ export class PermissionManagementComponent {
     this.currentEditAdmin = null;
   }
 
+  // 快取管理員的角色名稱
+  adminRolesCache: { [adminId: string]: string[] } = {};
+
   // 取得管理員的角色顯示名稱
   getAdminRoleNames(admin: IApiResponseAdmin): string {
-    // 注意：這裡只是快速顯示，實際角色資料需要透過 API 查詢
-    // 如果需要即時顯示，建議在 getPageAdmin 時一併查詢角色資訊
-    if (admin.permission === 0 || admin.permission === null || admin.permission === undefined) {
-      return '未設定角色';
+    // 如果已經有快取，直接返回
+    if (this.adminRolesCache[admin.id]) {
+      return this.adminRolesCache[admin.id].join(', ') || '未設定角色';
     }
-    // 根據 permission 值顯示對應角色名稱（需要根據後端實際映射調整）
-    return `權限等級 ${admin.permission}`;
+
+    // 如果沒有快取，異步加載
+    this.securityService.getRolePermission(admin.id).subscribe({
+      next: (res) => {
+        if (res?.data && Array.isArray(res.data)) {
+          const roleNames = res.data
+            .filter((role: IApiResponseSecurityRole) => role.is_owned)
+            .map((role: IApiResponseSecurityRole) => role.role_name);
+          this.adminRolesCache[admin.id] = roleNames;
+        } else {
+          this.adminRolesCache[admin.id] = [];
+        }
+      },
+      error: (err) => {
+        console.error('取得管理員角色失敗:', err);
+        this.adminRolesCache[admin.id] = [];
+      }
+    });
+
+    return '載入中...';
   }
 
   // 取得角色對應的權限列表
