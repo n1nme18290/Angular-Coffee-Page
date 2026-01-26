@@ -4,140 +4,124 @@
     flex-direction: column;
     height: 100vh;
     background: #f5f5f5;
-
-    nz-header {
-        flex-shrink: 0;
-        background: linear-gradient(135deg, #27496D 0%, #2c5aa0 100%);
-    }
-
-    nz-content {
-        flex: 1;
-        overflow-y: auto;
-    }
 }
 
-/* ===== Header 樣式 ===== */
-.top-header {
-    background: linear-gradient(135deg, #27496D 0%, #2c5aa0 100%);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-    padding: 0;
-
-    .header-wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 24px;
-        height: 64px;
-        max-width: 1400px;
-        margin: 0 auto;
-        width: 100%;
-    }
-
+/* ===== Header 樣式 (保留原本) ===== */
+nz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    flex-shrink: 0;
+    
     .header-left {
         display: flex;
         align-items: center;
         gap: 16px;
-        flex: 1;
-
-        .toggle-btn {
-            background: transparent !important;
-            border: none !important;
-            color: #ffffff;
-            height: 40px;
-            width: 40px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-
-            &:hover {
-                background: rgba(255, 255, 255, 0.15) !important;
-            }
-
-            .toggle-icon {
-                font-size: 20px;
-            }
-        }
-
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #ffffff;
-
-            .title-icon {
-                font-size: 24px;
-            }
-
-            h1 {
-                font-size: 24px;
-                margin: 0;
-                font-weight: 600;
-            }
-        }
     }
 
-    .logout-btn {
-        background: rgba(255, 255, 255, 0.2) !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
-        color: #ffffff !important;
-        padding: 6px 20px;
-        border-radius: 20px;
+    .h2 {
+        color: #ffffff;
+        margin: 0;
+    }
+}
+
+/* ===== 按鈕共用樣式 (保留原本) ===== */
+button[nz-button] {
+    margin-right: 8px;
+    margin-bottom: 1px;
+    height: 40px;
+    border-radius: 100px;
+    border: 1px solid #27496D;
+    font-weight: bold;
+    background-color: #ffffff;
+    color: #27496D;
+    transition: all 0.3s ease;
+}
+
+/* Header 左側折疊按鈕 (保留原本) */
+button[nz-button].btn-styles4 {
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+    border: none;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 12px;
+    border-radius: 50%;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    .big-icon {
+        font-size: 28px;
         transition: all 0.3s ease;
-        white-space: nowrap;
-
-        &:hover {
-            background: rgba(255, 77, 79, 0.3) !important;
-            border-color: #ff4d4f !important;
-            color: #ff4d4f !important;
-        }
-
-        span {
-            margin-right: 8px;
-        }
     }
 
-    @media (max-width: 768px) {
-        .header-wrapper {
-            padding: 0 16px;
-        }
+    &:hover {
+        color: #40a9ff;
+        background-color: rgba(24, 144, 255, 0.08);
+        box-shadow: 0 4px 10px rgba(24, 144, 255, 0.25);
+        transform: translateY(-1px);
+    }
 
-        .header-left {
-            .header-title h1 {
-                font-size: 18px;
-            }
+    &:hover .big-icon {
+        transform: scale(1.1);
+    }
+}
+
+/* 登出按鈕 (保留原本) */
+button[nz-button].btn-styles6 {
+    background-color: #27496D;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-right: 0;
+
+    h3 {
+        margin: 0;
+        transition: all 0.3s ease;
+    }
+
+    &:hover {
+        color: #ff4d4f;
+        background-color: rgba(255, 77, 79, 0.08);
+        box-shadow: 0 2px 4px #ff4d4f;
+        transform: translateY(-1px);
+        border-color: #ff4d4f;
+
+        h3 {
+            color: #ff4d4f;
         }
     }
 }
 
+/* ===== 主容器樣式 ===== */
+.user-page-container {
+    padding: 20px 24px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
 
-/* ===== 主要內容區 ===== */
-.main-content {
-    padding: 32px 24px;
+nz-content {
+    width: 100%;
+    max-width: 100%;
+    flex: 1;
+    overflow-y: auto;
     background: #f5f5f5;
-
-    .content-wrapper {
-        max-width: 1400px;
-        margin: 0 auto;
-        width: 100%;
-    }
 }
 
 /* ===== 歡迎區域 ===== */
 .welcome-section {
-    margin-bottom: 40px;
+    margin-bottom: 24px;
 
     h2 {
-        font-size: 32px;
+        font-size: 28px;
         font-weight: 700;
         color: #27496D;
         margin: 0 0 8px 0;
     }
 
     p {
-        font-size: 16px;
+        font-size: 15px;
         color: #8c8c8c;
         margin: 0;
     }
@@ -145,22 +129,22 @@
 
 /* ===== 卡片區域 ===== */
 .cards-section {
-    margin-bottom: 40px;
+    margin-bottom: 32px;
     display: flex;
-    flex-wrap: wrap;
 
     .card-wrapper {
-        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
 }
 
 /* ===== 卡片共用樣式 ===== */
 .info-card {
-    border-radius: 12px;
+    border-radius: 8px;
     border: none;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     background: #ffffff;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -170,36 +154,38 @@
         flex: 1;
         display: flex;
         flex-direction: column;
+        height: 100%;
     }
 
     &:hover {
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
     }
 
     /* 點數卡片 */
     &.points-card {
-        background: linear-gradient(135deg, #fff9e6 0%, #fffbe6 100%);
-        border: 1px solid #ffd666;
+        ::ng-deep .ant-card-body {
+            min-height: 280px;
+        }
 
         .card-content {
             display: flex;
             align-items: center;
             gap: 20px;
             margin-bottom: 20px;
+            flex: 1;
 
             .card-icon {
                 width: 80px;
                 height: 80px;
-                border-radius: 16px;
+                border-radius: 12px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 font-size: 40px;
-                background: linear-gradient(135deg, #FFD014 0%, #FFA500 100%);
+                background: linear-gradient(135deg, #FFD014 0%, #FFA000 100%);
                 color: #ffffff;
                 flex-shrink: 0;
-                box-shadow: 0 4px 12px rgba(255, 208, 20, 0.3);
             }
 
             .card-info {
@@ -212,18 +198,23 @@
                     font-weight: 500;
                 }
 
+                .card-value-wrapper {
+                    display: flex;
+                    align-items: baseline;
+                    gap: 8px;
+                }
+
                 .card-value {
                     font-size: 48px;
                     font-weight: 700;
                     color: #FFD014;
                     line-height: 1;
-                    margin-bottom: 4px;
                 }
 
                 .card-unit {
-                    font-size: 14px;
-                    color: #8c8c8c;
-                    font-weight: 500;
+                    font-size: 24px;
+                    color: #FFD014;
+                    font-weight: 600;
                 }
             }
         }
@@ -235,16 +226,20 @@
 
     /* 規則卡片 */
     &.rules-card {
+        ::ng-deep .ant-card-body {
+            min-height: 280px;
+        }
+
         .card-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             padding-bottom: 16px;
             border-bottom: 2px solid #f0f0f0;
 
             i {
-                font-size: 24px;
+                font-size: 22px;
                 color: #27496D;
             }
 
@@ -259,32 +254,35 @@
         .rules-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
+            flex: 1;
         }
     }
 }
 
-/* ===== 轉贈點數按鈕 ===== */
+/* ===== 轉贈點數按鈕 (使用原本樣式但調整) ===== */
 .transfer-btn {
     width: 100%;
-    height: 48px;
+    height: 50px;
     font-size: 16px;
     border-radius: 8px;
     font-weight: 600;
-    background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%) !important;
-    border: none !important;
-    color: #ffffff !important;
-    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+    background-color: #ffffff !important;
+    border-color: rgb(14, 57, 98) !important;
+    color: rgb(14, 57, 98) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
 
     i {
-        font-size: 16px;
+        font-size: 18px;
         margin-right: 8px;
     }
 
     &:hover {
-        background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%) !important;
-        box-shadow: 0 4px 16px rgba(24, 144, 255, 0.4);
+        background-color: #ffffff !important;
+        color: #1890ff !important;
+        border-color: #1890ff !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         transform: translateY(-2px);
     }
 }
@@ -294,8 +292,8 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px;
-    background: #f5f5f5;
+    padding: 14px;
+    background: #fafafa;
     border-radius: 8px;
     transition: all 0.3s ease;
 
@@ -307,32 +305,34 @@
 
     span {
         font-size: 14px;
-        color: #262626;
+        color: #595959;
+        font-weight: 500;
         line-height: 1.5;
     }
 
     &:hover {
-        background: #fffbe6;
+        background: #e6f7ff;
+        transform: translateX(4px);
     }
 }
 
 /* ===== 交易紀錄區域 ===== */
 .history-section {
-    margin-top: 40px;
+    margin-top: 32px;
 
     .section-header {
         display: flex;
         align-items: center;
         gap: 12px;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
 
         i {
-            font-size: 28px;
+            font-size: 24px;
             color: #27496D;
         }
 
         h2 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             color: #27496D;
             margin: 0;
@@ -340,9 +340,9 @@
     }
 
     .history-card {
-        border-radius: 12px;
+        border-radius: 8px;
         border: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         background: #ffffff;
 
         ::ng-deep .ant-card-body {
@@ -359,22 +359,20 @@
         ::ng-deep {
             .ant-table {
                 background: transparent;
-                border-radius: 12px;
-                overflow: hidden;
             }
 
             .ant-table-thead > tr > th {
-                background: #f5f5f5;
+                background: #fafafa;
                 border-bottom: 2px solid #f0f0f0;
                 font-weight: 600;
                 color: #27496D;
                 padding: 16px;
-                font-size: 14px;
+                font-size: 15px;
+                text-align: center;
             }
 
             .ant-table-tbody > tr {
                 transition: all 0.3s ease;
-                border-bottom: 1px solid #f0f0f0;
 
                 &:hover {
                     background: #fafafa;
@@ -382,19 +380,16 @@
 
                 > td {
                     padding: 16px;
-                    border: none;
+                    border-bottom: 1px solid #f0f0f0;
                     font-size: 14px;
+                    text-align: center;
+                    vertical-align: middle;
                 }
             }
 
-            // 分頁樣式
             .ant-pagination {
-                margin-top: 16px;
+                margin: 16px;
                 text-align: center;
-
-                .ant-pagination-item-active a {
-                    color: #1890ff;
-                }
             }
         }
     }
@@ -410,6 +405,7 @@
     .amount-info {
         display: flex;
         flex-direction: column;
+        align-items: center;
         gap: 4px;
 
         .amount-positive {
@@ -431,7 +427,7 @@
     }
 
     .time-info {
-        color: #8c8c8c;
+        color: #595959;
         font-size: 14px;
     }
 }
@@ -443,23 +439,23 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 80px 20px;
-        gap: 16px;
+        padding: 60px 20px;
+        gap: 12px;
 
         i {
             font-size: 48px;
-            color: #bfbfbf;
+            color: #d9d9d9;
         }
 
         p {
             font-size: 14px;
-            color: #8c8c8c;
+            color: #999;
             margin: 0;
         }
     }
 }
 
-/* ===== Modal 樣式 ===== */
+/* ===== Modal 樣式 (保留原本) ===== */
 .modal-form {
     .form-item {
         margin-bottom: 24px;
@@ -472,77 +468,158 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 12px;
-            font-weight: 600;
-            color: #27496D;
+            margin-bottom: 8px;
             font-size: 14px;
+            font-weight: 500;
+            color: #262626;
 
             i {
-                font-size: 16px;
                 color: #1890ff;
+                font-size: 16px;
             }
 
             .required {
                 color: #ff4d4f;
-            }
-        }
-
-        input {
-            border-radius: 6px;
-
-            &:focus {
-                border-color: #1890ff !important;
-                box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+                margin-left: 4px;
             }
         }
 
         &.info-box {
+            background: #f0f5ff;
+            padding: 12px 16px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            background: #e6f7ff;
-            border-left: 3px solid #1890ff;
-            border-radius: 4px;
+            gap: 8px;
 
             i {
-                font-size: 18px;
                 color: #1890ff;
-                flex-shrink: 0;
+                font-size: 16px;
             }
 
             span {
                 font-size: 14px;
-                color: #0050b3;
-                margin: 0;
+                color: #1890ff;
+                font-weight: 500;
             }
         }
     }
 }
 
+/* ===== Modal 底部按鈕樣式 (保留原本) ===== */
+::ng-deep {
+    .ant-modal-footer {
+        display: flex;
+        gap: 0;
+        padding: 16px;
+        border-top: 1px solid #f0f0f0;
+
+        button {
+            flex: 1;
+            height: 40px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+
+            &:first-child {
+                margin-left: 8px;
+                background-color: #ffffff;
+                color: rgb(170, 20, 20);
+                border-color: rgb(170, 20, 20);
+                box-shadow: 0 2px 4px rgba(255, 24, 24, 0.2);
+
+                &:hover {
+                    background-color: #ffffff;
+                    border-color: #ff4040;
+                    color: #ff4040;
+                    box-shadow: 0 4px 8px rgba(255, 24, 24, 0.3);
+                    transform: translateY(-1px);
+                }
+            }
+
+            &:last-child {
+                margin-left: 8px;
+                background-color: #ffffff;
+                color: rgb(14, 57, 98);
+                border-color: rgb(14, 57, 98);
+                box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+
+                &:hover {
+                    background-color: #40a9ff;
+                    border-color: #40a9ff;
+                    color: #ffffff;
+                    box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+            }
+
+            i {
+                margin-right: 6px;
+            }
+        }
+    }
+}
+
+h3 {
+    color: #ffffff;
+    margin: 0;
+    user-select: none;
+    line-height: 1.4;
+    font-size: 16px;
+    word-break: break-word;
+}
+
 /* ===== 響應式設計 ===== */
 @media (max-width: 1200px) {
-    .main-content {
+    .user-page-container {
         padding: 24px 16px;
     }
 
     .welcome-section {
         h2 {
-            font-size: 28px;
+            font-size: 24px;
         }
     }
 }
 
 @media (max-width: 768px) {
-    .main-content {
+    .user-page-container {
         padding: 16px 12px;
+    }
+
+    nz-header {
+        padding: 0 16px;
+
+        .header-left {
+            gap: 8px;
+
+            .h2 {
+                font-size: 18px;
+            }
+        }
+
+        .btn-styles4 {
+            width: 48px;
+            height: 48px;
+
+            .big-icon {
+                font-size: 20px;
+            }
+        }
+
+        .btn-styles6 {
+            h3 {
+                font-size: 14px;
+            }
+        }
     }
 
     .welcome-section {
         margin-bottom: 24px;
 
         h2 {
-            font-size: 24px;
+            font-size: 20px;
         }
 
         p {
@@ -561,12 +638,12 @@
 
         &.points-card {
             .card-content {
-                gap: 12px;
+                gap: 16px;
 
                 .card-icon {
                     width: 60px;
                     height: 60px;
-                    font-size: 32px;
+                    font-size: 30px;
                 }
 
                 .card-info {
@@ -579,50 +656,32 @@
     }
 
     .history-section {
+        margin-top: 24px;
+
         .section-header {
             gap: 8px;
 
             i {
-                font-size: 24px;
+                font-size: 20px;
             }
 
             h2 {
-                font-size: 20px;
+                font-size: 18px;
             }
         }
     }
 
     .table-wrapper {
-        ::ng-deep .ant-table {
-            font-size: 12px;
-
+        .history-table ::ng-deep {
             .ant-table-thead > tr > th {
                 padding: 12px 8px;
+                font-size: 13px;
             }
 
             .ant-table-tbody > tr > td {
                 padding: 12px 8px;
+                font-size: 13px;
             }
-        }
-    }
-}
-
-/* ===== 深色模式支持（可選）===== */
-@media (prefers-color-scheme: dark) {
-    .personal-info-layout {
-        background: #141414;
-    }
-
-    .main-content {
-        background: #141414;
-    }
-
-    .info-card {
-        background: #262626;
-        color: #rgba(255, 255, 255, 0.85);
-
-        &.points-card {
-            background: linear-gradient(135deg, #1a1a1a 0%, #262626 100%);
         }
     }
 }

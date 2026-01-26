@@ -1,48 +1,47 @@
 <nz-layout class="personal-info-layout">
-    <!-- ===== 頂部 Header ===== -->
-    <nz-header class="top-header">
-        <div class="header-wrapper">
-            <div class="header-left">
-                @if (sidebarService.showSidebar) {
-                    <button nz-button nzType="text" (click)="toggleCollapsed()" class="toggle-btn">
-                        <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-                            class="toggle-icon"></span>
-                    </button>
-                }
-                <div class="header-title">
-                    <span nz-icon nzType="user" nzTheme="outline" class="title-icon"></span>
-                    <h1>{{username}}</h1>
-                </div>
-            </div>
-            <button nz-button class="logout-btn" (click)="LogOut()">
-                <span nz-icon nzType="logout" nzTheme="outline"></span>
-                登出
-            </button>
+    <!-- ===== 頂部 Header (保留原本樣式) ===== -->
+    <nz-header>
+        <div class="header-left">
+            @if (sidebarService.showSidebar) {
+                <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
+                    <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
+                        class="big-icon"></span>
+                </button>
+            }
+            <h1 nz-typography class="h2">
+                <span nz-icon nzType="user" nzTheme="outline"></span>
+                {{username}}
+            </h1>
         </div>
+        <button nz-button nzType="primary" class="btn-styles6" (click)="LogOut()">
+            <h3 nz-typography>登出</h3>
+        </button>
     </nz-header>
 
     <!-- ===== 主要內容區 ===== -->
-    <nz-content class="main-content">
-        <div class="content-wrapper">
+    <nz-content>
+        <div class="user-page-container">
             <!-- 歡迎語與點數概覽 -->
             <div class="welcome-section">
-                <h2>歡迎回來</h2>
+                <h2>歡迎回來，{{username}}</h2>
                 <p>查看您的點數餘額與交易紀錄</p>
             </div>
 
             <!-- 點數卡片區域 -->
             <div class="cards-section" nz-row [nzGutter]="[24, 24]">
-                <!-- 我的點數卡片 -->
-                <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="8" class="card-wrapper">
-                    <nz-card class="info-card points-card" [nzHoverable]="true">
+                <!-- 我的點數卡片 (30%) -->
+                <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="10" [nzLg]="7" class="card-wrapper">
+                    <nz-card class="info-card points-card">
                         <div class="card-content">
                             <div class="card-icon">
                                 <i nz-icon nzType="wallet" nzTheme="outline"></i>
                             </div>
                             <div class="card-info">
                                 <div class="card-label">我的點數</div>
-                                <div class="card-value">{{ userpoint }}</div>
-                                <div class="card-unit">點</div>
+                                <div class="card-value-wrapper">
+                                    <span class="card-value">{{ userpoint }}</span>
+                                    <span class="card-unit">點</span>
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer">
@@ -54,9 +53,9 @@
                     </nz-card>
                 </div>
 
-                <!-- 點數規則卡片 -->
-                <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="16" class="card-wrapper">
-                    <nz-card class="info-card rules-card" [nzHoverable]="true">
+                <!-- 點數規則卡片 (70%) -->
+                <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="14" [nzLg]="17" class="card-wrapper">
+                    <nz-card class="info-card rules-card">
                         <div class="card-header">
                             <i nz-icon nzType="file-text" nzTheme="outline"></i>
                             <h3>點數使用規則</h3>
@@ -68,11 +67,11 @@
                             </div>
                             <div class="rule-item">
                                 <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                                <span>20點可兌換一杯咖啡</span>
+                                <span>此處應該要改為真實的點數使用</span>
                             </div>
                             <div class="rule-item">
                                 <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                                <span>20點可兌換一杯咖啡</span>
+                                <span>此處應該要改為真實的規則說明</span>
                             </div>
                         </div>
                     </nz-card>
@@ -154,7 +153,7 @@
         </div>
     </nz-content>
 
-    <!-- 轉贈點數 Modal -->
+    <!-- 轉贈點數 Modal (保留原本樣式) -->
     <nz-modal [(nzVisible)]="addpointisVisible" 
               nzTitle="轉贈點數" 
               [nzFooter]="transferFooter" 
