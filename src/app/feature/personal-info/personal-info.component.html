@@ -1,131 +1,155 @@
 <nz-layout class="personal-info-layout">
-    <nz-header>
-        <div class="header-left">
-            @if (sidebarService.showSidebar) {
-                <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-                    <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-                        class="big-icon"></span>
-                </button>
-            }
-            <h1 nz-typography class="h2">
-                <span nz-icon nzType="user" nzTheme="outline"></span>
-                {{username}}
-            </h1>
+    <!-- ===== 頂部 Header ===== -->
+    <nz-header class="top-header">
+        <div class="header-wrapper">
+            <div class="header-left">
+                @if (sidebarService.showSidebar) {
+                    <button nz-button nzType="text" (click)="toggleCollapsed()" class="toggle-btn">
+                        <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
+                            class="toggle-icon"></span>
+                    </button>
+                }
+                <div class="header-title">
+                    <span nz-icon nzType="user" nzTheme="outline" class="title-icon"></span>
+                    <h1>{{username}}</h1>
+                </div>
+            </div>
+            <button nz-button class="logout-btn" (click)="LogOut()">
+                <span nz-icon nzType="logout" nzTheme="outline"></span>
+                登出
+            </button>
         </div>
-        <button nz-button nzType="primary" class="btn-styles6" (click)="LogOut()">
-            <h3 nz-typography>登出</h3>
-        </button>
     </nz-header>
 
-    <nz-content>
-        <div class="user-page-container">
-            <!-- 左右分欄布局 -->
-            <div nz-row [nzGutter]="24" class="main-content-row">
-                
-                <!-- 左側：我的點數與轉贈點數 -->
-                <div nz-col [nzSpan]="12" [nzXs]="24" [nzLg]="12" class="left-column">
-                    <!-- 我的點數卡片 -->
-                    <nz-card class="stat-card points-card">
-                        <div class="stat-content">
-                            <div class="stat-icon">
+    <!-- ===== 主要內容區 ===== -->
+    <nz-content class="main-content">
+        <div class="content-wrapper">
+            <!-- 歡迎語與點數概覽 -->
+            <div class="welcome-section">
+                <h2>歡迎回來</h2>
+                <p>查看您的點數餘額與交易紀錄</p>
+            </div>
+
+            <!-- 點數卡片區域 -->
+            <div class="cards-section" nz-row [nzGutter]="[24, 24]">
+                <!-- 我的點數卡片 -->
+                <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="8" class="card-wrapper">
+                    <nz-card class="info-card points-card" [nzHoverable]="true">
+                        <div class="card-content">
+                            <div class="card-icon">
                                 <i nz-icon nzType="wallet" nzTheme="outline"></i>
                             </div>
-                            <div class="stat-info">
-                                <div class="stat-label">我的點數</div>
-                                <div class="stat-value">{{ userpoint }}</div>
+                            <div class="card-info">
+                                <div class="card-label">我的點數</div>
+                                <div class="card-value">{{ userpoint }}</div>
+                                <div class="card-unit">點</div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button nz-button nzType="primary" class="transfer-btn" (click)="addpointModal()">
+                                <i nz-icon nzType="swap" nzTheme="outline"></i>
+                                <span>轉贈點數</span>
+                            </button>
+                        </div>
+                    </nz-card>
+                </div>
+
+                <!-- 點數規則卡片 -->
+                <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" [nzLg]="16" class="card-wrapper">
+                    <nz-card class="info-card rules-card" [nzHoverable]="true">
+                        <div class="card-header">
+                            <i nz-icon nzType="file-text" nzTheme="outline"></i>
+                            <h3>點數使用規則</h3>
+                        </div>
+                        <div class="rules-list">
+                            <div class="rule-item">
+                                <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                                <span>20點可兌換一杯咖啡</span>
+                            </div>
+                            <div class="rule-item">
+                                <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                                <span>20點可兌換一杯咖啡</span>
+                            </div>
+                            <div class="rule-item">
+                                <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                                <span>20點可兌換一杯咖啡</span>
                             </div>
                         </div>
                     </nz-card>
-
-                    <!-- 轉贈點數按鈕 -->
-                    <button nz-button nzType="primary" class="action-btn transfer-btn" (click)="addpointModal()">
-                        <i nz-icon nzType="swap" nzTheme="outline"></i>
-                        轉贈點數
-                    </button>
                 </div>
+            </div>
 
-                <!-- 右側：Tabs 區域 -->
-                <div nz-col [nzSpan]="12" [nzXs]="24" [nzLg]="12" class="right-column">
-                    <nz-tabset [(nzSelectedIndex)]="selectedTabIndex" class="info-tabs">
-                        <!-- 點數規則說明 Tab -->
-                        <nz-tab [nzTitle]="rulesTitle">
-                            <ng-template #rulesTitle>
-                                <i nz-icon nzType="file-text" nzTheme="outline"></i>
-                                點數規則說明
-                            </ng-template>
-                            <div class="tab-content-wrapper">
-                                <div class="rules-content">
-                                    <div class="rule-item">
-                                        <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                                        <span>20點可兌換一杯咖啡</span>
-                                    </div>
-                                    <div class="rule-item">
-                                        <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                                        <span>20點可兌換一杯咖啡</span>
-                                    </div>
-                                    <div class="rule-item">
-                                        <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                                        <span>20點可兌換一杯咖啡</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </nz-tab>
-
-                        <!-- 點數異動紀錄 Tab -->
-                        <nz-tab [nzTitle]="historyTitle">
-                            <ng-template #historyTitle>
-                                <i nz-icon nzType="history" nzTheme="outline"></i>
-                                點數異動紀錄
-                            </ng-template>
-                            <div class="tab-content-wrapper">
-                                <div class="point-information-container">
-                                    <nz-table #memberHistoryTable 
-                                              [nzData]="memberPointsHistoryList" 
-                                              [nzLoading]="memberHistoryLoading"
-                                              [nzBordered]="true" 
-                                              [nzShowPagination]="true" 
-                                              [nzPageSize]="10" 
-                                              [nzHideOnSinglePage]="false"
-                                              [nzScroll]="{ y: '400px' }">
-                                        <thead>
-                                            <tr>
-                                                <th>異動事件</th>
-                                                <th>點數異動情況</th>
-                                                <th>異動時間</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (memberPointsHistoryList && memberPointsHistoryList.length > 0) {
-                                                @for (data of memberPointsHistoryList; track data.id) {
-                                                    <tr>
-                                                        <td>{{ data.description || data.type }}</td>
-                                                        <td>
-                                                            <span [ngClass]="data.amount >= 0 ? 'text-green' : 'text-red'">
-                                                                {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
-                                                            </span>
-                                                            ({{ data.before_balance }} → {{ data.after_balance }})
-                                                        </td>
-                                                        <td>{{ data.created_at }}</td>
-                                                    </tr>
-                                                }
+            <!-- 交易紀錄區域 -->
+            <div class="history-section">
+                <div class="section-header">
+                    <i nz-icon nzType="history" nzTheme="outline"></i>
+                    <h2>點數異動紀錄</h2>
+                </div>
+                <nz-card class="history-card">
+                    <div class="table-wrapper">
+                        <nz-table #memberHistoryTable 
+                                  [nzData]="memberPointsHistoryList" 
+                                  [nzLoading]="memberHistoryLoading"
+                                  [nzBordered]="false" 
+                                  [nzShowPagination]="true" 
+                                  [nzPageSize]="10" 
+                                  [nzHideOnSinglePage]="false"
+                                  [nzScroll]="{ x: '800px' }"
+                                  class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>異動事件</th>
+                                    <th>點數變化</th>
+                                    <th>異動時間</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (memberPointsHistoryList && memberPointsHistoryList.length > 0) {
+                                    @for (data of memberPointsHistoryList; track data.id) {
+                                        <tr class="history-row">
+                                            <td>
+                                                <div class="event-info">
+                                                    {{ data.description || data.type }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="amount-info">
+                                                    <span [ngClass]="data.amount >= 0 ? 'amount-positive' : 'amount-negative'">
+                                                        {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
+                                                    </span>
+                                                    <div class="balance-info">
+                                                        {{ data.before_balance }} → {{ data.after_balance }}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="time-info">
+                                                    {{ data.created_at }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                } @else {
+                                    <tr class="empty-row">
+                                        <td colspan="3">
+                                            @if (memberHistoryLoading) {
+                                                <div class="empty-state">
+                                                    <nz-spin [nzSimple]="true"></nz-spin>
+                                                    <p>載入中...</p>
+                                                </div>
                                             } @else {
-                                                <tr>
-                                                    <td colspan="3" class="text-center">
-                                                        @if (memberHistoryLoading) {
-                                                            載入中...
-                                                        } @else {
-                                                            暫無資料
-                                                        }
-                                                    </td>
-                                                </tr>
+                                                <div class="empty-state">
+                                                    <i nz-icon nzType="file-text" nzTheme="outline"></i>
+                                                    <p>暫無交易紀錄</p>
+                                                </div>
                                             }
-                                        </tbody>
-                                    </nz-table>
-                                </div>
-                            </div>
-                        </nz-tab>
-                    </nz-tabset>
-                </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </nz-table>
+                    </div>
+                </nz-card>
             </div>
         </div>
     </nz-content>

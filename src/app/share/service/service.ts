@@ -12,9 +12,9 @@ import { TokenService } from '../service/token.service';
 export abstract class BaseService {
   protected http = inject(HttpClient);
   // 建升的伺服器
-  protected readonly url = 'http://10.25.1.101:5054';
+  // protected readonly url = 'http://10.25.1.101:5054';
   // 峻嘉的伺服器
-  // protected readonly url = 'http://163.17.136.69:11538';
+  protected readonly url = 'http://163.17.136.69:11538';
   protected readonly PointsUrl = "/Points/Points/";
   protected readonly LogUrl = "/Logs/Log/";
   protected readonly ProductUrl = "/Product/Product/";
@@ -74,7 +74,7 @@ export class PointService extends BaseService {
   getPointByMemberId(memberId: string): Observable<IApiResponse<IApiResponsePoints>> {
     const apiUrl = `${this.url}${this.PointsUrl}get_member_points`;
     const requestBody = {
-      memberId: memberId
+      id: memberId
     };
     return this.http.post<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
   }
