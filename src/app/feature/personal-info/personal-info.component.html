@@ -44,17 +44,87 @@
                     </button>
                 </div>
 
-                <!-- 右側：按鈕區域 -->
+                <!-- 右側：Tabs 區域 -->
                 <div nz-col [nzSpan]="12" [nzXs]="24" [nzLg]="12" class="right-column">
-                    <button nz-button nzType="primary" class="action-btn rules-btn" (click)="openRulesModal()">
-                        <i nz-icon nzType="file-text" nzTheme="outline"></i>
-                        點數規則說明
-                    </button>
-                    
-                    <button nz-button nzType="primary" class="action-btn history-btn" (click)="openHistoryModal()">
-                        <i nz-icon nzType="history" nzTheme="outline"></i>
-                        點數異動紀錄
-                    </button>
+                    <nz-tabset [(nzSelectedIndex)]="selectedTabIndex" class="info-tabs">
+                        <!-- 點數規則說明 Tab -->
+                        <nz-tab [nzTitle]="rulesTitle">
+                            <ng-template #rulesTitle>
+                                <i nz-icon nzType="file-text" nzTheme="outline"></i>
+                                點數規則說明
+                            </ng-template>
+                            <div class="tab-content-wrapper">
+                                <div class="rules-content">
+                                    <div class="rule-item">
+                                        <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                                        <span>20點可兌換一杯咖啡</span>
+                                    </div>
+                                    <div class="rule-item">
+                                        <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                                        <span>20點可兌換一杯咖啡</span>
+                                    </div>
+                                    <div class="rule-item">
+                                        <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                                        <span>20點可兌換一杯咖啡</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </nz-tab>
+
+                        <!-- 點數異動紀錄 Tab -->
+                        <nz-tab [nzTitle]="historyTitle">
+                            <ng-template #historyTitle>
+                                <i nz-icon nzType="history" nzTheme="outline"></i>
+                                點數異動紀錄
+                            </ng-template>
+                            <div class="tab-content-wrapper">
+                                <div class="point-information-container">
+                                    <nz-table #memberHistoryTable 
+                                              [nzData]="memberPointsHistoryList" 
+                                              [nzLoading]="memberHistoryLoading"
+                                              [nzBordered]="true" 
+                                              [nzShowPagination]="true" 
+                                              [nzPageSize]="10" 
+                                              [nzHideOnSinglePage]="false"
+                                              [nzScroll]="{ y: '400px' }">
+                                        <thead>
+                                            <tr>
+                                                <th>異動事件</th>
+                                                <th>點數異動情況</th>
+                                                <th>異動時間</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (memberPointsHistoryList && memberPointsHistoryList.length > 0) {
+                                                @for (data of memberPointsHistoryList; track data.id) {
+                                                    <tr>
+                                                        <td>{{ data.description || data.type }}</td>
+                                                        <td>
+                                                            <span [ngClass]="data.amount >= 0 ? 'text-green' : 'text-red'">
+                                                                {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
+                                                            </span>
+                                                            ({{ data.before_balance }} → {{ data.after_balance }})
+                                                        </td>
+                                                        <td>{{ data.created_at }}</td>
+                                                    </tr>
+                                                }
+                                            } @else {
+                                                <tr>
+                                                    <td colspan="3" class="text-center">
+                                                        @if (memberHistoryLoading) {
+                                                            載入中...
+                                                        } @else {
+                                                            暫無資料
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </nz-table>
+                                </div>
+                            </div>
+                        </nz-tab>
+                    </nz-tabset>
                 </div>
             </div>
         </div>
@@ -108,98 +178,6 @@
             <button nz-button nzType="primary" (click)="addpointhandleOk(addpointselectedValue, pointvalue)">
                 <i nz-icon nzType="check" nzTheme="outline"></i>
                 確認轉贈
-            </button>
-        </ng-template>
-    </nz-modal>
-
-    <!-- 規則說明 Modal -->
-    <nz-modal [(nzVisible)]="rulesModalVisible" 
-              nzTitle="點數規則說明" 
-              [nzFooter]="rulesFooter" 
-              nzWidth="700px"
-              nzCentered 
-              [nzClosable]="false">
-        <ng-container *nzModalContent>
-            <div class="rules-content">
-                <div class="rule-item">
-                    <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                    <span>20點可兌換一杯咖啡</span>
-                </div>
-                <div class="rule-item">
-                    <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                    <span>此處應該要改為真實的點數使用</span>
-                </div>
-                <div class="rule-item">
-                    <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                    <span>此處應該要改為真實的規則說明</span>
-                </div>
-            </div>
-        </ng-container>
-        <ng-template #rulesFooter>
-            <button nz-button nzType="primary" (click)="closeRulesModal()">
-                <i nz-icon nzType="check" nzTheme="outline"></i>
-                我知道了
-            </button>
-        </ng-template>
-    </nz-modal>
-
-    <!-- 點數異動紀錄 Modal -->
-    <nz-modal [(nzVisible)]="historyModalVisible" 
-              nzTitle="點數異動紀錄" 
-              [nzFooter]="historyFooter" 
-              nzWidth="900px"
-              nzCentered 
-              [nzClosable]="false">
-        <ng-container *nzModalContent>
-            <div class="point-information-container">
-                <nz-table #memberHistoryTable 
-                          [nzData]="memberPointsHistoryList" 
-                          [nzLoading]="memberHistoryLoading"
-                          [nzBordered]="true" 
-                          [nzShowPagination]="true" 
-                          [nzPageSize]="10" 
-                          [nzHideOnSinglePage]="false"
-                          [nzScroll]="{ y: '400px' }">
-                    <thead>
-                        <tr>
-                            <th>異動事件</th>
-                            <th>點數異動情況</th>
-                            <th>異動時間</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (memberPointsHistoryList && memberPointsHistoryList.length > 0) {
-                            @for (data of memberPointsHistoryList; track data.id) {
-                                <tr>
-                                    <td>{{ data.description || data.type }}</td>
-                                    <td>
-                                        <span [ngClass]="data.amount >= 0 ? 'text-green' : 'text-red'">
-                                            {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
-                                        </span>
-                                        ({{ data.before_balance }} → {{ data.after_balance }})
-                                    </td>
-                                    <td>{{ data.created_at }}</td>
-                                </tr>
-                            }
-                        } @else {
-                            <tr>
-                                <td colspan="3" class="text-center">
-                                    @if (memberHistoryLoading) {
-                                        載入中...
-                                    } @else {
-                                        暫無資料
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </nz-table>
-            </div>
-        </ng-container>
-        <ng-template #historyFooter>
-            <button nz-button nzType="primary" (click)="closeHistoryModal()">
-                <i nz-icon nzType="close" nzTheme="outline"></i>
-                關閉
             </button>
         </ng-template>
     </nz-modal>

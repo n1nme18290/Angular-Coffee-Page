@@ -74,6 +74,9 @@ export class PersonalInfoComponent implements OnInit {
   private tokenService = inject(TokenService);
   private message = inject(NzMessageService);
 
+  // ✅ Tabs 控制
+  selectedTabIndex = 0;
+
   // 使用者資訊
   username: string = '';
   email: string = '';
@@ -82,8 +85,6 @@ export class PersonalInfoComponent implements OnInit {
 
   // Modal 控制
   addpointisVisible = false;
-  rulesModalVisible = false;
-  historyModalVisible = false;
 
   // 表單值
   addpointselectedValue: string = '';
@@ -114,30 +115,6 @@ export class PersonalInfoComponent implements OnInit {
   // ✅ 切換側邊欄
   toggleCollapsed() {
     this.sidebarService.toggleCollapsed();
-  }
-
-  // ✅ 開啟規則說明 Modal
-  openRulesModal() {
-    this.rulesModalVisible = true;
-  }
-
-  // ✅ 關閉規則說明 Modal
-  closeRulesModal() {
-    this.rulesModalVisible = false;
-  }
-
-  // ✅ 開啟點數異動紀錄 Modal
-  openHistoryModal() {
-    this.historyModalVisible = true;
-    // 如果還沒載入過資料，則載入
-    if (this.memberPointsHistoryList.length === 0) {
-      this.loadMemberLog();
-    }
-  }
-
-  // ✅ 關閉點數異動紀錄 Modal
-  closeHistoryModal() {
-    this.historyModalVisible = false;
   }
 
   // 載入會員基本資訊

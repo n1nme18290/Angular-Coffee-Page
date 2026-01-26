@@ -177,60 +177,123 @@ nz-content {
 }
 
 /* ===== 轉贈點數按鈕 ===== */
-button[nz-button].action-btn {
+.action-btn {
     width: 100%;
-    height: 50px;
+    height: 60px;
     font-size: 18px;
-    border-radius: 12px;
+    border-radius: 8px;
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
     flex-shrink: 0;
     background-color: #ffffff;
-    border: 1px solid rgb(14, 57, 98);
+    border-color: rgb(14, 57, 98);
     color: rgb(14, 57, 98);
 
     i {
-        font-size: 22px;
+        font-size: 20px;
         margin-right: 8px;
     }
 
     &:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        background-color: #ffffff;
         color: #1890ff;
         border-color: #1890ff;
     }
 }
 
-
-
-/* ===== 右側：按鈕區域 ===== */
+/* ===== 右側：Tabs 區域 ===== */
 .right-column {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    height: 100%;
 
-    .rules-btn,
-    .history-btn {
-        background-color: #ffffff;
-        color: rgb(14, 57, 98);
-        border-color: rgb(14, 57, 98);
+    .info-tabs {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
 
-        &:hover {
-            background-color: #ffffff;
-            color: #1890ff;
-            border-color: #1890ff;
+        ::ng-deep {
+            .ant-tabs {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .ant-tabs-content-holder {
+                flex: 1;
+                overflow: hidden;
+            }
+
+            .ant-tabs-content {
+                height: 100%;
+            }
+
+            .ant-tabs-tabpane {
+                height: 100%;
+                overflow: hidden;
+            }
+
+            // Tabs 導航列樣式
+            .ant-tabs-nav {
+                background-color: #27496D;
+                margin-bottom: 0;
+                padding: 0 16px;
+                border-radius: 8px 8px 0 0;
+
+                &::before {
+                    border-bottom: none;
+                }
+            }
+
+            .ant-tabs-tab {
+                color: #ffffff;
+                padding: 12px 20px;
+                font-size: 16px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    color: #FFD014;
+                }
+
+                &.ant-tabs-tab-active {
+                    .ant-tabs-tab-btn {
+                        color: #FFD014;
+                        font-weight: 600;
+                    }
+                }
+
+                i {
+                    margin-right: 8px;
+                    font-size: 16px;
+                }
+            }
+
+            .ant-tabs-ink-bar {
+                background-color: #FFD014;
+                height: 3px;
+            }
         }
+    }
+
+    .tab-content-wrapper {
+        height: 100%;
+        overflow: auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 }
 
-/* ===== 規則說明 Modal 內容 ===== */
+/* ===== 規則說明內容 ===== */
 .rules-content {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 8px 0;
 
     .rule-item {
         display: flex;
@@ -260,9 +323,13 @@ button[nz-button].action-btn {
     }
 }
 
-/* ===== 點數異動紀錄 Modal 內容 ===== */
+/* ===== 點數異動紀錄內容 ===== */
 .point-information-container {
     ::ng-deep {
+        .ant-table-wrapper {
+            height: 100%;
+        }
+
         .ant-table-thead > tr > th {
             background: #fafafa;
             font-weight: 600;
