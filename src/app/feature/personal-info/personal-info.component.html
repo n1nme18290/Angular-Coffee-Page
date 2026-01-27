@@ -123,7 +123,8 @@
                                             </td>
                                             <td>
                                                 <div class="time-info">
-                                                    {{ data.created_at }}
+                                                    <span class="time-date">{{ data.created_at.split(' ')[0] }}</span>
+                                                    <span class="time-clock">{{ data.created_at.split(' ')[1] }}</span>
                                                 </div>
                                             </td>
                                         </tr>

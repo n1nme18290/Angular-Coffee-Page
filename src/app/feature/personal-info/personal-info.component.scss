@@ -114,14 +114,14 @@ nz-content {
     margin-bottom: 24px;
 
     h2 {
-        font-size: 28px;
+        font-size: 36px;
         font-weight: 700;
         color: #27496D;
         margin: 0 0 8px 0;
     }
 
     p {
-        font-size: 15px;
+        font-size: 18px;
         color: #8c8c8c;
         margin: 0;
     }
@@ -192,9 +192,9 @@ nz-content {
                 flex: 1;
 
                 .card-label {
-                    font-size: 14px;
+                    font-size: 18px;
                     color: #8c8c8c;
-                    margin-bottom: 8px;
+                    margin-bottom: 10px;
                     font-weight: 500;
                 }
 
@@ -205,14 +205,14 @@ nz-content {
                 }
 
                 .card-value {
-                    font-size: 48px;
+                    font-size: 56px;
                     font-weight: 700;
                     color: #FFD014;
                     line-height: 1;
                 }
 
                 .card-unit {
-                    font-size: 24px;
+                    font-size: 32px;
                     color: #FFD014;
                     font-weight: 600;
                 }
@@ -239,12 +239,12 @@ nz-content {
             border-bottom: 2px solid #f0f0f0;
 
             i {
-                font-size: 22px;
+                font-size: 26px;
                 color: #27496D;
             }
 
             h3 {
-                font-size: 18px;
+                font-size: 24px;
                 font-weight: 600;
                 color: #27496D;
                 margin: 0;
@@ -264,7 +264,7 @@ nz-content {
 .transfer-btn {
     width: 100%;
     height: 50px;
-    font-size: 16px;
+    font-size: 18px;
     border-radius: 8px;
     font-weight: 600;
     background-color: #ffffff !important;
@@ -274,7 +274,7 @@ nz-content {
     transition: all 0.3s ease;
 
     i {
-        font-size: 18px;
+        font-size: 20px;
         margin-right: 8px;
     }
 
@@ -298,13 +298,13 @@ nz-content {
     transition: all 0.3s ease;
 
     i {
-        font-size: 18px;
+        font-size: 22px;
         color: #52c41a;
         flex-shrink: 0;
     }
 
     span {
-        font-size: 14px;
+        font-size: 16px;
         color: #595959;
         font-weight: 500;
         line-height: 1.5;
@@ -327,12 +327,12 @@ nz-content {
         margin-bottom: 20px;
 
         i {
-            font-size: 24px;
+            font-size: 28px;
             color: #27496D;
         }
 
         h2 {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 700;
             color: #27496D;
             margin: 0;
@@ -367,7 +367,7 @@ nz-content {
                 font-weight: 600;
                 color: #27496D;
                 padding: 16px;
-                font-size: 15px;
+                font-size: 17px;
                 text-align: center;
             }
 
@@ -381,7 +381,7 @@ nz-content {
                 > td {
                     padding: 16px;
                     border-bottom: 1px solid #f0f0f0;
-                    font-size: 14px;
+                    font-size: 16px;
                     text-align: center;
                     vertical-align: middle;
                 }
@@ -400,35 +400,50 @@ nz-content {
     .event-info {
         color: #262626;
         font-weight: 500;
+        font-size: 16px;
     }
 
     .amount-info {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
 
         .amount-positive {
             color: #52c41a;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 18px;
         }
 
         .amount-negative {
             color: #ff4d4f;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 18px;
         }
 
         .balance-info {
-            font-size: 12px;
+            font-size: 14px;
             color: #8c8c8c;
         }
     }
 
     .time-info {
         color: #595959;
-        font-size: 14px;
+        font-size: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+
+        .time-date {
+            font-weight: 500;
+            color: #262626;
+        }
+
+        .time-clock {
+            font-size: 14px;
+            color: #8c8c8c;
+        }
     }
 }
 
@@ -448,7 +463,7 @@ nz-content {
         }
 
         p {
-            font-size: 14px;
+            font-size: 16px;
             color: #999;
             margin: 0;
         }
@@ -469,13 +484,13 @@ nz-content {
             align-items: center;
             gap: 8px;
             margin-bottom: 8px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 500;
             color: #262626;
 
             i {
                 color: #1890ff;
-                font-size: 16px;
+                font-size: 18px;
             }
 
             .required {
@@ -494,11 +509,11 @@ nz-content {
 
             i {
                 color: #1890ff;
-                font-size: 16px;
+                font-size: 18px;
             }
 
             span {
-                font-size: 14px;
+                font-size: 16px;
                 color: #1890ff;
                 font-weight: 500;
             }
@@ -519,7 +534,7 @@ nz-content {
             height: 40px;
             border-radius: 6px;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 16px;
             transition: all 0.3s ease;
 
             &:first-child {
@@ -578,7 +593,7 @@ h3 {
 
     .welcome-section {
         h2 {
-            font-size: 24px;
+            font-size: 28px;
         }
     }
 }
@@ -619,7 +634,7 @@ h3 {
         margin-bottom: 24px;
 
         h2 {
-            font-size: 20px;
+            font-size: 24px;
         }
 
         p {
@@ -647,10 +662,30 @@ h3 {
                 }
 
                 .card-info {
+                    .card-label {
+                        font-size: 14px;
+                    }
+
                     .card-value {
-                        font-size: 36px;
+                        font-size: 40px;
+                    }
+
+                    .card-unit {
+                        font-size: 22px;
                     }
                 }
+            }
+        }
+
+        &.rules-card {
+            .card-header {
+                h3 {
+                    font-size: 18px;
+                }
+            }
+
+            .rule-item span {
+                font-size: 14px;
             }
         }
     }
@@ -662,11 +697,11 @@ h3 {
             gap: 8px;
 
             i {
-                font-size: 20px;
+                font-size: 22px;
             }
 
             h2 {
-                font-size: 18px;
+                font-size: 20px;
             }
         }
     }
@@ -675,7 +710,7 @@ h3 {
         .history-table ::ng-deep {
             .ant-table-thead > tr > th {
                 padding: 12px 8px;
-                font-size: 13px;
+                font-size: 14px;
             }
 
             .ant-table-tbody > tr > td {
