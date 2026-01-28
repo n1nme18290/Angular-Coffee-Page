@@ -65,10 +65,29 @@ export class PointService extends BaseService {
     const apiUrl = `${this.url}${this.PointsUrl}get_all_points`;
     return this.http.get<IApiResponse<IApiResponsePoints[]>>(apiUrl);
   }
-  // 取得分頁點數
-  getPagePoints(page: number, perpage: number): Observable<IApiResponse<IApiResponsePages<IApiResponsePoints>>> {
-    const apiUrl = `${this.url}${this.PointsUrl}get_page_points?page=${page}&per_page=${perpage}`;
-    return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePoints>>>(apiUrl);
+  // 取得分頁點數（支援會員名稱搜尋）
+  getPagePoints(
+    page: number,
+    perpage: number,
+    memberName?: string | null
+  ): Observable<IApiResponse<IApiResponsePages<IApiResponsePoints>>> {
+    // 準備 query parameters
+    const params = new URLSearchParams();
+    params.set('page', String(page));
+    params.set('per_page', String(perpage));
+
+    // 準備 request body
+    const requestBody: any = {};
+    if (memberName) {
+      requestBody.name = memberName;
+    }
+
+    const apiUrl = `${this.url}${this.PointsUrl}get_page_points?${params.toString()}`;
+
+    return this.http.post<IApiResponse<IApiResponsePages<IApiResponsePoints>>>(
+      apiUrl,
+      requestBody
+    );
   }
   // 取得單一點數
   getPointByMemberId(memberId: string): Observable<IApiResponse<IApiResponsePoints>> {

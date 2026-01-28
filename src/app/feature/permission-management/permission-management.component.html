@@ -10,14 +10,14 @@
     <nz-content>
         <div nz-row class="row-style">
             <div nz-col [nzSpan]="12" class="left-col">
-                <h2 nz-typography class="boxword">管理員清單</h2>
+                <h2 nz-typography class="boxword">管理人員清單</h2>
             </div>
         </div>
     </nz-content>
 
     <div class="admin-information-container">
         <div class="send-request">
-            <!-- 管理員列表 Table -->
+            <!-- 管理人員列表 Table -->
             <nz-table #basicTable [nzData]="adminList || []" [nzBordered]="true" [nzLoading]="loading"
                 [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="adminCurrentPage"
                 [nzPageSize]="adminPageSize" [nzTotal]="totalAdmin" [nzShowSizeChanger]="true"
@@ -76,18 +76,18 @@
     </div>
 
 
-    <!-- 編輯管理員角色 Modal -->
+    <!-- 編輯管理人員角色 Modal -->
     <nz-modal [(nzVisible)]="editAdminRoleVisible" [nzTitle]="'管理角色 - ' + (currentEditAdmin?.name || '')"
         [nzFooter]="editAdminRoleFooter" nzWidth="900px" nzCentered (nzOnCancel)="cancelEditAdminRole()">
         <ng-container *nzModalContent>
-            <!-- 管理員資訊卡片 -->
+            <!-- 管理人員資訊卡片 -->
             <div
                 style="margin-bottom: 20px; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white;">
                 <div nz-row [nzGutter]="16">
                     <div nz-col [nzSpan]="12">
                         <p style="margin: 4px 0;">
                             <i nz-icon nzType="user" nzTheme="outline"></i>
-                            <strong style="margin-left: 8px;">管理員：</strong>{{ currentEditAdmin?.name }}
+                            <strong style="margin-left: 8px;">管理人員：</strong>{{ currentEditAdmin?.name }}
                         </p>
                         <p style="margin: 4px 0;">
                             <i nz-icon nzType="mail" nzTheme="outline"></i>
@@ -165,7 +165,7 @@
                 <p style="margin: 0; color: #0050b3;">
                     <i nz-icon nzType="info-circle" nzTheme="outline"></i>
                     <strong style="margin-left: 8px;">提示：</strong>
-                    可以為管理員分配多個角色，權限將自動合併。SuperAdmin 擁有所有權限（*）。
+                    可以為管理人員分配多個角色，權限將自動合併。
                 </p>
             </div>
         </ng-container>

@@ -359,52 +359,26 @@ export class HistoricalRecordComponent {
   getPagePoints() {
     this.loading = true;
 
-    // 如果有搜尋或日期篩選，先取得所有資料再在前端過濾與分頁
-    const hasFilters = (this.pointsSearchName && this.pointsSearchName.trim()) || this.pointsFilteredDate;
-    if (hasFilters) {
-      this.pointService.getAllPoints().subscribe({
-        next: (resAll) => {
-          let allList: IApiResponsePoints[] = resAll?.data || [];
+    // 使用新 API 的搜尋功能（會員名稱）
+    // 日期篩選仍在前端進行（後端不支援）
+    const memberName = this.pointsSearchName && this.pointsSearchName.trim() ? this.pointsSearchName.trim() : null;
 
-          // 前端篩選：名稱搜尋
-          if (this.pointsSearchName && this.pointsSearchName.trim()) {
-            const searchLower = this.pointsSearchName.toLowerCase().trim();
-            allList = allList.filter(item => item.member_name.toLowerCase().includes(searchLower));
-          }
+    this.pointService.getPagePoints(this.currentPage, this.pageSize, memberName).subscribe({
+      next: (res) => {
+        if (res && res.data) {
+          let dataList = res.data.data || [];
+          this.total = res.data.total || 0;
 
-          // 前端篩選：日期篩選
+          // 前端日期篩選
           if (this.pointsFilteredDate) {
-            allList = allList.filter((item: IApiResponsePoints) => {
+            dataList = dataList.filter((item: IApiResponsePoints) => {
               const itemDate = item.updated_at.split(' ')[0];
               return itemDate === this.pointsFilteredDate;
             });
+            this.total = dataList.length; // 更新 total 為日期篩選後的數量
           }
 
-          // 設定 total，並針對目前 page 做 slice
-          this.total = allList.length;
-          const start = (this.currentPage - 1) * this.pageSize;
-          this.pointsList = allList.slice(start, start + this.pageSize);
-          this.setOfCheckedId.clear();
-          this.refreshCheckedStatus();
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('Error fetching all points for filtering:', err);
-          this.pointsList = [];
-          this.total = 0;
-          this.loading = false;
-        }
-      });
-      return;
-    }
-
-    // 無篩選時使用後端分頁，並採用後端回傳的 total
-    this.pointService.getPagePoints(this.currentPage, this.pageSize).subscribe({
-      next: (res) => {
-        if (res && res.data) {
-          const dataList = res.data.data || [];
           this.pointsList = dataList;
-          this.total = res.data.total || dataList.length || 0;
           this.setOfCheckedId.clear();
           this.refreshCheckedStatus();
         }
@@ -443,7 +417,7 @@ export class HistoricalRecordComponent {
     get_points: '取得點數',
     regift_points: '轉出點數',
     card_collect: '卡面簽到退',
-    add_points: '管理員發送點數'
+    add_points: '管理人員發送點數'
   };
 
 
