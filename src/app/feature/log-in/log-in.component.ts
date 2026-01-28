@@ -4,15 +4,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { FormsModule } from '@angular/forms';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzSwitchModule } from 'ng-zorro-antd/switch';
-import { NzAvatarModule } from 'ng-zorro-antd/avatar';
-import { NzTabsModule } from 'ng-zorro-antd/tabs';
-import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { NzDrawerModule } from 'ng-zorro-antd/drawer';
-import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
 import { AuthService } from '../../share/service/service';
 import { PermissionService } from '../../share/service/permission.service';
@@ -20,18 +12,13 @@ import { PermissionService } from '../../share/service/permission.service';
 @Component({
   selector: 'app-log-in',
   standalone: true,
-  imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
-    , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
-    NzRadioModule,],
+  imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzTypographyModule, NzInputModule, FormsModule],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.scss'
 })
 export class LogInComponent {
 
-  email: string = '';
-  password: string = '';
-  //控制密碼是否顯示在畫面上，眼睛 icon開關
-  passwordVisible = false;
+  studentId: string = '';
 
   private permissionService = inject(PermissionService);
   private router = inject(Router)
@@ -79,7 +66,7 @@ export class LogInComponent {
 
   //sso 單一登入流程
   onSSOLogin(): void {
-    this.authService.ssoLoginAndSaveToken().subscribe({
+    this.authService.ssoLoginAndSaveToken(this.studentId).subscribe({
       next: (response) => {
         if (response.isSuccess) {
           console.log('登入成功，token 已儲存');

@@ -367,18 +367,17 @@ export class AuthService extends BaseService {
     });
   }
   // SSO 登入 -暫定
-  ssoLogin(): Observable<IApiResponse<IApiResponseMemberSSOLogin>> {
+  ssoLogin(studentId: string): Observable<IApiResponse<IApiResponseMemberSSOLogin>> {
     const ssoUrl = this.url + this.AuthUrl + 'sso_login';
     const requestBody = {
       "provider": "member",
-      // "student_id": "s1811432008",
-      "student_id": "s1811432018",
+      "student_id": studentId || "s1811432018",
     }
     return this.http.post<IApiResponse<IApiResponseMemberSSOLogin>>(ssoUrl, requestBody);
   }
-  ssoLoginAndSaveToken(): Observable<IApiResponse<IApiResponseMemberSSOLogin>> {
+  ssoLoginAndSaveToken(studentId: string): Observable<IApiResponse<IApiResponseMemberSSOLogin>> {
     return new Observable(observer => {
-      this.ssoLogin().subscribe({
+      this.ssoLogin(studentId).subscribe({
         next: (response) => {
           if (response.isSuccess && response.data) {
             // 儲存 sso_token

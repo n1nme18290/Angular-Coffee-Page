@@ -416,8 +416,8 @@ export class HistoricalRecordComponent {
     exchange_coffee: '兌換咖啡',
     get_points: '取得點數',
     regift_points: '轉出點數',
-    card_collect: '卡面簽到退',
-    add_points: '管理人員發送點數'
+    card_collect: '卡片簽到退',
+    add_points: '系統發送點數'
   };
 
 
@@ -427,7 +427,7 @@ export class HistoricalRecordComponent {
     cleaning_alert: '機器需要清潔',
     device_clean: '機器已經清洗過',
     exchange_coffee: '兌換咖啡',
-    card_collect: '卡面簽到退'
+    card_collect: '卡片簽到退'
   };
 
   // 將使用者使用紀錄的篩選類型參數轉換為友善名稱

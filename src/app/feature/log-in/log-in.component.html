@@ -3,32 +3,16 @@
   <nz-content>
 
     <div class="box">
-      <h2 nz-typography>登入帳號</h2>
-      <!--登入信箱輸入框-->
+      <h2 nz-typography>SSO 登入</h2>
+      <!--學號輸入框-->
       <div class="input-block">
-        <h5 nz-typography style="margin: 0;">請輸入信箱：</h5>
-        <input nz-input placeholder="請輸入信箱" nzSize="large" [(ngModel)]="email" />
-      </div>
-      <!--登入密碼輸入框-->
-      <div class="input-block">
-        <h5 nz-typography style="margin: 0;">請輸入密碼：</h5>
-
-        <nz-input-group [nzSuffix]="suffixTemplate" nzSize="large">
-            <input [type]="passwordVisible ? 'text' : 'password'" nz-input placeholder="請輸入密碼" [(ngModel)]="password" />
-        </nz-input-group>
-
-        <!--密碼是否可視-->
-        <ng-template #suffixTemplate>
-            <span nz-icon class="ant-input-password-icon" [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
-                (click)="passwordVisible = !passwordVisible"></span>
-        </ng-template>
+        <h5 nz-typography style="margin: 0;">請輸入學號（要加s），未輸入則為管理員角色：</h5>
+        <input nz-input placeholder="請輸入學號" nzSize="large" [(ngModel)]="studentId" />
       </div>
       <br>
-      <!--登入按鈕-->
-      <button nz-button nzType="primary" nzBlock class="btn-styles1"(click)="onLogin(email, password)">登入</button>
-
+      <!--SSO 登入按鈕-->
+      <button nz-button nzType="primary" nzBlock class="btn-styles1" (click)="onSSOLogin()">SSO 登入</button>
     </div>
-    <button (click)="onSSOLogin()">測試sso登入</button>
   </nz-content>
 
 </nz-layout>
