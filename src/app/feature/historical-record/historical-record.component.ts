@@ -442,7 +442,8 @@ export class HistoricalRecordComponent {
     exchange_coffee: '兌換咖啡',
     get_points: '取得點數',
     regift_points: '轉出點數',
-    card_collect: '卡面簽到退'
+    card_collect: '卡面簽到退',
+    add_points: '管理員發送點數'
   };
 
 

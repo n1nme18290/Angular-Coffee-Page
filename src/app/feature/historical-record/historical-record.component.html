@@ -47,13 +47,17 @@
                                     <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
                                     取得點數
                                 </li>
+                                <li nz-menu-item (click)="onHistoryTypeFilterChange('add_points')">
+                                    <i nz-icon nzType="plus-circle" nzTheme="outline"></i>
+                                    系統給予點數
+                                </li>
                                 <li nz-menu-item (click)="onHistoryTypeFilterChange('regift_points')">
                                     <i nz-icon nzType="gift" nzTheme="outline"></i>
                                     轉出點數
                                 </li>
                                 <li nz-menu-item (click)="onHistoryTypeFilterChange('card_collect')">
                                     <i nz-icon nzType="idcard" nzTheme="outline"></i>
-                                    卡面簽到退
+                                    卡片簽到退
                                 </li>
                             </ul>
                         </nz-dropdown-menu>
@@ -91,8 +95,14 @@
                             <td>{{ getSerialNumber(i) }}</td>
                             <td>{{ data.member_name }}</td>
                             <td>{{ typeMap[data.type] }}</td>
-                            <td>{{ data.after_balance >= data.before_balance ? '+' : '-' }}{{ data.amount }} ({{
-                                data.before_balance }} → {{ data.after_balance }})</td>
+                            <td>
+                                @if (data.type === 'add_points') {
+                                -{{ data.amount }}
+                                } @else {
+                                {{ data.after_balance >= data.before_balance ? '+' : '-' }}{{ data.amount }} ({{
+                                data.before_balance }} → {{ data.after_balance }})
+                                }
+                            </td>
                             <td>{{ data.created_at }}</td>
                         </tr>
                         }
