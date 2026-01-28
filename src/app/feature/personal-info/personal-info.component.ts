@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -26,10 +27,11 @@ import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { MemberService, PointService, LogService } from '../../share/service/service';
+import { MemberService, PointService, LogService, AuthService } from '../../share/service/service';
 import { IApiResponseMember, IApiResponsePointsHistory } from '../../share/service/model';
 import { SidebarService } from '../../share/service/sidebar.service';
 import { TokenService } from '../../share/service/token.service';
+import { PermissionService } from '../../share/service/permission.service';
 
 @Component({
   selector: 'app-personal-info',
@@ -72,6 +74,9 @@ export class PersonalInfoComponent implements OnInit {
   private pointsService = inject(PointService);
   private logService = inject(LogService);
   private tokenService = inject(TokenService);
+  private authService = inject(AuthService);
+  private permissionService = inject(PermissionService);
+  private router = inject(Router);
   private message = inject(NzMessageService);
 
   // ✅ Tabs 控制
@@ -232,8 +237,9 @@ export class PersonalInfoComponent implements OnInit {
   }
 
   LogOut() {
-    this.tokenService.removeToken();
-    this.tokenService.removeMemberId();
-    window.location.reload();
+    this.authService.logout();
+    this.permissionService.clearPermissions();
+    console.log('✅ 已登出，token、admin_id 和權限已清除');
+    this.router.navigate(['/log-in']);
   }
 }

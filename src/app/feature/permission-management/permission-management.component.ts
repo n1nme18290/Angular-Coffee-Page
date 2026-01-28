@@ -69,27 +69,76 @@ export class PermissionManagementComponent {
 
 
   ngOnInit() {
+    // 先確保角色列表已加載
     this.loadAvailableRoles();
+    // 同時加載管理員和會員列表
     this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
     this.getPageMember(this.memberCurrentPage, this.memberPageSize);
   }
 
   // 載入所有可用角色
   loadAvailableRoles(): void {
+    console.log('🔄 開始加載角色列表...');
+    this.roleListLoading = true;
+    
     this.securityService.getAllRolesList().subscribe({
       next: (res) => {
-        if (res?.data && Array.isArray(res.data)) {
-          this.availableRoles = res.data.map((role: IApiResponseSecurityRole) => ({
-            role_id: role.role_id,
-            role_name: role.role_name,
-            description: role.description,
-            is_owned: false // 這裡的 is_owned 只是預設值，實際狀態由 getRolePermission 取得
-          }));
+        console.log('📥 後端返回的原始響應:', res);
+        
+        if (res?.data) {
+          let roleData: any = res.data;
+          
+          // 如果返回的 data 本身不是數組，嘗試提取內部數據
+          if (!Array.isArray(roleData)) {
+            console.warn('⚠️ 角色數據不是數組，嘗試提取...');
+            if (roleData.data && Array.isArray(roleData.data)) {
+              roleData = roleData.data;
+            } else if (roleData.list && Array.isArray(roleData.list)) {
+              roleData = roleData.list;
+            } else if (roleData.roles && Array.isArray(roleData.roles)) {
+              roleData = roleData.roles;
+            }
+          }
+          
+          if (Array.isArray(roleData) && roleData.length > 0) {
+            console.log('📊 找到 ' + roleData.length + ' 個角色');
+            console.log('📋 第一個角色的結構:', roleData[0]);
+            
+            this.availableRoles = roleData.map((role: any) => {
+              const mappedRole = {
+                role_id: role.role_id || role.id || '',
+                role_name: role.role_name || role.name || '',
+                description: role.description || '',
+                is_owned: false
+              };
+              console.log('✓ 映射角色:', role, '→', mappedRole);
+              return mappedRole;
+            });
+            
+            console.log('✅ 角色列表已加載:', this.availableRoles.length + ' 個角色');
+            console.log('📌 最終角色列表:', JSON.stringify(this.availableRoles));
+          } else {
+            console.warn('⚠️ 角色數據為空或不是數組');
+            this.availableRoles = [];
+          }
+        } else {
+          console.warn('⚠️ 響應中沒有 data 字段');
+          this.availableRoles = [];
         }
+        
+        this.roleListLoading = false;
       },
       error: (err) => {
-        console.error('載入角色列表失敗:', err);
-        this.message.error('載入角色列表失敗');
+        console.error('❌ 載入角色列表失敗:', err);
+        console.error('❌ 錯誤詳情:', {
+          status: err.status,
+          statusText: err.statusText,
+          message: err.message,
+          error: err.error
+        });
+        this.message.error('載入角色列表失敗: ' + (err.error?.message || err.message));
+        this.availableRoles = [];
+        this.roleListLoading = false;
       }
     });
   }
@@ -169,13 +218,25 @@ export class PermissionManagementComponent {
   // 編輯管理員角色彈跳視窗
   editAdminRoleVisible = false;
   roleListLoading = false;
+  adminRolesLoading = false; // 區分：加載管理員已分配的角色
   currentEditAdmin: IApiResponseAdmin | null = null;
 
   // 開啟編輯角色 Modal
   editAdminRoleModal(admin: IApiResponseAdmin): void {
     this.currentEditAdmin = admin;
     this.setOfCheckedRoleId.clear();
-    this.roleListLoading = true;
+    
+    // 如果可用角色列表還沒加載完，先加載
+    if (this.availableRoles.length === 0) {
+      console.log('🔄 角色列表為空，開始加載...');
+      this.roleListLoading = true;
+      this.loadAvailableRoles();
+    } else {
+      console.log('✅ 角色列表已存在，直接使用');
+    }
+    
+    // 標記正在加載該管理員的現有角色
+    this.adminRolesLoading = true;
     
     // 載入該管理員現有的角色
     this.securityService.getRolePermission(admin.id).subscribe({
@@ -184,19 +245,27 @@ export class PermissionManagementComponent {
           // 篩選出 is_owned 為 true 的角色，並預先勾選
           const ownedRoles = res.data.filter((role: IApiResponseSecurityRole) => role.is_owned);
           
+          console.log('👤 該管理員已擁有的角色:', ownedRoles);
+          
           ownedRoles.forEach((role: IApiResponseSecurityRole) => {
             this.setOfCheckedRoleId.add(role.role_id);
           });
         }
-        this.roleListLoading = false;
-        this.editAdminRoleVisible = true;
+        this.adminRolesLoading = false;
+        // 無論角色列表是否加載完成，都先打開 modal，讓用戶看到加載狀態
+        if (!this.editAdminRoleVisible) {
+          this.editAdminRoleVisible = true;
+        }
         this.refreshCheckedStatus();
       },
       error: (err) => {
         console.error('取得管理員角色失敗:', err);
         this.message.warning('無法載入現有角色，將顯示空白');
-        this.roleListLoading = false;
-        this.editAdminRoleVisible = true;
+        this.adminRolesLoading = false;
+        // 即使出錯也打開 modal
+        if (!this.editAdminRoleVisible) {
+          this.editAdminRoleVisible = true;
+        }
       }
     });
   }
@@ -214,7 +283,7 @@ export class PermissionManagementComponent {
       return;
     }
 
-    this.roleListLoading = true;
+    this.adminRolesLoading = true;
     this.securityService.assignRolesToAdmin(
       this.currentEditAdmin.id,
       selectedRoleIds
@@ -225,12 +294,12 @@ export class PermissionManagementComponent {
         this.setOfCheckedRoleId.clear();
         this.currentEditAdmin = null;
         this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
-        this.roleListLoading = false;
+        this.adminRolesLoading = false;
       },
       error: (err) => {
         console.error('設定角色失敗:', err);
         this.message.error('角色設定失敗：' + (err.error?.message || '請稍後再試'));
-        this.roleListLoading = false;
+        this.adminRolesLoading = false;
       }
     });
   }

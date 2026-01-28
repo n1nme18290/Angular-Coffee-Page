@@ -80,10 +80,18 @@ export class TokenService {
     removeMemberId(): void {
         const memberIdKey = this.getMemberIdKey();
         localStorage.removeItem(memberIdKey);
+        this.memberIdSubject.next(null);
     }
 
     hasMemberId(): boolean {
         return !!this.getMemberId();
+    }
+
+    // Admin ID 相關方法
+    removeAdminId(): void {
+        const adminIdKey = this.getAdminIdKey();
+        localStorage.removeItem(adminIdKey);
+        console.log('✅ Admin ID 已清除:', adminIdKey);
     }
     
     // Observable 以便訂閱 token 和 member ID 的變化

@@ -352,7 +352,7 @@ export class AuthService extends BaseService {
     const ssoUrl = this.url + this.AuthUrl + 'sso_login';
     const requestBody = {
       "provider": "member",
-      // "student_id": "1811432008",
+      // "student_id": "s1811432008",
       "student_id": "s1811432018",
     }
     return this.http.post<IApiResponse<IApiResponseMemberSSOLogin>>(ssoUrl, requestBody);
@@ -388,6 +388,7 @@ export class AuthService extends BaseService {
   logout(): void {
     this.tokenService.removeToken();
     this.tokenService.removeMemberId();
+    this.tokenService.removeAdminId();
   }
 }
 // Member 相關API

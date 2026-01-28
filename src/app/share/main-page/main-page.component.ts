@@ -19,6 +19,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { Router } from '@angular/router';
 import { SidebarService } from '../service/sidebar.service';
 import { PermissionService } from '../service/permission.service';
+import { AuthService } from '../service/service';
 import { MAIN_MENU_ITEMS, SYSTEM_MANAGEMENT_ITEMS, MenuItemConfig } from '../../core/config/role-permissions.config';
 
 @Component({
@@ -32,6 +33,7 @@ import { MAIN_MENU_ITEMS, SYSTEM_MANAGEMENT_ITEMS, MenuItemConfig } from '../../
 })
 export class MainPageComponent implements OnInit {
   private permissionService = inject(PermissionService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   public sidebarService = inject(SidebarService);
 
@@ -53,8 +55,16 @@ export class MainPageComponent implements OnInit {
       this.checkSidebarVisibility();
     });
 
-    // 初始載入權限
-    this.permissionService.loadUserPermissions();
+    // 檢查權限是否已經載入，如果已經載入過就不再請求
+    if (this.permissionService.getRoles().length === 0) {
+      console.log('🔄 首次進入主頁面，載入權限...');
+      this.permissionService.loadUserPermissions().subscribe();
+    } else {
+      console.log('✅ 權限已在快取中，無需重新載入');
+      // 手動觸發菜單更新
+      this.updateVisibleMenuItems();
+      this.checkSidebarVisibility();
+    }
   }
 
   private checkSidebarVisibility() {
@@ -107,7 +117,12 @@ export class MainPageComponent implements OnInit {
   }
 
   // 導航方法
-  GoLogIn() { this.router.navigate(['/log-in']); }
+  GoLogIn() {
+    this.authService.logout();
+    this.permissionService.clearPermissions();
+    console.log('✅ 已登出，token、admin_id 和權限已清除');
+    this.router.navigate(['/log-in']);
+  }
   GoPersonalInfo() { this.router.navigate(['/personal-info']); }
   GoPointInformation() { this.router.navigate(['/point-information']); }
   GoEquipment() { this.router.navigate(['/equipment']); }
