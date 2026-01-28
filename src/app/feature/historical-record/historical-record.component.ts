@@ -358,29 +358,53 @@ export class HistoricalRecordComponent {
   // 取得點數資訊
   getPagePoints() {
     this.loading = true;
-    this.pointService.getPagePoints(this.currentPage, this.pageSize).subscribe({
-      next: (res) => {
-        if (res && res.data) {
-          let dataList = res.data.data || [];
+
+    // 如果有搜尋或日期篩選，先取得所有資料再在前端過濾與分頁
+    const hasFilters = (this.pointsSearchName && this.pointsSearchName.trim()) || this.pointsFilteredDate;
+    if (hasFilters) {
+      this.pointService.getAllPoints().subscribe({
+        next: (resAll) => {
+          let allList: IApiResponsePoints[] = resAll?.data || [];
 
           // 前端篩選：名稱搜尋
           if (this.pointsSearchName && this.pointsSearchName.trim()) {
             const searchLower = this.pointsSearchName.toLowerCase().trim();
-            dataList = dataList.filter(item =>
-              item.member_name.toLowerCase().includes(searchLower)
-            );
+            allList = allList.filter(item => item.member_name.toLowerCase().includes(searchLower));
           }
 
           // 前端篩選：日期篩選
           if (this.pointsFilteredDate) {
-            dataList = dataList.filter((item: IApiResponsePoints) => {
+            allList = allList.filter((item: IApiResponsePoints) => {
               const itemDate = item.updated_at.split(' ')[0];
               return itemDate === this.pointsFilteredDate;
             });
           }
 
+          // 設定 total，並針對目前 page 做 slice
+          this.total = allList.length;
+          const start = (this.currentPage - 1) * this.pageSize;
+          this.pointsList = allList.slice(start, start + this.pageSize);
+          this.setOfCheckedId.clear();
+          this.refreshCheckedStatus();
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error fetching all points for filtering:', err);
+          this.pointsList = [];
+          this.total = 0;
+          this.loading = false;
+        }
+      });
+      return;
+    }
+
+    // 無篩選時使用後端分頁，並採用後端回傳的 total
+    this.pointService.getPagePoints(this.currentPage, this.pageSize).subscribe({
+      next: (res) => {
+        if (res && res.data) {
+          const dataList = res.data.data || [];
           this.pointsList = dataList;
-          this.total = dataList.length;
+          this.total = res.data.total || dataList.length || 0;
           this.setOfCheckedId.clear();
           this.refreshCheckedStatus();
         }
@@ -430,5 +454,21 @@ export class HistoricalRecordComponent {
     exchange_coffee: '兌換咖啡',
     card_collect: '卡面簽到退'
   };
+
+  // 將使用者使用紀錄的篩選類型參數轉換為友善名稱
+  getHistoryFilterLabel(filterType: string): string {
+    if (filterType === '全部類型') {
+      return '全部類型';
+    }
+    return this.typeMap[filterType] || filterType;
+  }
+
+  // 將設備使用紀錄的篩選類型參數轉換為友善名稱
+  getDeviceFilterLabel(filterType: string): string {
+    if (filterType === '全部類型') {
+      return '全部類型';
+    }
+    return this.typeMapEquipment[filterType] || filterType;
+  }
 
 }

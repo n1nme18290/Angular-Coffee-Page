@@ -259,3 +259,54 @@ nz-breadcrumb {
         }
     }
 }
+
+/* ===== 發送點數 Modal 樣式 ===== */
+.modal-form {
+    .form-item {
+        margin-bottom: 16px;
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #262626;
+
+            .required {
+                margin-left: 4px;
+                color: #ff4d4f;
+            }
+
+            i {
+                margin-right: 8px;
+                color: #1890ff;
+            }
+        }
+
+        input {
+            padding: 10px 12px;
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+            font-size: 14px;
+
+            &:focus {
+                border-color: #1890ff;
+                box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+            }
+        }
+    }
+
+    .info-box {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        background: #f0f2f5;
+        border-radius: 4px;
+        border-left: 3px solid #1890ff;
+
+        i {
+            color: #1890ff;
+            font-size: 16px;
+        }
+    }
+}

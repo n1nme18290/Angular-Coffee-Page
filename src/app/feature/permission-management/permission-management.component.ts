@@ -24,7 +24,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { IApiResponseAdmin, IApiResponseMember, IApiResponseSecurityRole } from '../../share/service/model';
-import { AdminService, MemberService, SecurityService } from '../../share/service/service';
+import { AdminService, MemberService, SecurityService, PointService } from '../../share/service/service';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { ROLE_PERMISSIONS } from '../../core/config/role-permissions.config';
 
@@ -46,6 +46,7 @@ export class PermissionManagementComponent {
   memberService = inject(MemberService);
   adminService = inject(AdminService);
   securityService = inject(SecurityService);
+  pointService = inject(PointService);
   message = inject(NzMessageService);
 
   adminList: IApiResponseAdmin[] = [];
@@ -66,6 +67,12 @@ export class PermissionManagementComponent {
   // 角色相關
   availableRoles: IApiResponseSecurityRole[] = [];
   rolePermissions = ROLE_PERMISSIONS;
+
+  // 發送點數相關
+  sendPointsVisible = false;
+  currentSendPointsMember: IApiResponseMember | null = null;
+  sendPointsValue: number = 0;
+  sendPointsLoading = false;
 
 
   ngOnInit() {
@@ -386,9 +393,55 @@ export class PermissionManagementComponent {
     this.indeterminate = someChecked && !allChecked;
   }
 
-  // 發送點數給會員（待實作）
+  // 打開發送點數 Modal
   sendPointsToMember(member: IApiResponseMember): void {
-    this.message.info('發送點數功能開發中');
+    this.currentSendPointsMember = member;
+    this.sendPointsValue = 0;
+    this.sendPointsVisible = true;
+  }
+
+  // 取消發送點數
+  cancelSendPoints(): void {
+    this.sendPointsVisible = false;
+    this.currentSendPointsMember = null;
+    this.sendPointsValue = 0;
+  }
+
+  // 確認發送點數
+  confirmSendPoints(): void {
+    if (!this.currentSendPointsMember || !this.sendPointsValue || this.sendPointsValue <= 0) {
+      this.message.warning('請輸入有效的點數數量');
+      return;
+    }
+
+    this.sendPointsLoading = true;
+    
+    // 發送點數：贈送方不用帶入人員相關參數，只帶目標會員 ID 和點數
+    const targetMemberId = this.currentSendPointsMember.student_id;
+    const points = this.sendPointsValue;
+
+    // 使用 addMemberpoints API，第一個參數設為空字符串（根據需求，贈送方不需要參數）
+    this.pointService.addMemberpoints('', targetMemberId, points).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.message.success(`已成功發送 ${points} 點給 ${this.currentSendPointsMember?.name}`);
+          this.sendPointsVisible = false;
+          this.currentSendPointsMember = null;
+          this.sendPointsValue = 0;
+          
+          // 刷新會員列表
+          this.getPageMember(this.memberCurrentPage, this.memberPageSize);
+        } else {
+          this.message.error(res.message || '發送點數失敗');
+        }
+        this.sendPointsLoading = false;
+      },
+      error: (err) => {
+        console.error('❌ 發送點數錯誤:', err);
+        this.message.error('發送點數時發生錯誤');
+        this.sendPointsLoading = false;
+      }
+    });
   }
   // 切換側邊欄
   toggleCollapsed(): void {

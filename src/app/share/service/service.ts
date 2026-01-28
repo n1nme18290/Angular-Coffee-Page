@@ -580,11 +580,12 @@ export class SecurityService extends BaseService {
   }
   // 為管理員分配角色
   assignRolesToAdmin(adminId: string, roleIds: string[]): Observable<IApiResponse<any>> {
-    const apiUrl = `${this.url}${this.SecurityUrl}assign_roles`;
+    const apiUrl = `${this.url}${this.AccessUrl}set_admin_roles`;
     const requestBody = {
       admin_id: adminId,
-      role_ids: roleIds
+      role_ids: roleIds,
+      replace: true
     };
-    return this.http.post<IApiResponse<any>>(apiUrl, requestBody);
+    return this.http.put<IApiResponse<any>>(apiUrl, requestBody);
   }
 }

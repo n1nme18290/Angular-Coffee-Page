@@ -30,7 +30,7 @@
 
                         <button nz-button nz-dropdown [nzDropdownMenu]="historyTypeMenu" class="filter-dropdown">
                             <i nz-icon nzType="filter" nzTheme="outline"></i>
-                            {{ historyFilterType }}
+                            {{ getHistoryFilterLabel(historyFilterType) }}
                             <span nz-icon nzType="down"></span>
                         </button>
                         <nz-dropdown-menu #historyTypeMenu="nzDropdownMenu">
@@ -136,7 +136,7 @@
 
                         <button nz-button nz-dropdown [nzDropdownMenu]="deviceTypeMenu" class="filter-dropdown">
                             <i nz-icon nzType="filter" nzTheme="outline"></i>
-                            {{ deviceFilterType }}
+                            {{ getDeviceFilterLabel(deviceFilterType) }}
                             <span nz-icon nzType="down"></span>
                         </button>
                         <nz-dropdown-menu #deviceTypeMenu="nzDropdownMenu">

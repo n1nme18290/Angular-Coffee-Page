@@ -51,7 +51,8 @@
                             </nz-tag>
                         </td>
                         <td>
-                            <button nz-button nzType="primary" class="action-btn edit-btn" (click)="editAdminRoleModal(data)">
+                            <button nz-button nzType="primary" class="action-btn edit-btn"
+                                (click)="editAdminRoleModal(data)">
                                 <i nz-icon nzType="team" nzTheme="outline"></i>
                                 管理角色
                             </button>
@@ -76,16 +77,12 @@
 
 
     <!-- 編輯管理員角色 Modal -->
-    <nz-modal 
-        [(nzVisible)]="editAdminRoleVisible" 
-        [nzTitle]="'管理角色 - ' + (currentEditAdmin?.name || '')"
-        [nzFooter]="editAdminRoleFooter" 
-        nzWidth="900px" 
-        nzCentered 
-        (nzOnCancel)="cancelEditAdminRole()">
+    <nz-modal [(nzVisible)]="editAdminRoleVisible" [nzTitle]="'管理角色 - ' + (currentEditAdmin?.name || '')"
+        [nzFooter]="editAdminRoleFooter" nzWidth="900px" nzCentered (nzOnCancel)="cancelEditAdminRole()">
         <ng-container *nzModalContent>
             <!-- 管理員資訊卡片 -->
-            <div style="margin-bottom: 20px; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white;">
+            <div
+                style="margin-bottom: 20px; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white;">
                 <div nz-row [nzGutter]="16">
                     <div nz-col [nzSpan]="12">
                         <p style="margin: 4px 0;">
@@ -98,10 +95,11 @@
                         </p>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <p style="margin: 4px 0;">
+                        <!-- ID 不用顯示 -->
+                        <!-- <p style="margin: 4px 0;">
                             <i nz-icon nzType="idcard" nzTheme="outline"></i>
                             <strong style="margin-left: 8px;">ID：</strong>{{ currentEditAdmin?.id }}
-                        </p>
+                        </p> -->
                         <p style="margin: 4px 0;">
                             <i nz-icon nzType="team" nzTheme="outline"></i>
                             <strong style="margin-left: 8px;">已選角色數：</strong>{{ setOfCheckedRoleId.size }}
@@ -111,20 +109,11 @@
             </div>
 
             <!-- 角色列表 -->
-            <nz-table 
-                #roleTable 
-                [nzData]="availableRoles" 
-                [nzLoading]="roleListLoading" 
-                [nzBordered]="true"
-                [nzShowPagination]="false"
-                [nzScroll]="{ y: '400px' }">
+            <nz-table #roleTable [nzData]="availableRoles" [nzLoading]="roleListLoading" [nzBordered]="true"
+                [nzShowPagination]="false" [nzScroll]="{ y: '400px' }">
                 <thead>
                     <tr>
-                        <th 
-                            nzWidth="60px"
-                            nzShowCheckbox 
-                            [nzChecked]="checked" 
-                            [nzIndeterminate]="indeterminate"
+                        <th nzWidth="60px" nzShowCheckbox [nzChecked]="checked" [nzIndeterminate]="indeterminate"
                             (nzCheckedChange)="onAllRolesChecked($event)">
                         </th>
                         <th nzWidth="150px">角色名稱</th>
@@ -134,46 +123,45 @@
                 </thead>
                 <tbody>
                     @if (availableRoles && availableRoles.length > 0) {
-                        @for (role of availableRoles; track role.role_id) {
-                        <tr>
-                            <td 
-                                nzShowCheckbox 
-                                [nzChecked]="setOfCheckedRoleId.has(role.role_id)"
-                                (nzCheckedChange)="onRoleItemChecked(role.role_id, $event)">
-                            </td>
-                            <td>
-                                <nz-tag [nzColor]="'blue'">{{ role.role_name }}</nz-tag>
-                            </td>
-                            <td>{{ role.description }}</td>
-                            <td>
-                                @if (getRolePermissions(role.role_name).length > 0) {
-                                    @for (permission of getRolePermissions(role.role_name); track permission) {
-                                        <nz-tag [nzColor]="permission === '*' ? 'red' : 'green'" style="margin: 2px;">
-                                            {{ permission }}
-                                        </nz-tag>
-                                    }
-                                } @else {
-                                    <span style="color: #999;">未定義權限</span>
-                                }
-                            </td>
-                        </tr>
-                        }
+                    @for (role of availableRoles; track role.role_id) {
+                    <tr>
+                        <td nzShowCheckbox [nzChecked]="setOfCheckedRoleId.has(role.role_id)"
+                            (nzCheckedChange)="onRoleItemChecked(role.role_id, $event)">
+                        </td>
+                        <td>
+                            <nz-tag [nzColor]="'blue'">{{ role.role_name }}</nz-tag>
+                        </td>
+                        <td>{{ role.description }}</td>
+                        <td>
+                            @if (getRolePermissions(role.role_name).length > 0) {
+                            @for (permission of getRolePermissions(role.role_name); track permission) {
+                            <nz-tag [nzColor]="permission === '*' ? 'red' : 'green'" style="margin: 2px;">
+                                {{ permission }}
+                            </nz-tag>
+                            }
+                            } @else {
+                            <span style="color: #999;">未定義權限</span>
+                            }
+                        </td>
+                    </tr>
+                    }
                     } @else {
-                        <tr>
-                            <td colspan="4" class="text-center">
-                                @if (roleListLoading) {
-                                    載入中...
-                                } @else {
-                                    暫無可用角色
-                                }
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            @if (roleListLoading) {
+                            載入中...
+                            } @else {
+                            暫無可用角色
+                            }
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </nz-table>
 
             <!-- 提示訊息 -->
-            <div style="margin-top: 16px; padding: 12px; background: #e6f7ff; border-left: 4px solid #1890ff; border-radius: 4px;">
+            <div
+                style="margin-top: 16px; padding: 12px; background: #e6f7ff; border-left: 4px solid #1890ff; border-radius: 4px;">
                 <p style="margin: 0; color: #0050b3;">
                     <i nz-icon nzType="info-circle" nzTheme="outline"></i>
                     <strong style="margin-left: 8px;">提示：</strong>
@@ -187,12 +175,8 @@
                 <i nz-icon nzType="close" nzTheme="outline"></i>
                 取消
             </button>
-            <button 
-                nz-button 
-                nzType="primary" 
-                [nzLoading]="adminRolesLoading"
-                [disabled]="setOfCheckedRoleId.size === 0 || adminRolesLoading"
-                (click)="saveAdminRoles()">
+            <button nz-button nzType="primary" [nzLoading]="adminRolesLoading"
+                [disabled]="setOfCheckedRoleId.size === 0 || adminRolesLoading" (click)="saveAdminRoles()">
                 <i nz-icon nzType="check" nzTheme="outline"></i>
                 儲存角色
             </button>
@@ -239,7 +223,8 @@
                             </nz-tag>
                         </td>
                         <td>
-                            <button nz-button nzType="primary" class="action-btn send-points-btn" (click)="sendPointsToMember(data)">
+                            <button nz-button nzType="primary" class="action-btn send-points-btn"
+                                (click)="sendPointsToMember(data)">
                                 <i nz-icon nzType="gift" nzTheme="outline"></i>
                                 發送點數
                             </button>
@@ -261,4 +246,50 @@
             </nz-table>
         </div>
     </div>
+
+    <!-- 發送點數 Modal -->
+    <nz-modal [(nzVisible)]="sendPointsVisible" nzTitle="發送點數" [nzFooter]="sendPointsFooter" nzWidth="600px" nzCentered
+        [nzClosable]="false">
+        <ng-container *nzModalContent>
+            <div class="modal-form">
+                <!-- 會員資訊顯示 -->
+                <div class="form-item info-box"
+                    style="margin-bottom: 20px; padding: 12px; background: #f0f2f5; border-radius: 4px;">
+                    <i nz-icon nzType="info-circle" nzTheme="outline"></i>
+                    <span style="margin-left: 8px;">
+                        <strong>{{ currentSendPointsMember?.name }}</strong> ({{ currentSendPointsMember?.student_id }})
+                    </span>
+                </div>
+
+                <!-- 發送點數輸入框 -->
+                <div class="form-item">
+                    <div class="form-label">
+                        <i nz-icon nzType="dollar" nzTheme="outline"></i>
+                        發送點數
+                        <span class="required" style="color: red;">*</span>
+                    </div>
+                    <input nz-input placeholder="輸入點數數量" [(ngModel)]="sendPointsValue" type="number"
+                        [nzSize]="'large'" />
+                </div>
+
+                <!-- 提示信息 -->
+                <div class="form-item info-box" style="margin-top: 16px;">
+                    <i nz-icon nzType="warning" nzTheme="outline" style="color: #faad14;"></i>
+                    <span style="margin-left: 8px; color: #8c8c8c;">
+                        請輸入要發送給會員的點數數量
+                    </span>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #sendPointsFooter>
+            <button nz-button (click)="cancelSendPoints()">
+                <i nz-icon nzType="close" nzTheme="outline"></i>
+                取消
+            </button>
+            <button nz-button nzType="primary" [nzLoading]="sendPointsLoading" (click)="confirmSendPoints()">
+                <i nz-icon nzType="check" nzTheme="outline"></i>
+                確認發送
+            </button>
+        </ng-template>
+    </nz-modal>
 </nz-layout>
