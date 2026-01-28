@@ -538,7 +538,7 @@ export class DeviceService extends BaseService {
   }
   // 設備清潔狀態更新
   deviceCleaned(deviceId: string, memberId: string): Observable<IApiResponseNormal> {
-    const apiUrl = `${this.url}${this.DeviceUrl}device_cleaning_button`;
+    const apiUrl = `${this.url}${this.DeviceUrl}device_clean_water`;
     const requestBody = {
       deviceId: deviceId,
       memberId: memberId
@@ -597,12 +597,13 @@ export class SecurityService extends BaseService {
     return this.http.get<IApiResponse<IApiResponseSecurityRole[]>>(apiUrl);
   }
   // 為管理員分配角色
-  assignRolesToAdmin(adminId: string, roleIds: string[]): Observable<IApiResponse<any>> {
+  assignRolesToAdmin(targetAdminId: string, roleIds: string[], operatorAdminId: string): Observable<IApiResponse<any>> {
     const apiUrl = `${this.url}${this.AccessUrl}set_admin_roles`;
     const requestBody = {
-      admin_id: adminId,
+      admin_id: targetAdminId,
       role_ids: roleIds,
-      replace: true
+      replace: true,
+      operator_admin_id: operatorAdminId
     };
     return this.http.put<IApiResponse<any>>(apiUrl, requestBody);
   }

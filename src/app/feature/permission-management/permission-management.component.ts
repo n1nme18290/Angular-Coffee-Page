@@ -25,6 +25,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { IApiResponseAdmin, IApiResponseMember, IApiResponseSecurityRole } from '../../share/service/model';
 import { AdminService, MemberService, SecurityService, PointService } from '../../share/service/service';
+import { TokenService } from '../../share/service/token.service';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { ROLE_PERMISSIONS } from '../../core/config/role-permissions.config';
 
@@ -47,6 +48,7 @@ export class PermissionManagementComponent {
   adminService = inject(AdminService);
   securityService = inject(SecurityService);
   pointService = inject(PointService);
+  tokenService = inject(TokenService);
   message = inject(NzMessageService);
 
   adminList: IApiResponseAdmin[] = [];
@@ -228,6 +230,8 @@ export class PermissionManagementComponent {
   adminRolesLoading = false; // 區分：加載管理員已分配的角色
   currentEditAdmin: IApiResponseAdmin | null = null;
 
+  currentAdmin: IApiResponseAdmin = { id: this.tokenService.getCurrentAdminId() || '' } as IApiResponseAdmin;
+
   // 開啟編輯角色 Modal
   editAdminRoleModal(admin: IApiResponseAdmin): void {
     this.currentEditAdmin = admin;
@@ -293,7 +297,8 @@ export class PermissionManagementComponent {
     this.adminRolesLoading = true;
     this.securityService.assignRolesToAdmin(
       this.currentEditAdmin.id,
-      selectedRoleIds
+      selectedRoleIds,
+      this.currentAdmin.id
     ).subscribe({
       next: (res) => {
         this.message.success('角色設定成功！');

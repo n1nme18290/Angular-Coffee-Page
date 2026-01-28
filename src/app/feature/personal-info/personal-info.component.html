@@ -3,10 +3,10 @@
     <nz-header>
         <div class="header-left">
             @if (sidebarService.showSidebar) {
-                <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-                    <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-                        class="big-icon"></span>
-                </button>
+            <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
+                <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
+                    class="big-icon"></span>
+            </button>
             }
             <h1 nz-typography class="h2">
                 <span nz-icon nzType="user" nzTheme="outline"></span>
@@ -86,15 +86,10 @@
                 </div>
                 <nz-card class="history-card">
                     <div class="table-wrapper">
-                        <nz-table #memberHistoryTable 
-                                  [nzData]="memberPointsHistoryList" 
-                                  [nzLoading]="memberHistoryLoading"
-                                  [nzBordered]="false" 
-                                  [nzShowPagination]="true" 
-                                  [nzPageSize]="10" 
-                                  [nzHideOnSinglePage]="false"
-                                  [nzScroll]="{ x: '800px' }"
-                                  class="history-table">
+                        <nz-table #memberHistoryTable [nzData]="memberPointsHistoryList"
+                            [nzLoading]="memberHistoryLoading" [nzBordered]="false" [nzShowPagination]="true"
+                            [nzPageSize]="10" [nzHideOnSinglePage]="false" [nzScroll]="{ x: '800px' }"
+                            class="history-table">
                             <thead>
                                 <tr>
                                     <th>異動事件</th>
@@ -104,47 +99,47 @@
                             </thead>
                             <tbody>
                                 @if (memberPointsHistoryList && memberPointsHistoryList.length > 0) {
-                                    @for (data of memberPointsHistoryList; track data.id) {
-                                        <tr class="history-row">
-                                            <td>
-                                                <div class="event-info">
-                                                    {{ data.description || data.type }}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="amount-info">
-                                                    <span [ngClass]="data.amount >= 0 ? 'amount-positive' : 'amount-negative'">
-                                                        {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
-                                                    </span>
-                                                    <div class="balance-info">
-                                                        {{ data.before_balance }} → {{ data.after_balance }}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="time-info">
-                                                    <span class="time-date">{{ data.created_at.split(' ')[0] }}</span>
-                                                    <span class="time-clock">{{ data.created_at.split(' ')[1] }}</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
+                                @for (data of memberPointsHistoryList; track data.id) {
+                                <tr class="history-row">
+                                    <td>
+                                        <div class="event-info">
+                                            {{ data.description || data.type }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="amount-info">
+                                            <span [ngClass]="data.amount >= 0 ? 'amount-positive' : 'amount-negative'">
+                                                {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
+                                            </span>
+                                            <div class="balance-info">
+                                                {{ data.before_balance }} → {{ data.after_balance }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="time-info">
+                                            <span class="time-date">{{ data.created_at.split(' ')[0] }}</span>
+                                            <span class="time-clock">{{ data.created_at.split(' ')[1] }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                }
                                 } @else {
-                                    <tr class="empty-row">
-                                        <td colspan="3">
-                                            @if (memberHistoryLoading) {
-                                                <div class="empty-state">
-                                                    <nz-spin [nzSimple]="true"></nz-spin>
-                                                    <p>載入中...</p>
-                                                </div>
-                                            } @else {
-                                                <div class="empty-state">
-                                                    <i nz-icon nzType="file-text" nzTheme="outline"></i>
-                                                    <p>暫無交易紀錄</p>
-                                                </div>
-                                            }
-                                        </td>
-                                    </tr>
+                                <tr class="empty-row">
+                                    <td colspan="3">
+                                        @if (memberHistoryLoading) {
+                                        <div class="empty-state">
+                                            <nz-spin [nzSimple]="true"></nz-spin>
+                                            <p>載入中...</p>
+                                        </div>
+                                        } @else {
+                                        <div class="empty-state">
+                                            <i nz-icon nzType="file-text" nzTheme="outline"></i>
+                                            <p>暫無交易紀錄</p>
+                                        </div>
+                                        }
+                                    </td>
+                                </tr>
                                 }
                             </tbody>
                         </nz-table>
@@ -155,12 +150,8 @@
     </nz-content>
 
     <!-- 轉贈點數 Modal (保留原本樣式) -->
-    <nz-modal [(nzVisible)]="addpointisVisible" 
-              nzTitle="轉贈點數" 
-              [nzFooter]="transferFooter" 
-              nzWidth="600px"
-              nzCentered 
-              [nzClosable]="false">
+    <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="transferFooter" nzWidth="600px" nzCentered
+        [nzClosable]="false">
         <ng-container *nzModalContent>
             <div class="modal-form">
                 <div class="form-item">
@@ -169,10 +160,7 @@
                         轉贈對象
                         <span class="required">*</span>
                     </div>
-                    <input nz-input 
-                           placeholder="輸入對方帳號或名稱" 
-                           [(ngModel)]="addpointselectedValue" 
-                           [nzSize]="'large'" />
+                    <input nz-input placeholder="輸入對方學號" [(ngModel)]="addpointselectedValue" [nzSize]="'large'" />
                 </div>
 
                 <div class="form-item">
@@ -181,11 +169,7 @@
                         轉贈點數
                         <span class="required">*</span>
                     </div>
-                    <input nz-input 
-                           placeholder="輸入點數數量" 
-                           [(ngModel)]="pointvalue" 
-                           type="number"
-                           [nzSize]="'large'" />
+                    <input nz-input placeholder="輸入點數數量" [(ngModel)]="pointvalue" type="number" [nzSize]="'large'" />
                 </div>
 
                 <div class="form-item info-box">
