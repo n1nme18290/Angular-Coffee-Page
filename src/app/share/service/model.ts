@@ -109,6 +109,10 @@ export interface IApiResponseMember {
     status: string
     created_at: string
     updated_at: string
+    role_names: string[]
+    is_admin_bound: boolean
+    admin_id: string | null
+    admin_status: string | null
 }
 export interface IApiResponseGetPageProduct {
     id: string

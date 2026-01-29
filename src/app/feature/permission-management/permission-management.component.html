@@ -44,8 +44,6 @@
                             </nz-tag>
                         </td>
                         <td>
-                            <!-- <nz-tag [nzColor]="data.status === 'active' ? 'green' : 'red'">
-                                {{ data.status === 'active' ? '啟用' : '停用' }} -->
                             <nz-tag [nzColor]="data.status === '啟用' ? 'green' : 'red'">
                                 {{ data.status }}
                             </nz-tag>
@@ -95,11 +93,6 @@
                         </p>
                     </div>
                     <div nz-col [nzSpan]="12">
-                        <!-- ID 不用顯示 -->
-                        <!-- <p style="margin: 4px 0;">
-                            <i nz-icon nzType="idcard" nzTheme="outline"></i>
-                            <strong style="margin-left: 8px;">ID：</strong>{{ currentEditAdmin?.id }}
-                        </p> -->
                         <p style="margin: 4px 0;">
                             <i nz-icon nzType="team" nzTheme="outline"></i>
                             <strong style="margin-left: 8px;">已選角色數：</strong>{{ setOfCheckedRoleId.size }}

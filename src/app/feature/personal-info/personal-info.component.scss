@@ -13,7 +13,7 @@ nz-header {
     align-items: center;
     padding: 0 24px;
     flex-shrink: 0;
-    
+
     .header-left {
         display: flex;
         align-items: center;
@@ -361,7 +361,7 @@ nz-content {
                 background: transparent;
             }
 
-            .ant-table-thead > tr > th {
+            .ant-table-thead>tr>th {
                 background: #fafafa;
                 border-bottom: 2px solid #f0f0f0;
                 font-weight: 600;
@@ -371,14 +371,14 @@ nz-content {
                 text-align: center;
             }
 
-            .ant-table-tbody > tr {
+            .ant-table-tbody>tr {
                 transition: all 0.3s ease;
 
                 &:hover {
                     background: #fafafa;
                 }
 
-                > td {
+                >td {
                     padding: 16px;
                     border-bottom: 1px solid #f0f0f0;
                     font-size: 16px;
@@ -468,6 +468,12 @@ nz-content {
             margin: 0;
         }
     }
+}
+
+/* Modal 外框圓角 */
+::ng-deep .round-modal .ant-modal-content {
+    border-radius: 16px;
+    overflow: hidden;
 }
 
 /* ===== Modal 樣式 (保留原本) ===== */
@@ -708,12 +714,12 @@ h3 {
 
     .table-wrapper {
         .history-table ::ng-deep {
-            .ant-table-thead > tr > th {
+            .ant-table-thead>tr>th {
                 padding: 12px 8px;
                 font-size: 14px;
             }
 
-            .ant-table-tbody > tr > td {
+            .ant-table-tbody>tr>td {
                 padding: 12px 8px;
                 font-size: 13px;
             }
