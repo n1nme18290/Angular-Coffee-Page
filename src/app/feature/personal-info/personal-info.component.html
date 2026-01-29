@@ -63,7 +63,7 @@
                         <div class="rules-list">
                             <div class="rule-item">
                                 <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                                <span>20點可兌換一杯咖啡</span>
+                                <span>1點可兌換一杯咖啡</span>
                             </div>
                             <div class="rule-item">
                                 <i nz-icon nzType="check-circle" nzTheme="outline"></i>
@@ -108,14 +108,19 @@
                                     </td>
                                     <td>
                                         <div class="amount-info">
-                                            <span [ngClass]="data.amount >= 0 ? 'amount-positive' : 'amount-negative'">
-                                                {{ data.amount >= 0 ? '+' : '' }}{{ data.amount }}
+                                            <span
+                                                [ngClass]="data.after_balance >= data.before_balance? 'amount-positive': 'amount-negative'">
+                                                {{
+                                                data.after_balance >= data.before_balance ? '+' : '-'
+                                                }}{{ data.amount }}
                                             </span>
+
                                             <div class="balance-info">
-                                                {{ data.before_balance }} → {{ data.after_balance }}
+                                                ({{ data.before_balance }} → {{ data.after_balance }})
                                             </div>
                                         </div>
                                     </td>
+
                                     <td>
                                         <div class="time-info">
                                             <span class="time-date">{{ data.created_at.split(' ')[0] }}</span>
