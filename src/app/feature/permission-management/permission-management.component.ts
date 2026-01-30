@@ -402,7 +402,6 @@ export class PermissionManagementComponent {
     this.checked = allChecked;
     this.indeterminate = someChecked && !allChecked;
   }
-
   // 打開發送點數 Modal
   sendPointsToMember(member: IApiResponseMember): void {
     this.currentSendPointsMember = member;
@@ -416,21 +415,17 @@ export class PermissionManagementComponent {
     this.currentSendPointsMember = null;
     this.sendPointsValue = 0;
   }
-
   // 確認發送點數
   confirmSendPoints(): void {
     if (!this.currentSendPointsMember || !this.sendPointsValue || this.sendPointsValue <= 0) {
       this.message.warning('請輸入有效的點數數量');
       return;
     }
-
     this.sendPointsLoading = true;
-    
     // 發送點數：贈送方不用帶入人員相關參數，只帶目標會員 ID 和點數
     const targetMemberId = this.currentSendPointsMember.student_id;
     const points = this.sendPointsValue;
-
-    // 使用 addMemberpoints API，第一個參數設為空字符串（根據需求，贈送方不需要參數）
+    // 使用 addMemberpoints API
     this.pointService.addMemberpoints('', targetMemberId, points).subscribe({
       next: (res) => {
         if (res.isSuccess) {
@@ -438,7 +433,6 @@ export class PermissionManagementComponent {
           this.sendPointsVisible = false;
           this.currentSendPointsMember = null;
           this.sendPointsValue = 0;
-          
           // 刷新會員列表
           this.getPageMember(this.memberCurrentPage, this.memberPageSize);
         } else {
@@ -453,40 +447,31 @@ export class PermissionManagementComponent {
       }
     });
   }
-
   // 打開綁定管理員 Modal
   bindMemberToAdmin(member: IApiResponseMember): void {
     this.currentBindMember = member;
     this.bindAdminVisible = true;
   }
-
   // 取消綁定管理員
   cancelBindAdmin(): void {
     this.bindAdminVisible = false;
     this.currentBindMember = null;
   }
-
+  
   // 確認綁定管理員
   confirmBindAdmin(): void {
     if (!this.currentBindMember) {
       this.message.warning('請選擇要綁定的會員');
       return;
     }
-
     // 檢查該會員是否已經是管理員
     if (this.currentBindMember.is_admin_bound) {
       this.message.warning('該會員已經是管理員');
       return;
     }
-
     this.bindAdminLoading = true;
-    
-    // 獲取當前操作者的 admin_id
-    const currentAdminId = this.tokenService.getCurrentAdminId() || '';
     const targetMemberId = this.currentBindMember.id;
-
-    // 調用 bindMember API
-    this.adminService.bindMember(currentAdminId, targetMemberId).subscribe({
+    this.adminService.bindMember(targetMemberId).subscribe({
       next: (res) => {
         if (res.isSuccess) {
           this.message.success(`已成功將 ${this.currentBindMember?.name} 綁定為管理員`);

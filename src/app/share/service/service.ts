@@ -241,10 +241,9 @@ export class AdminService extends BaseService {
     return this.http.post<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
   }
   // 建立管理員，Response待確認
-  bindMember(admin_id: string, member_id: string): Observable<IApiResponse<IApiResponseAdmin>> {
+  bindMember(member_id: string): Observable<IApiResponse<IApiResponseAdmin>> {
     const apiUrl = `${this.url}${this.AdminUrl}create_admin`;
     const requestBody = {
-      admin_id: admin_id,
       member_id: member_id
     };
     return this.http.put<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
@@ -343,8 +342,8 @@ export class AuthService extends BaseService {
             if (response.data.member_id) {
               this.tokenService.setMemberId(response.data.member_id);
             }
-            // 儲存 admin_id
-            if (response.data.admin_id) {
+            // 儲存 admin_id（只在有實際值且不為空字串時儲存）
+            if (response.data.admin_id && response.data.admin_id.trim() !== '') {
               this.tokenService.setCurrentAdminId(response.data.admin_id);
             }
           }
