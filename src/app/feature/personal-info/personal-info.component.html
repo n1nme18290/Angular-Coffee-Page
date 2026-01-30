@@ -30,7 +30,7 @@
             <!-- 點數卡片區域 -->
             <div class="cards-section" nz-row [nzGutter]="[24, 24]">
                 <!-- 我的點數卡片 (30%) -->
-                <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="10" [nzLg]="7" class="card-wrapper">
+                <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="10" [nzLg]="10" class="card-wrapper">
                     <nz-card class="info-card points-card">
                         <div class="card-content">
                             <div class="card-icon">
@@ -54,7 +54,7 @@
                 </div>
 
                 <!-- 點數規則卡片 (70%) -->
-                <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="14" [nzLg]="17" class="card-wrapper">
+                <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="14" [nzLg]="14" class="card-wrapper">
                     <nz-card class="info-card rules-card">
                         <div class="card-header">
                             <i nz-icon nzType="file-text" nzTheme="outline"></i>
@@ -63,15 +63,15 @@
                         <div class="rules-list">
                             <div class="rule-item">
                                 <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                                <span>1點可兌換一杯咖啡</span>
+                                <span>1點 可兌換一杯咖啡</span>
                             </div>
                             <div class="rule-item">
                                 <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                                <span>此處應該要改為真實的點數使用</span>
+                                <span>衛福部建議，成人每日咖啡因攝取量應不超過 300毫克</span>
                             </div>
                             <div class="rule-item">
                                 <i nz-icon nzType="check-circle" nzTheme="outline"></i>
-                                <span>此處應該要改為真實的規則說明</span>
+                                <span>累積點數每小時為一點，每次以一小時為限</span>
                             </div>
                         </div>
                     </nz-card>
@@ -123,8 +123,13 @@
 
                                     <td>
                                         <div class="time-info">
-                                            <span class="time-date">{{ data.created_at.split(' ')[0] }}</span>
-                                            <span class="time-clock">{{ data.created_at.split(' ')[1] }}</span>
+                                            <span class="time-date">
+                                                {{ data.created_at | date:'yyyy / MM / dd' }}
+                                            </span>
+                                            <span class="time-clock">
+                                                {{ data.created_at | date:'HH:mm' }}
+                                            </span>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -155,8 +160,8 @@
     </nz-content>
 
     <!-- 轉贈點數 Modal (保留原本樣式) -->
-    <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="transferFooter" nzWidth="600px" nzWrapClassName="round-modal" nzCentered
-        [nzClosable]="false">
+    <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="transferFooter" nzWidth="600px"
+        nzWrapClassName="round-modal" nzCentered [nzClosable]="false">
         <ng-container *nzModalContent>
             <div class="modal-form">
                 <div class="form-item">

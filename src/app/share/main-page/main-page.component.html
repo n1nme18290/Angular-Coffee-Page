@@ -36,8 +36,10 @@
       <!-- 登出選單（固定在底部） -->
       <ul nz-menu nzTheme="dark" nzMode="inline" class="logout-menu">
         <li nz-menu-item>
-          <span nz-icon nzType="logout"></span>
-          <span class="menu-item-large" (click)="GoLogIn()">登出</span>
+          <div style="display: flex;">
+            <span nz-icon nzType="logout"></span>
+            <span class="menu-item-large" (click)="GoLogIn()">登出</span>
+          </div>
         </li>
       </ul>
     </div>

@@ -28,9 +28,9 @@ nz-header {
 
 /* ===== 按鈕共用樣式 (保留原本) ===== */
 button[nz-button] {
-    margin-right: 8px;
-    margin-bottom: 1px;
-    height: 40px;
+    // margin-right: 8px;
+    // margin-bottom: 1px;
+    height: 44px;
     border-radius: 100px;
     border: 1px solid #27496D;
     font-weight: bold;
@@ -121,7 +121,7 @@ nz-content {
     }
 
     p {
-        font-size: 18px;
+        font-size: 24px;
         color: #8c8c8c;
         margin: 0;
     }
@@ -192,9 +192,8 @@ nz-content {
                 flex: 1;
 
                 .card-label {
-                    font-size: 18px;
+                    font-size: 24px;
                     color: #8c8c8c;
-                    margin-bottom: 10px;
                     font-weight: 500;
                 }
 
@@ -220,6 +219,8 @@ nz-content {
         }
 
         .card-footer {
+            display: flex;
+            flex-direction: column;
             margin-top: auto;
         }
     }
@@ -260,11 +261,9 @@ nz-content {
     }
 }
 
-/* ===== 轉贈點數按鈕 (使用原本樣式但調整) ===== */
+/* ===== 轉贈點數按鈕 ===== */
 .transfer-btn {
-    width: 100%;
-    height: 50px;
-    font-size: 18px;
+    font-size: 24px;
     border-radius: 8px;
     font-weight: 600;
     background-color: #ffffff !important;
@@ -274,7 +273,7 @@ nz-content {
     transition: all 0.3s ease;
 
     i {
-        font-size: 20px;
+        font-size: 24px;
         margin-right: 8px;
     }
 
@@ -298,13 +297,13 @@ nz-content {
     transition: all 0.3s ease;
 
     i {
-        font-size: 22px;
+        font-size: 20px;
         color: #52c41a;
         flex-shrink: 0;
     }
 
     span {
-        font-size: 16px;
+        font-size: 18px;
         color: #595959;
         font-weight: 500;
         line-height: 1.5;
@@ -367,7 +366,7 @@ nz-content {
                 font-weight: 600;
                 color: #27496D;
                 padding: 16px;
-                font-size: 17px;
+                font-size: 20px;
                 text-align: center;
             }
 
@@ -400,7 +399,7 @@ nz-content {
     .event-info {
         color: #262626;
         font-weight: 500;
-        font-size: 16px;
+        font-size: 18px;
     }
 
     .amount-info {
@@ -412,24 +411,24 @@ nz-content {
         .amount-positive {
             color: #52c41a;
             font-weight: 600;
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .amount-negative {
             color: #ff4d4f;
             font-weight: 600;
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .balance-info {
-            font-size: 14px;
+            font-size: 20px;
             color: #8c8c8c;
         }
     }
 
     .time-info {
         color: #595959;
-        font-size: 16px;
+        font-size: 18px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -441,7 +440,7 @@ nz-content {
         }
 
         .time-clock {
-            font-size: 14px;
+            font-size: 18px;
             color: #8c8c8c;
         }
     }
@@ -490,7 +489,7 @@ nz-content {
             align-items: center;
             gap: 8px;
             margin-bottom: 8px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 500;
             color: #262626;
 
@@ -519,7 +518,7 @@ nz-content {
             }
 
             span {
-                font-size: 16px;
+                font-size: 18px;
                 color: #1890ff;
                 font-weight: 500;
             }
@@ -540,7 +539,7 @@ nz-content {
             height: 40px;
             border-radius: 6px;
             font-weight: 500;
-            font-size: 16px;
+            font-size: 20px;
             transition: all 0.3s ease;
 
             &:first-child {
@@ -587,7 +586,7 @@ h3 {
     margin: 0;
     user-select: none;
     line-height: 1.4;
-    font-size: 16px;
+    font-size: 20px;
     word-break: break-word;
 }
 
@@ -625,13 +624,13 @@ h3 {
             height: 48px;
 
             .big-icon {
-                font-size: 20px;
+                font-size: 24px;
             }
         }
 
         .btn-styles6 {
             h3 {
-                font-size: 14px;
+                font-size: 24px;
             }
         }
     }
@@ -644,7 +643,7 @@ h3 {
         }
 
         p {
-            font-size: 14px;
+            font-size: 24px;
         }
     }
 
@@ -669,7 +668,7 @@ h3 {
 
                 .card-info {
                     .card-label {
-                        font-size: 14px;
+                        font-size: 24px;
                     }
 
                     .card-value {
@@ -677,7 +676,7 @@ h3 {
                     }
 
                     .card-unit {
-                        font-size: 22px;
+                        font-size: 24px;
                     }
                 }
             }

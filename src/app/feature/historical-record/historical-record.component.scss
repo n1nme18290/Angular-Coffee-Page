@@ -182,13 +182,32 @@ button[nz-button].btn-styles2 {
     }
 }
 
-// 表格容器樣式（與範例一致）
+// 表格容器樣式
 .table-container {
     padding: 0 20px;
-    // //background: #fff;
-    // border-radius: 8px;
-    // box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    
+    .amount-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+
+        .amount-positive {
+            color: #52c41a;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .amount-negative {
+            color: #ff4d4f;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .balance-info {
+            font-size: 14px;
+            color: #8c8c8c;
+        }
+    }
 }
 
 // Tabs 樣式

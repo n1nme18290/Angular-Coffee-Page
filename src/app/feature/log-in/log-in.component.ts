@@ -85,6 +85,5 @@ export class LogInComponent {
   onLogout(): void {
     this.authService.logout();
     this.permissionService.clearPermissions();
-    console.log('已登出，token 和權限已清除');
   }
 }

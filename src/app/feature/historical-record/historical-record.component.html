@@ -96,13 +96,20 @@
                             <td>{{ data.member_name }}</td>
                             <td>{{ typeMap[data.type] }}</td>
                             <td>
-                                @if (data.type === 'add_points') {
-                                -{{ data.amount }}
-                                } @else {
-                                {{ data.after_balance >= data.before_balance ? '+' : '-' }}{{ data.amount }} ({{
-                                data.before_balance }} → {{ data.after_balance }})
-                                }
+                                <div class="amount-info">
+                                    @if (data.type === 'add_points') {
+                                    <span class="amount-negative">-{{ data.amount }}</span>
+                                    } @else {
+                                    <span [ngClass]="data.after_balance >= data.before_balance? 'amount-positive': 'amount-negative'">
+                                        {{ data.after_balance >= data.before_balance ? '+' : '-' }}{{ data.amount }}
+                                    </span>
+                                    }
+                                    <div class="balance-info">
+                                        ({{ data.before_balance }} → {{ data.after_balance }})
+                                    </div>
+                                </div>
                             </td>
+
                             <td>{{ data.created_at }}</td>
                         </tr>
                         }

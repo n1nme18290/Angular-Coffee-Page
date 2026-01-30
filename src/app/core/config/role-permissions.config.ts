@@ -21,6 +21,9 @@ export const ROLE_PERMISSIONS: RolePermissionsConfig = {
         'manage_devices',
         'manage_points'
     ],
+    '維護人員': [
+        'view_devices',
+    ],
     'Log Viewer': [
         'view_logs',
         'view_analytics'

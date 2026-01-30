@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, ɵEmptyOutletComponent } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -27,7 +27,7 @@ import { MAIN_MENU_ITEMS, SYSTEM_MANAGEMENT_ITEMS, MenuItemConfig } from '../../
   standalone: true,
   imports: [RouterOutlet, NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule,
     NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule, CommonModule,
-    NzRadioModule, NzMenuModule],
+    NzRadioModule, NzMenuModule, ɵEmptyOutletComponent],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.scss'
 })
@@ -120,7 +120,6 @@ export class MainPageComponent implements OnInit {
   GoLogIn() {
     this.authService.logout();
     this.permissionService.clearPermissions();
-    console.log('✅ 已登出，token、admin_id 和權限已清除');
     this.router.navigate(['/log-in']);
   }
   GoPersonalInfo() { this.router.navigate(['/personal-info']); }

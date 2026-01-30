@@ -211,8 +211,8 @@
                         <td>{{ data.title }}</td>
                         <td>{{ data.status }}</td>
                         <td>
-                            <nz-tag [nzColor]="data.identityLev === 1 ? 'purple' : 'blue'">
-                                {{ data.identityLev === 1 ? '一般' : '部分授權' }}
+                            <nz-tag [nzColor]="data.is_admin_bound === true ? 'purple' : 'blue'">
+                                {{ data.is_admin_bound === true ? '部分授權' : '一般' }}
                             </nz-tag>
                         </td>
                         <td>

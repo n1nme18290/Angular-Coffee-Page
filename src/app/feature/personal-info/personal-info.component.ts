@@ -239,7 +239,6 @@ export class PersonalInfoComponent implements OnInit {
   LogOut() {
     this.authService.logout();
     this.permissionService.clearPermissions();
-    console.log('✅ 已登出，token、admin_id 和權限已清除');
     this.router.navigate(['/log-in']);
   }
 }
