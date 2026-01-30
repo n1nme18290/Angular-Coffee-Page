@@ -76,6 +76,11 @@ export class PermissionManagementComponent {
   sendPointsValue: number = 0;
   sendPointsLoading = false;
 
+  // 綁定管理員相關
+  bindAdminVisible = false;
+  currentBindMember: IApiResponseMember | null = null;
+  bindAdminLoading = false;
+
 
   ngOnInit() {
     // 先確保角色列表已加載
@@ -445,6 +450,61 @@ export class PermissionManagementComponent {
         console.error('❌ 發送點數錯誤:', err);
         this.message.error('發送點數時發生錯誤');
         this.sendPointsLoading = false;
+      }
+    });
+  }
+
+  // 打開綁定管理員 Modal
+  bindMemberToAdmin(member: IApiResponseMember): void {
+    this.currentBindMember = member;
+    this.bindAdminVisible = true;
+  }
+
+  // 取消綁定管理員
+  cancelBindAdmin(): void {
+    this.bindAdminVisible = false;
+    this.currentBindMember = null;
+  }
+
+  // 確認綁定管理員
+  confirmBindAdmin(): void {
+    if (!this.currentBindMember) {
+      this.message.warning('請選擇要綁定的會員');
+      return;
+    }
+
+    // 檢查該會員是否已經是管理員
+    if (this.currentBindMember.is_admin_bound) {
+      this.message.warning('該會員已經是管理員');
+      return;
+    }
+
+    this.bindAdminLoading = true;
+    
+    // 獲取當前操作者的 admin_id
+    const currentAdminId = this.tokenService.getCurrentAdminId() || '';
+    const targetMemberId = this.currentBindMember.id;
+
+    // 調用 bindMember API
+    this.adminService.bindMember(currentAdminId, targetMemberId).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.message.success(`已成功將 ${this.currentBindMember?.name} 綁定為管理員`);
+          this.bindAdminVisible = false;
+          this.currentBindMember = null;
+          
+          // 刷新管理員和會員列表
+          this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
+          this.getPageMember(this.memberCurrentPage, this.memberPageSize);
+        } else {
+          this.message.error(res.message || '綁定管理員失敗');
+        }
+        this.bindAdminLoading = false;
+      },
+      error: (err) => {
+        console.error('❌ 綁定管理員錯誤:', err);
+        this.message.error('綁定管理員時發生錯誤');
+        this.bindAdminLoading = false;
       }
     });
   }

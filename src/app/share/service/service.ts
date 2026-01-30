@@ -156,13 +156,11 @@ export class LogService extends BaseService {
     return this.http.post<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl, body);
   }
 
-
   // 分頁查詢點數異動紀錄
   // getPageLog(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>> {
   //   const apiUrl = `${this.url}${this.LogUrl}get_page_log?page=${page}&perPage=${perPage}`;
   //   return this.http.get<IApiResponse<IApiResponsePages<IApiResponsePointsHistory>>>(apiUrl);
   // }
-
 
   // 分頁查詢設備操作紀錄
   getPageDeviceLog(
@@ -212,45 +210,6 @@ export class LogService extends BaseService {
   }
 }
 
-// Product 相關Api，應該用不到了
-@Injectable({
-  providedIn: 'root'
-})
-export class ProductService extends BaseService {
-  constructor() {
-    super();
-  }
-  // 建立商品品項
-  // createProduct(name: string, description: string, category: string, points_required: number, status: number): Observable<IApiResponse<IApiResponsePoints>> {
-  //   const apiUrl = `${this.url}${this.ProductUrl}create_product`;
-  //   const requestBody = {
-  //     name: name,
-  //     description: description,
-  //     category: category,
-  //     points_required: points_required,
-  //     status: status
-  //   };
-  //   return this.http.post<IApiResponse<IApiResponsePoints>>(apiUrl, requestBody);
-  // }
-  // 分頁查詢商品項目
-  // getPageProduct(page: number, perPage: number): Observable<IApiResponse<IApiResponsePages<IApiResponseGetPageProduct>>> {
-  //   const apiUrl = `${this.url}${this.ProductUrl}get_page_product?page=${page}&perPage=${perPage}`;
-  //   return this.http.get<IApiResponse<IApiResponsePages<IApiResponseGetPageProduct>>>(apiUrl);
-  // }
-  // 分頁查詢會員所有商品數量
-  // getMemPageProduct(memberId: string, page: number, perPage: number): Observable<IApiResponseProductList> {
-  //   const apiUrl = `${this.url}${this.ProductUrl}get_mem_page_product?page=${page}&perPage=${perPage}`;
-  //   return this.http.post<IApiResponseProductList>(
-  //     apiUrl,
-  //     `"${memberId}"`,  // 直接傳送 JSON 字串格式
-  //     {
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       }
-  //     }
-  //   );
-  // }
-}
 // Admin 相關API
 @Injectable({
   providedIn: 'root'
@@ -281,17 +240,14 @@ export class AdminService extends BaseService {
     };
     return this.http.post<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
   }
-  // 建立管理員
-  createAdmin(name: string, email: string, password: string, permission: number, status: string): Observable<IApiResponse<IApiResponseAdmin>> {
+  // 建立管理員，Response待確認
+  bindMember(admin_id: string, member_id: string): Observable<IApiResponse<IApiResponseAdmin>> {
     const apiUrl = `${this.url}${this.AdminUrl}create_admin`;
     const requestBody = {
-      name: name,
-      email: email,
-      password: password,
-      permission: permission,
-      status: status
+      admin_id: admin_id,
+      member_id: member_id
     };
-    return this.http.post<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
+    return this.http.put<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
   }
   // 更新管理員
   updateAdmin(id: string, name: string, email: string, permission: number, status: string): Observable<IApiResponse<IApiResponseAdmin>> {
@@ -370,7 +326,6 @@ export class AuthService extends BaseService {
   ssoLogin(studentId: string): Observable<IApiResponse<IApiResponseMemberSSOLogin>> {
     const ssoUrl = this.url + this.AuthUrl + 'sso_login';
     const requestBody = {
-      "provider": "member",
       "student_id": studentId,
     }
     return this.http.post<IApiResponse<IApiResponseMemberSSOLogin>>(ssoUrl, requestBody);

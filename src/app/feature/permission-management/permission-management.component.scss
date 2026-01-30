@@ -203,10 +203,40 @@ nz-breadcrumb {
             transform: translateY(-1px);
         }
     }
+
+    &.bind-admin-btn {
+        background-color: #ffffff;
+        color: rgb(14, 57, 98);
+        border-color: rgb(14, 57, 98);
+        box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+
+        &:hover:not([disabled]) {
+            background-color: #ffffff;
+            border-color: #40a9ff;
+            color: #40a9ff;
+            box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        &[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+            background-color: #f5f5f5;
+            border-color: #d9d9d9;
+            color: rgba(0, 0, 0, 0.25);
+            box-shadow: none;
+        }
+    }
 }
 
-/* ================= Modal 底部按鈕樣式 ================= */
+/* ================= Modal 樣式 ================= */
 ::ng-deep {
+    // 內容樣式
+    .ant-modal-body {
+        font-size: 20px;
+    }
+    // 底部樣式
     .ant-modal-footer {
         display: flex;
         gap: 0;
@@ -264,7 +294,9 @@ nz-breadcrumb {
 .modal-form {
     .form-item {
         margin-bottom: 16px;
-
+        .info-box {
+            font-size: 20px;
+        }
         .form-label {
             display: flex;
             align-items: center;
