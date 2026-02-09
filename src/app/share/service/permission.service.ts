@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, switchMap, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, of, switchMap, finalize, forkJoin, map, catchError } from 'rxjs';
 import { SecurityService } from './service';
 import { TokenService } from './token.service';
 import { IApiResponseSecurityRole } from './model';
-import { ROLE_PERMISSIONS } from '../../core/config/role-permissions.config';
 
 @Injectable({
     providedIn: 'root'
@@ -24,7 +23,7 @@ export class PermissionService {
     ) { }
 
     /**
-     * 載入使用者權限（避免重複載入）
+     * 載入使用者權限（從 API 動態取得）
      */
     loadUserPermissions(): Observable<void> {
         const adminId = this.tokenService.getCurrentAdminId();
@@ -47,21 +46,58 @@ export class PermissionService {
             switchMap((res) => {
                 if (res.isSuccess && res.data) {
                     // 過濾出使用者擁有的角色（is_owned: true）
-                    const ownedRoles = res.data
-                        .filter((role: IApiResponseSecurityRole) => role.is_owned)
-                        .map((role: IApiResponseSecurityRole) => role.role_name);
+                    const ownedRoles = res.data.filter((role: IApiResponseSecurityRole) => role.is_owned);
 
-                    this.rolesSubject.next(ownedRoles);
-                    this.lastLoadedAdminId = adminId; // 記錄已載入的 admin id
+                    if (ownedRoles.length === 0) {
+                        console.log('⚠️ 該管理員沒有分配任何角色');
+                        this.setDefaultPermissions();
+                        return of(void 0);
+                    }
 
-                    // 根據角色映射權限
-                    const permissions = this.mapRolesToPermissions(ownedRoles);
-                    this.permissionsSubject.next(permissions);
-                    console.log('📥 新權限已從 API 載入:', ownedRoles);
+                    // 儲存角色名稱
+                    const roleNames = ownedRoles.map((role: IApiResponseSecurityRole) => role.role_name);
+                    this.rolesSubject.next(roleNames);
+                    this.lastLoadedAdminId = adminId;
+
+                    console.log('📥 已取得角色列表:', roleNames);
+
+                    // 為每個角色呼叫 getRolePermissions API
+                    const permissionRequests = ownedRoles.map((role: IApiResponseSecurityRole) =>
+                        this.securityService.getRolePermissions(role.role_id).pipe(
+                            map(permRes => {
+                                if (permRes && permRes.data && Array.isArray(permRes.data)) {
+                                    // 提取權限代碼（code）
+                                    return permRes.data.map((perm: any) => perm.code);
+                                }
+                                return [];
+                            }),
+                            catchError(err => {
+                                console.error(`❌ 取得角色 ${role.role_name} 的權限失敗:`, err);
+                                return of([]);
+                            })
+                        )
+                    );
+
+                    // 等待所有權限 API 請求完成
+                    return forkJoin(permissionRequests).pipe(
+                        map((allPermissions: string[][]) => {
+                            // 合併所有權限，去除重複
+                            const mergedPermissions = new Set<string>();
+                            allPermissions.forEach(permissions => {
+                                permissions.forEach(permission => mergedPermissions.add(permission));
+                            });
+
+                            const finalPermissions = Array.from(mergedPermissions);
+                            this.permissionsSubject.next(finalPermissions);
+                            
+                            console.log('✅ 已從 API 載入權限:', finalPermissions);
+                            return void 0;
+                        })
+                    );
                 } else {
                     this.setDefaultPermissions();
+                    return of(void 0);
                 }
-                return of(void 0);
             }),
             finalize(() => {
                 this.isLoadingSubject.next(false);
@@ -79,29 +115,13 @@ export class PermissionService {
         this.isLoadingSubject.next(false);
     }
 
+    /**
+     * 設定預設權限（學生角色）
+     */
     private setDefaultPermissions(): void {
-        // 設定預設角色為「學生」
         this.rolesSubject.next(['學生']);
-        this.permissionsSubject.next(ROLE_PERMISSIONS['學生'] || []);
-    }
-
-    private mapRolesToPermissions(roles: string[]): string[] {
-        const permissions = new Set<string>();
-
-        roles.forEach(role => {
-            const rolePermissions = ROLE_PERMISSIONS[role];
-
-            if (rolePermissions) {
-                // 萬用權限 (*) 直接新增
-                if (rolePermissions.includes('*')) {
-                    permissions.add('*');
-                } else {
-                    rolePermissions.forEach(permission => permissions.add(permission));
-                }
-            }
-        });
-
-        return Array.from(permissions);
+        this.permissionsSubject.next([]);
+        console.log('⚠️ 使用預設學生權限（無特殊權限）');
     }
 
     hasAnyPermission(requiredPermissions: string[]): boolean {

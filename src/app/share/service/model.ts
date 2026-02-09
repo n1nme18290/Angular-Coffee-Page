@@ -138,7 +138,7 @@ export interface IApiResponseProductList {
     message: string;
 }
 export interface IApiResponseDeviceState {
-    total:number
+    total: number
     online: number
     offline: number
     maintenance: number
@@ -184,3 +184,11 @@ export interface IApiResponseRoleListItem {
 //     created_at: string
 //     updated_at: string
 // }
+export interface IApiResponseRolePermission {
+    id: string
+    code: string
+    name: string
+    description?: string
+    group_name?: string
+    order_num?: string
+}

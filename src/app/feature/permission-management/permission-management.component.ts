@@ -27,7 +27,6 @@ import { IApiResponseAdmin, IApiResponseMember, IApiResponseSecurityRole } from 
 import { AdminService, MemberService, SecurityService, PointService } from '../../share/service/service';
 import { TokenService } from '../../share/service/token.service';
 import { NzTagModule } from 'ng-zorro-antd/tag';
-import { ROLE_PERMISSIONS } from '../../core/config/role-permissions.config';
 
 
 @Component({
@@ -68,7 +67,6 @@ export class PermissionManagementComponent {
 
   // 角色相關
   availableRoles: IApiResponseSecurityRole[] = [];
-  rolePermissions = ROLE_PERMISSIONS;
 
   // 發送點數相關
   sendPointsVisible = false;
@@ -309,6 +307,12 @@ export class PermissionManagementComponent {
         this.message.success('角色設定成功！');
         this.editAdminRoleVisible = false;
         this.setOfCheckedRoleId.clear();
+        
+        // 清除該管理員的角色快取
+        if (this.currentEditAdmin) {
+          delete this.adminRolesCache[this.currentEditAdmin.id];
+        }
+        
         this.currentEditAdmin = null;
         this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
         this.adminRolesLoading = false;
@@ -329,6 +333,9 @@ export class PermissionManagementComponent {
 
   // 快取管理員的角色名稱
   adminRolesCache: { [adminId: string]: string[] } = {};
+  
+  // 快取角色的權限列表
+  rolePermissionsCache: { [roleId: string]: string[] } = {};
 
   // 取得管理員的角色顯示名稱
   getAdminRoleNames(admin: IApiResponseAdmin): string {
@@ -358,9 +365,32 @@ export class PermissionManagementComponent {
     return '載入中...';
   }
 
-  // 取得角色對應的權限列表
-  getRolePermissions(roleName: string): string[] {
-    return this.rolePermissions[roleName] || [];
+  // 取得角色的權限列表（從 API 動態載入）
+  getRolePermissions(role: IApiResponseSecurityRole): string[] {
+    // 如果已經有快取，直接返回
+    if (this.rolePermissionsCache[role.role_id]) {
+      return this.rolePermissionsCache[role.role_id];
+    }
+
+    // 如果沒有快取，異步加載
+    this.securityService.getRolePermissions(role.role_id).subscribe({
+      next: (res) => {
+        // IApiResponsePages<IApiResponseRolePermission> 結構中，data 是 IApiResponseRolePermission[]
+        if (res?.data && Array.isArray(res.data)) {
+          // 提取權限名稱（name）或代碼（code）
+          const permissions = res.data.map((perm: any) => perm.name || perm.code);
+          this.rolePermissionsCache[role.role_id] = permissions;
+        } else {
+          this.rolePermissionsCache[role.role_id] = [];
+        }
+      },
+      error: (err) => {
+        console.error(`取得角色 ${role.role_name} 的權限失敗:`, err);
+        this.rolePermissionsCache[role.role_id] = [];
+      }
+    });
+
+    return []; // 載入中時返回空陣列
   }
 
   // 全選/取消全選角色

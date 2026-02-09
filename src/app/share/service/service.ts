@@ -1,7 +1,7 @@
 import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
 import { inject, Injectable, Type } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog, IApiResponseMemberSSOLogin, IApiResponseSecurityRole, IApiResponseDeviceState, IApiResponseNormal2 } from './model';
+import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog, IApiResponseMemberSSOLogin, IApiResponseSecurityRole, IApiResponseDeviceState, IApiResponseNormal2, IApiResponseRolePermission } from './model';
 import { IApiResponsePoints } from './model';
 import { TokenService } from '../service/token.service';
 
@@ -240,13 +240,14 @@ export class AdminService extends BaseService {
     };
     return this.http.post<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
   }
-  // 建立管理員，Response待確認
-  bindMember(member_id: string): Observable<IApiResponse<IApiResponseAdmin>> {
+  // 綁定使用者到管理員
+  bindMember(member_id: string): Observable<IApiResponseNormal> {
     const apiUrl = `${this.url}${this.AdminUrl}create_admin`;
     const requestBody = {
+      admin_id: '',
       member_id: member_id
     };
-    return this.http.put<IApiResponse<IApiResponseAdmin>>(apiUrl, requestBody);
+    return this.http.put<IApiResponseNormal>(apiUrl, requestBody);
   }
   // 更新管理員
   updateAdmin(id: string, name: string, email: string, permission: number, status: string): Observable<IApiResponse<IApiResponseAdmin>> {
@@ -534,6 +535,11 @@ export class SecurityService extends BaseService {
       status: status
     };
     return this.http.put<IApiResponse<null>>(apiUrl, requestBody);
+  }
+  // 取得角色權限列表
+  getRolePermissions(role_id: string): Observable<IApiResponsePages<IApiResponseRolePermission>> {
+    const apiUrl = `${this.url}${this.SecurityUrl}permissions?role_id=${role_id}`;
+    return this.http.get<IApiResponsePages<IApiResponseRolePermission>>(apiUrl);
   }
   // 設定權限
   // setPermissions(role_id: string, permissions: string[], replace: boolean): Observable<IApiResponse<any>> {

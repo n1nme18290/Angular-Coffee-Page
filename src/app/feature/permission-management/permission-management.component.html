@@ -126,14 +126,14 @@
                         </td>
                         <td>{{ role.description }}</td>
                         <td>
-                            @if (getRolePermissions(role.role_name).length > 0) {
-                            @for (permission of getRolePermissions(role.role_name); track permission) {
-                            <nz-tag [nzColor]="permission === '*' ? 'red' : 'green'" style="margin: 2px;">
+                            @if (getRolePermissions(role).length > 0) {
+                            @for (permission of getRolePermissions(role); track permission) {
+                            <nz-tag [nzColor]="'green'" style="margin: 2px;">
                                 {{ permission }}
                             </nz-tag>
                             }
                             } @else {
-                            <span style="color: #999;">未定義權限</span>
+                            <span style="color: #999;">載入中...</span>
                             }
                         </td>
                     </tr>
