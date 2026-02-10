@@ -6,7 +6,7 @@
     background: #f5f5f5;
 }
 
-/* ===== Header 樣式 (保留原本) ===== */
+/* ===== Header 樣式 ===== */
 nz-header {
     display: flex;
     justify-content: space-between;
@@ -23,13 +23,19 @@ nz-header {
     .h2 {
         color: #ffffff;
         margin: 0;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        span[nz-icon] {
+            font-size: 20px;
+        }
     }
 }
 
-/* ===== 按鈕共用樣式 (保留原本) ===== */
+/* ===== 按鈕共用樣式 ===== */
 button[nz-button] {
-    // margin-right: 8px;
-    // margin-bottom: 1px;
     height: 44px;
     border-radius: 100px;
     border: 1px solid #27496D;
@@ -39,7 +45,7 @@ button[nz-button] {
     transition: all 0.3s ease;
 }
 
-/* Header 左側折疊按鈕 (保留原本) */
+/* Header 左側折疊按鈕 */
 button[nz-button].btn-styles4 {
     background-color: transparent;
     color: rgb(255, 255, 255);
@@ -68,7 +74,7 @@ button[nz-button].btn-styles4 {
     }
 }
 
-/* 登出按鈕 (保留原本) */
+/* 登出按鈕 */
 button[nz-button].btn-styles6 {
     background-color: #27496D;
     color: #ffffff;
@@ -78,6 +84,7 @@ button[nz-button].btn-styles6 {
     h3 {
         margin: 0;
         transition: all 0.3s ease;
+        font-size: 20px;
     }
 
     &:hover {
@@ -195,6 +202,7 @@ nz-content {
                     font-size: 24px;
                     color: #8c8c8c;
                     font-weight: 500;
+                    margin-bottom: 8px;
                 }
 
                 .card-value-wrapper {
@@ -271,10 +279,14 @@ nz-content {
     color: rgb(14, 57, 98) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
 
     i {
         font-size: 24px;
-        margin-right: 8px;
     }
 
     &:hover {
@@ -421,7 +433,7 @@ nz-content {
         }
 
         .balance-info {
-            font-size: 20px;
+            font-size: 16px;
             color: #8c8c8c;
         }
     }
@@ -440,7 +452,7 @@ nz-content {
         }
 
         .time-clock {
-            font-size: 18px;
+            font-size: 16px;
             color: #8c8c8c;
         }
     }
@@ -475,7 +487,7 @@ nz-content {
     overflow: hidden;
 }
 
-/* ===== Modal 樣式 (保留原本) ===== */
+/* ===== Modal 樣式 ===== */
 .modal-form {
     .form-item {
         margin-bottom: 24px;
@@ -518,7 +530,7 @@ nz-content {
             }
 
             span {
-                font-size: 18px;
+                font-size: 16px;
                 color: #1890ff;
                 font-weight: 500;
             }
@@ -526,11 +538,11 @@ nz-content {
     }
 }
 
-/* ===== Modal 底部按鈕樣式 (保留原本) ===== */
+/* ===== Modal 底部按鈕樣式 ===== */
 ::ng-deep {
     .ant-modal-footer {
         display: flex;
-        gap: 0;
+        gap: 8px;
         padding: 16px;
         border-top: 1px solid #f0f0f0;
 
@@ -539,11 +551,14 @@ nz-content {
             height: 40px;
             border-radius: 6px;
             font-weight: 500;
-            font-size: 20px;
+            font-size: 16px;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
 
             &:first-child {
-                margin-left: 8px;
                 background-color: #ffffff;
                 color: rgb(170, 20, 20);
                 border-color: rgb(170, 20, 20);
@@ -559,7 +574,6 @@ nz-content {
             }
 
             &:last-child {
-                margin-left: 8px;
                 background-color: #ffffff;
                 color: rgb(14, 57, 98);
                 border-color: rgb(14, 57, 98);
@@ -575,7 +589,7 @@ nz-content {
             }
 
             i {
-                margin-right: 6px;
+                font-size: 16px;
             }
         }
     }
@@ -591,64 +605,132 @@ h3 {
 }
 
 /* ===== 響應式設計 ===== */
-@media (max-width: 1200px) {
+
+/* 平板尺寸 (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 768px) {
     .user-page-container {
-        padding: 24px 16px;
+        padding: 20px;
     }
 
     .welcome-section {
         h2 {
-            font-size: 28px;
+            font-size: 30px;
+        }
+
+        p {
+            font-size: 20px;
+        }
+    }
+
+    .info-card {
+        &.points-card {
+            .card-content {
+                .card-icon {
+                    width: 70px;
+                    height: 70px;
+                    font-size: 35px;
+                }
+
+                .card-info {
+                    .card-label {
+                        font-size: 20px;
+                    }
+
+                    .card-value {
+                        font-size: 48px;
+                    }
+
+                    .card-unit {
+                        font-size: 28px;
+                    }
+                }
+            }
+        }
+
+        &.rules-card {
+            .card-header {
+                h3 {
+                    font-size: 20px;
+                }
+            }
+
+            .rule-item span {
+                font-size: 16px;
+            }
+        }
+    }
+
+    .transfer-btn {
+        font-size: 20px;
+
+        i {
+            font-size: 20px;
         }
     }
 }
 
-@media (max-width: 768px) {
+/* 手機尺寸 (最大 767px) */
+@media (max-width: 767px) {
     .user-page-container {
         padding: 16px 12px;
     }
 
     nz-header {
-        padding: 0 16px;
+        padding: 0 12px;
+        height: auto;
+        min-height: 64px;
 
         .header-left {
             gap: 8px;
+            flex: 1;
+            min-width: 0;
 
             .h2 {
-                font-size: 18px;
+                font-size: 16px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                span[nz-icon] {
+                    font-size: 16px;
+                }
             }
         }
 
         .btn-styles4 {
             width: 48px;
             height: 48px;
+            margin-bottom: 8px;
 
             .big-icon {
-                font-size: 24px;
+                font-size: 22px;
             }
         }
 
         .btn-styles6 {
+            height: 36px;
+            padding: 0 12px;
+
             h3 {
-                font-size: 24px;
+                font-size: 16px;
             }
         }
     }
 
     .welcome-section {
-        margin-bottom: 24px;
+        margin-bottom: 16px;
 
         h2 {
             font-size: 24px;
         }
 
         p {
-            font-size: 24px;
+            font-size: 16px;
         }
     }
 
     .cards-section {
-        margin-bottom: 24px;
+        margin-bottom: 20px;
     }
 
     .info-card {
@@ -657,8 +739,13 @@ h3 {
         }
 
         &.points-card {
+            ::ng-deep .ant-card-body {
+                min-height: auto;
+            }
+
             .card-content {
-                gap: 16px;
+                gap: 12px;
+                margin-bottom: 16px;
 
                 .card-icon {
                     width: 60px;
@@ -668,41 +755,75 @@ h3 {
 
                 .card-info {
                     .card-label {
-                        font-size: 24px;
+                        font-size: 18px;
+                        margin-bottom: 4px;
                     }
 
                     .card-value {
-                        font-size: 40px;
+                        font-size: 36px;
                     }
 
                     .card-unit {
-                        font-size: 24px;
+                        font-size: 20px;
                     }
                 }
             }
         }
 
         &.rules-card {
+            ::ng-deep .ant-card-body {
+                min-height: auto;
+            }
+
             .card-header {
+                margin-bottom: 12px;
+                padding-bottom: 12px;
+
+                i {
+                    font-size: 20px;
+                }
+
                 h3 {
                     font-size: 18px;
                 }
             }
 
-            .rule-item span {
-                font-size: 14px;
+            .rules-list {
+                gap: 8px;
+            }
+
+            .rule-item {
+                padding: 12px;
+
+                i {
+                    font-size: 16px;
+                }
+
+                span {
+                    font-size: 14px;
+                }
             }
         }
     }
 
+    .transfer-btn {
+        font-size: 18px;
+        height: 44px;
+
+        i {
+            font-size: 18px;
+        }
+    }
+
     .history-section {
-        margin-top: 24px;
+        margin-top: 20px;
 
         .section-header {
             gap: 8px;
+            margin-bottom: 12px;
 
             i {
-                font-size: 22px;
+                font-size: 20px;
             }
 
             h2 {
@@ -714,12 +835,227 @@ h3 {
     .table-wrapper {
         .history-table ::ng-deep {
             .ant-table-thead>tr>th {
-                padding: 12px 8px;
+                padding: 10px 6px;
                 font-size: 14px;
             }
 
             .ant-table-tbody>tr>td {
-                padding: 12px 8px;
+                padding: 10px 6px;
+                font-size: 13px;
+            }
+
+            .ant-pagination {
+                margin: 12px 8px;
+            }
+        }
+    }
+
+    .history-row {
+        .event-info {
+            font-size: 14px;
+        }
+
+        .amount-info {
+            gap: 4px;
+
+            .amount-positive,
+            .amount-negative {
+                font-size: 16px;
+            }
+
+            .balance-info {
+                font-size: 12px;
+            }
+        }
+
+        .time-info {
+            font-size: 13px;
+
+            .time-date {
+                font-size: 13px;
+            }
+
+            .time-clock {
+                font-size: 12px;
+            }
+        }
+    }
+
+    .empty-row {
+        .empty-state {
+            padding: 40px 16px;
+
+            i {
+                font-size: 36px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+        }
+    }
+
+    /* Modal 響應式 */
+    ::ng-deep .round-modal {
+        max-width: calc(100vw - 32px) !important;
+        margin: 0 16px;
+
+        .ant-modal-body {
+            padding: 16px;
+        }
+
+        .ant-modal-header {
+            padding: 16px;
+
+            .ant-modal-title {
+                font-size: 18px;
+            }
+        }
+    }
+
+    .modal-form {
+        .form-item {
+            margin-bottom: 16px;
+
+            .form-label {
+                font-size: 16px;
+
+                i {
+                    font-size: 16px;
+                }
+            }
+
+            &.info-box {
+                padding: 10px 12px;
+
+                i {
+                    font-size: 16px;
+                }
+
+                span {
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+
+    ::ng-deep .ant-modal-footer {
+        padding: 12px;
+        gap: 8px;
+        flex-wrap: nowrap;
+
+        button {
+            height: 36px;
+            font-size: 14px;
+            min-width: 0;
+            padding: 0 12px;
+
+            i {
+                font-size: 14px;
+            }
+
+            .btn-text {
+                display: inline;
+            }
+        }
+    }
+}
+
+/* 極小手機尺寸 (最大 375px) */
+@media (max-width: 375px) {
+    nz-header {
+        .header-left {
+            .h2 {
+                font-size: 14px;
+
+                span[nz-icon] {
+                    font-size: 14px;
+                }
+            }
+        }
+
+        .btn-styles4 {
+            width: 44px;
+            height: 44px;
+
+            .big-icon {
+                font-size: 20px;
+            }
+        }
+
+        .btn-styles6 {
+            height: 32px;
+            padding: 0 10px;
+
+            h3 {
+                font-size: 14px;
+            }
+        }
+    }
+
+    .welcome-section {
+        h2 {
+            font-size: 20px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+    }
+
+    .info-card {
+        &.points-card {
+            .card-content {
+                .card-icon {
+                    width: 50px;
+                    height: 50px;
+                    font-size: 24px;
+                }
+
+                .card-info {
+                    .card-label {
+                        font-size: 16px;
+                    }
+
+                    .card-value {
+                        font-size: 30px;
+                    }
+
+                    .card-unit {
+                        font-size: 18px;
+                    }
+                }
+            }
+        }
+
+        &.rules-card {
+            .card-header {
+                h3 {
+                    font-size: 16px;
+                }
+            }
+
+            .rule-item span {
+                font-size: 13px;
+            }
+        }
+    }
+
+    .transfer-btn {
+        font-size: 16px;
+        height: 40px;
+
+        i {
+            font-size: 16px;
+        }
+    }
+
+    ::ng-deep .ant-modal-footer {
+        button {
+            font-size: 13px;
+            padding: 0 8px;
+
+            .btn-text {
                 font-size: 13px;
             }
         }

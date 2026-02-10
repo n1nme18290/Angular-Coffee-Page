@@ -1,5 +1,5 @@
 <nz-layout class="personal-info-layout">
-    <!-- ===== 頂部 Header (保留原本樣式) ===== -->
+    <!-- ===== 頂部 Header ===== -->
     <nz-header>
         <div class="header-left">
             @if (sidebarService.showSidebar) {
@@ -28,8 +28,8 @@
             </div>
 
             <!-- 點數卡片區域 -->
-            <div class="cards-section" nz-row [nzGutter]="[24, 24]">
-                <!-- 我的點數卡片 (30%) -->
+            <div class="cards-section" nz-row [nzGutter]="[16, 16]">
+                <!-- 我的點數卡片 -->
                 <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="10" [nzLg]="10" class="card-wrapper">
                     <nz-card class="info-card points-card">
                         <div class="card-content">
@@ -53,7 +53,7 @@
                     </nz-card>
                 </div>
 
-                <!-- 點數規則卡片 (70%) -->
+                <!-- 點數規則卡片 -->
                 <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="14" [nzLg]="14" class="card-wrapper">
                     <nz-card class="info-card rules-card">
                         <div class="card-header">
@@ -88,7 +88,7 @@
                     <div class="table-wrapper">
                         <nz-table #memberHistoryTable [nzData]="memberPointsHistoryList"
                             [nzLoading]="memberHistoryLoading" [nzBordered]="false" [nzShowPagination]="true"
-                            [nzPageSize]="10" [nzHideOnSinglePage]="false" [nzScroll]="{ x: '800px' }"
+                            [nzPageSize]="10" [nzHideOnSinglePage]="false" [nzScroll]="{ x: '600px' }"
                             class="history-table">
                             <thead>
                                 <tr>
@@ -114,13 +114,11 @@
                                                 data.after_balance >= data.before_balance ? '+' : '-'
                                                 }}{{ data.amount }}
                                             </span>
-
                                             <div class="balance-info">
                                                 ({{ data.before_balance }} → {{ data.after_balance }})
                                             </div>
                                         </div>
                                     </td>
-
                                     <td>
                                         <div class="time-info">
                                             <span class="time-date">
@@ -129,7 +127,6 @@
                                             <span class="time-clock">
                                                 {{ data.created_at | date:'HH:mm' }}
                                             </span>
-
                                         </div>
                                     </td>
                                 </tr>
@@ -159,9 +156,9 @@
         </div>
     </nz-content>
 
-    <!-- 轉贈點數 Modal (保留原本樣式) -->
-    <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="transferFooter" nzWidth="600px"
-        nzWrapClassName="round-modal" nzCentered [nzClosable]="false">
+    <!-- 轉贈點數 Modal -->
+    <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="transferFooter" 
+        [nzWidth]="modalWidth" nzWrapClassName="round-modal" nzCentered [nzClosable]="false">
         <ng-container *nzModalContent>
             <div class="modal-form">
                 <div class="form-item">
@@ -191,11 +188,11 @@
         <ng-template #transferFooter>
             <button nz-button (click)="addpointhandleCancel()">
                 <i nz-icon nzType="close" nzTheme="outline"></i>
-                取消
+                <span class="btn-text">取消</span>
             </button>
             <button nz-button nzType="primary" (click)="addpointhandleOk(addpointselectedValue, pointvalue)">
                 <i nz-icon nzType="check" nzTheme="outline"></i>
-                確認轉贈
+                <span class="btn-text">確認轉贈</span>
             </button>
         </ng-template>
     </nz-modal>

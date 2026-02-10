@@ -79,6 +79,25 @@ export class PermissionManagementComponent {
   currentBindMember: IApiResponseMember | null = null;
   bindAdminLoading = false;
 
+  // 管理人員搜尋篩選
+  adminSearchName: string = '';
+  adminFilterRole: string = '全部角色';
+
+  // 會員搜尋篩選
+  memberSearchId: string = '';
+  memberFilterCard: string = '全部類別';
+
+  // 卡片類別映射
+  cardTypeMap: { [key: string]: string } = {
+    'student': '學生卡',
+    'staff': '教職員卡',
+  };
+
+  // 角色映射
+  roleTypeMap: { [key: string]: string } = {
+    'admin': '管理員',
+    'manager': '學生'
+  };
 
   ngOnInit() {
     // 先確保角色列表已加載
@@ -86,6 +105,62 @@ export class PermissionManagementComponent {
     // 同時加載管理員和會員列表
     this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
     this.getPageMember(this.memberCurrentPage, this.memberPageSize);
+  }
+
+  // ==================== 管理人員搜尋篩選功能 ====================
+
+  // 管理人員搜尋
+  searchAdmin(): void {
+    this.adminCurrentPage = 1;
+    this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
+  }
+
+  // 清除管理人員搜尋
+  clearAdminSearch(): void {
+    this.adminSearchName = '';
+    this.adminFilterRole = '全部角色';
+    this.adminCurrentPage = 1;
+    this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
+  }
+
+  // 管理人員角色篩選變更
+  onAdminRoleFilterChange(role: string): void {
+    this.adminFilterRole = role;
+    this.adminCurrentPage = 1;
+    this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
+  }
+
+  // 取得管理人員角色篩選標籤
+  getAdminRoleFilterLabel(role: string): string {
+    return role;
+  }
+
+  // ==================== 會員搜尋篩選功能 ====================
+
+  // 會員搜尋
+  searchMember(): void {
+    this.memberCurrentPage = 1;
+    this.getPageMember(this.memberCurrentPage, this.memberPageSize);
+  }
+
+  // 清除會員搜尋
+  clearMemberSearch(): void {
+    this.memberSearchId = '';
+    this.memberFilterCard = '全部類別';
+    this.memberCurrentPage = 1;
+    this.getPageMember(this.memberCurrentPage, this.memberPageSize);
+  }
+
+  // 會員卡片類別篩選變更
+  onMemberCardFilterChange(card: string): void {
+    this.memberFilterCard = card;
+    this.memberCurrentPage = 1;
+    this.getPageMember(this.memberCurrentPage, this.memberPageSize);
+  }
+
+  // 取得會員卡片類別篩選標籤
+  getMemberCardFilterLabel(card: string): string {
+    return card;
   }
 
   // 載入所有可用角色
@@ -168,18 +243,40 @@ export class PermissionManagementComponent {
     this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
   }
 
-  // 取得分頁 Admin
+  // 取得分頁 Admin（含搜尋篩選）
   getPageAdmin(page: number, pageSize: number): void {
     this.loading = true;
     this.adminService.getPageAdmins(page, pageSize).subscribe({
       next: (res) => {
         const data = res?.data?.data;
+        let adminData: IApiResponseAdmin[] = [];
+        
         if (Array.isArray(data)) {
-          this.adminList = data;
+          adminData = data;
+          
+          // 前端篩選：名稱搜尋
+          if (this.adminSearchName && this.adminSearchName.trim()) {
+            const searchLower = this.adminSearchName.toLowerCase().trim();
+            adminData = adminData.filter(admin =>
+              admin.name.toLowerCase().includes(searchLower)
+            );
+          }
+          
+          // 前端篩選：角色篩選
+          if (this.adminFilterRole !== '全部角色') {
+            adminData = adminData.filter(admin => {
+              const roleNames = this.getAdminRoleNames(admin);
+              return roleNames.includes(this.adminFilterRole);
+            });
+          }
+          
+          this.adminList = adminData;
+          this.totalAdmin = adminData.length;
         } else {
           this.adminList = [];
+          this.totalAdmin = 0;
         }
-        this.totalAdmin = res?.data?.total ?? 0;
+        
         this.loading = false;
       },
       error: (err) => {
@@ -191,6 +288,7 @@ export class PermissionManagementComponent {
       }
     });
   }
+
   // Member 頁面數據變更時
   onMemberPageIndexChange(pageIndex: number): void {
     this.memberCurrentPage = pageIndex;
@@ -204,18 +302,40 @@ export class PermissionManagementComponent {
     this.getPageMember(this.memberCurrentPage, this.memberPageSize);
   }
 
-  // 取得分頁 Member
+  // 取得分頁 Member（含搜尋篩選）
   getPageMember(page: number, pageSize: number): void {
     this.loading = true;
     this.memberService.getPageMembers(page, pageSize).subscribe({
       next: (res) => {
         const data = res?.data?.data;
+        let memberData: IApiResponseMember[] = [];
+        
         if (Array.isArray(data)) {
-          this.memberlist = data;
+          memberData = data;
+          
+          // 前端篩選：ID搜尋
+          if (this.memberSearchId && this.memberSearchId.trim()) {
+            const searchId = this.memberSearchId.trim();
+            memberData = memberData.filter(member =>
+              member.student_id.includes(searchId)
+            );
+          }
+          
+          // 前端篩選：卡片類別篩選
+          if (this.memberFilterCard !== '全部類別') {
+            memberData = memberData.filter(member => {
+              const cardType = this.cardTypeMap[member.title] || member.title;
+              return cardType === this.memberFilterCard;
+            });
+          }
+          
+          this.memberlist = memberData;
+          this.totalMember = memberData.length;
         } else {
           this.memberlist = [];
+          this.totalMember = 0;
         }
-        this.totalMember = res?.data?.total ?? 0;
+        
         this.loading = false;
       },
       error: (err) => {
@@ -227,6 +347,7 @@ export class PermissionManagementComponent {
       }
     });
   }
+
   // 編輯管理員角色彈跳視窗
   editAdminRoleVisible = false;
   roleListLoading = false;
@@ -266,7 +387,7 @@ export class PermissionManagementComponent {
           });
         }
         this.adminRolesLoading = false;
-        // 無論角色列表是否加載完成，都先打開 modal，讓用戶看到加載狀態
+        // 無論角色列表是否加載完成,都先打開 modal，讓用戶看到加載狀態
         if (!this.editAdminRoleVisible) {
           this.editAdminRoleVisible = true;
         }
@@ -283,6 +404,7 @@ export class PermissionManagementComponent {
       }
     });
   }
+
   // 儲存角色分配
   saveAdminRoles(): void {
     if (!this.currentEditAdmin) {
@@ -324,6 +446,7 @@ export class PermissionManagementComponent {
       }
     });
   }
+
   // 取消編輯
   cancelEditAdminRole(): void {
     this.editAdminRoleVisible = false;
@@ -432,6 +555,7 @@ export class PermissionManagementComponent {
     this.checked = allChecked;
     this.indeterminate = someChecked && !allChecked;
   }
+
   // 打開發送點數 Modal
   sendPointsToMember(member: IApiResponseMember): void {
     this.currentSendPointsMember = member;
@@ -445,6 +569,7 @@ export class PermissionManagementComponent {
     this.currentSendPointsMember = null;
     this.sendPointsValue = 0;
   }
+
   // 確認發送點數
   confirmSendPoints(): void {
     if (!this.currentSendPointsMember || !this.sendPointsValue || this.sendPointsValue <= 0) {
@@ -477,11 +602,13 @@ export class PermissionManagementComponent {
       }
     });
   }
+
   // 打開綁定管理員 Modal
   bindMemberToAdmin(member: IApiResponseMember): void {
     this.currentBindMember = member;
     this.bindAdminVisible = true;
   }
+
   // 取消綁定管理員
   cancelBindAdmin(): void {
     this.bindAdminVisible = false;
@@ -523,6 +650,7 @@ export class PermissionManagementComponent {
       }
     });
   }
+
   // 切換側邊欄
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
