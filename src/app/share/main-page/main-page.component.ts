@@ -120,7 +120,7 @@ export class MainPageComponent implements OnInit {
   GoLogIn() {
     this.authService.logout();
     this.permissionService.clearPermissions();
-    this.router.navigate(['/log-in']);
+    this.router.navigate(['/']);
   }
   GoPersonalInfo() { this.router.navigate(['/personal-info']); }
   GoPointInformation() { this.router.navigate(['/point-information']); }

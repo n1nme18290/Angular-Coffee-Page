@@ -9,8 +9,8 @@ export const authGuard: CanActivateFn = (route, state) => {
     const hasToken = tokenService.hasToken();
 
     if (!hasToken) {
-        console.log('❌ 未登入，導向登入頁');
-        router.navigate(['/log-in']);
+        console.log('❌ 未登入，導向 SSO 入口頁');
+        router.navigate(['/']);
         return false;
     }
 

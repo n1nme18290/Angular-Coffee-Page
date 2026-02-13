@@ -239,6 +239,6 @@ export class PersonalInfoComponent implements OnInit {
   LogOut() {
     this.authService.logout();
     this.permissionService.clearPermissions();
-    this.router.navigate(['/log-in']);
+    this.router.navigate(['/']);
   }
 }

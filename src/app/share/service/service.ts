@@ -288,6 +288,59 @@ export class AuthService extends BaseService {
   constructor(private tokenService: TokenService) {
     super();
   }
+
+  /**
+   * 記錄登入嘗試（審計日誌）
+   * @param loginType 登入類型：'admin' | 'sso' | 'backdoor'
+   * @param identifier 識別資訊（email 或 studentId）
+   * @param success 是否成功
+   * @param errorMessage 錯誤訊息（如果有）
+   */
+  private logLoginAttempt(
+    loginType: 'admin' | 'sso' | 'backdoor',
+    identifier: string,
+    success: boolean,
+    errorMessage?: string
+  ): void {
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      loginType,
+      identifier: this.maskSensitiveInfo(identifier),
+      success,
+      errorMessage,
+      userAgent: navigator.userAgent,
+      ipAddress: 'client-side' // 實際 IP 需要從後端獲取
+    };
+
+    console.log(`🔐 登入嘗試記錄 [${loginType}]:`, logEntry);
+
+    // TODO: 發送到後端進行審計
+    // this.http.post('/api/audit/login-attempt', logEntry).subscribe();
+
+    // 暫時存儲到 localStorage（實際應該發送到後端）
+    const logs = JSON.parse(localStorage.getItem('login_audit_logs') || '[]');
+    logs.push(logEntry);
+    // 只保留最近 200 筆記錄
+    if (logs.length > 200) {
+      logs.shift();
+    }
+    localStorage.setItem('login_audit_logs', JSON.stringify(logs));
+  }
+
+  /**
+   * 遮罩敏感資訊
+   */
+  private maskSensitiveInfo(info: string): string {
+    if (!info) return '';
+    if (info.includes('@')) {
+      // Email: 只顯示前 3 個字元和 @ 後面
+      const [username, domain] = info.split('@');
+      return `${username.substring(0, 3)}***@${domain}`;
+    }
+    // 學號或其他：只顯示前 3 個字元
+    return `${info.substring(0, 3)}***`;
+  }
+
   // Admin 登入
   // 帳：admin@example.com 密：P@ssw0rd
   adminLogin(email: string, password: string): Observable<IApiResponse<IApiResponseAdminLogin>> {
@@ -298,10 +351,19 @@ export class AuthService extends BaseService {
     };
     return this.http.post<IApiResponse<IApiResponseAdminLogin>>(apiUrl, requestBody);
   }
-  loginAndSaveToken(email: string, password: string): Observable<IApiResponse<IApiResponseAdminLogin>> {
+  
+  loginAndSaveToken(email: string, password: string, isBackdoor: boolean = false): Observable<IApiResponse<IApiResponseAdminLogin>> {
     return new Observable(observer => {
       this.adminLogin(email, password).subscribe({
         next: (response) => {
+          // 記錄登入嘗試
+          this.logLoginAttempt(
+            isBackdoor ? 'backdoor' : 'admin',
+            email,
+            response.isSuccess,
+            response.isSuccess ? undefined : response.message
+          );
+
           // 如果登入成功且有 jwt token
           if (response.isSuccess && response.data) {
             // 儲存 token
@@ -317,11 +379,19 @@ export class AuthService extends BaseService {
           observer.complete();
         },
         error: (error) => {
+          // 記錄登入失敗
+          this.logLoginAttempt(
+            isBackdoor ? 'backdoor' : 'admin',
+            email,
+            false,
+            error.message || '登入請求失敗'
+          );
           observer.error(error);
         }
       });
     });
   }
+  
   // SSO 登入 -暫定
   ssoLogin(studentId: string): Observable<IApiResponse<IApiResponseMemberSSOLogin>> {
     const ssoUrl = this.url + this.AuthUrl + 'sso_login';
@@ -330,10 +400,19 @@ export class AuthService extends BaseService {
     }
     return this.http.post<IApiResponse<IApiResponseMemberSSOLogin>>(ssoUrl, requestBody);
   }
+  
   ssoLoginAndSaveToken(studentId: string): Observable<IApiResponse<IApiResponseMemberSSOLogin>> {
     return new Observable(observer => {
       this.ssoLogin(studentId).subscribe({
         next: (response) => {
+          // 記錄 SSO 登入嘗試
+          this.logLoginAttempt(
+            'sso',
+            studentId,
+            response.isSuccess,
+            response.isSuccess ? undefined : response.message
+          );
+
           if (response.isSuccess && response.data) {
             // 儲存 sso_token
             if (response.data.jwt) {
@@ -352,11 +431,19 @@ export class AuthService extends BaseService {
           observer.complete();
         },
         error: (error) => {
+          // 記錄 SSO 登入失敗
+          this.logLoginAttempt(
+            'sso',
+            studentId,
+            false,
+            error.message || 'SSO 登入請求失敗'
+          );
           observer.error(error);
         }
       });
     });
   }
+  
   // 登出
   logout(): void {
     this.tokenService.removeToken();

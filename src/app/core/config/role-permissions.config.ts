@@ -34,25 +34,28 @@ export const SYSTEM_MANAGEMENT_ITEMS: MenuItemConfig[] = [
         path: '/backend-management',
         label: '兌換資料分析頁面',
         icon: 'bar-chart',
-        permissions: ['view_analytics', 'manage_backend']
+        permissions: ['view_analytics', 'manage_backend'],
+        roles: ['Admin', 'SuperAdmin', 'admin', 'superadmin']  // 加入角色檢查
     },
     {
         path: '/equipment',
         label: '設備管理頁面',
         icon: 'laptop',
-        permissions: ['view_devices', 'manage_devices']
+        permissions: ['view_devices', 'manage_devices'],
+        roles: ['Admin', 'SuperAdmin', 'admin', 'superadmin']  // 加入角色檢查
     },
     {
         path: '/permission-management',
         label: '使用者管理',
         icon: 'team',
         permissions: ['manage_permissions', 'manage_users'],
-        roles: ['Admin', 'SuperAdmin']
+        roles: ['Admin', 'SuperAdmin', 'admin', 'superadmin']
     },
     {
         path: '/historical-record',
         label: '歷史紀錄頁面',
         icon: 'history',
-        permissions: ['view_logs']
+        permissions: ['view_logs'],
+        roles: ['Admin', 'SuperAdmin', 'admin', 'superadmin']  // 加入角色檢查
     }
 ];
