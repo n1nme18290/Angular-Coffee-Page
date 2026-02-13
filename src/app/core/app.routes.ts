@@ -41,16 +41,17 @@ export const routes: Routes = [
       { 
         path: 'personal-info',
         component: PersonalInfoComponent,
-        canActivate: [permissionGuard],
+        // personal-info 不需要權限限制，所有登入用戶都可訪問
       },
       { 
         path: 'point-information',
         component: PointInformationComponent,
-        // canActivate: [permissionGuard],
+        // point-information 不需要權限限制，所有登入用戶都可訪問
       },
-      { path: 'equipment',
+      { 
+        path: 'equipment',
         component: EquipmentComponent,
-        // canActivate: [permissionGuard],
+        canActivate: [permissionGuard],
         children: [
           { path: 'equipment/equipment-information', component: EquipmentInformationComponent },
         ]
@@ -58,22 +59,22 @@ export const routes: Routes = [
       {
         path: 'backend-management',
         component: BackendManagementComponent,
-        // canActivate: [permissionGuard],
+        canActivate: [permissionGuard],
       },
       {
         path: 'historical-record',
         component: HistoricalRecordComponent,
-        // canActivate: [permissionGuard],
+        canActivate: [permissionGuard],
       },
       { 
         path: 'permission-management',
         component: PermissionManagementComponent,
-        // canActivate: [permissionGuard],
+        canActivate: [permissionGuard],
       },
-      {
-        path: 'test-page',
-        component: TestPageComponent,
-      }
+      // {
+      //   path: 'test-page',
+      //   component: TestPageComponent,
+      // }
     ]
   }
   // { path: 'demo-components', component: DemoComponentsComponent },

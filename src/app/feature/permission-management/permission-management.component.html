@@ -32,7 +32,7 @@
                     搜尋
                 </button>
 
-                <button nz-button nz-dropdown [nzDropdownMenu]="adminRoleMenu" class="filter-dropdown">
+                <!-- <button nz-button nz-dropdown [nzDropdownMenu]="adminRoleMenu" class="filter-dropdown">
                     <i nz-icon nzType="filter" nzTheme="outline"></i>
                     {{ getAdminRoleFilterLabel(adminFilterRole) }}
                     <span nz-icon nzType="down"></span>
@@ -52,13 +52,13 @@
                             學生
                         </li>
                     </ul>
-                </nz-dropdown-menu>
+                </nz-dropdown-menu> -->
 
-                <button nz-button nzType="default" class="clear-btn" (click)="clearAdminSearch()"
+                <!-- <button nz-button nzType="default" class="clear-btn" (click)="clearAdminSearch()"
                     *ngIf="adminSearchName || adminFilterRole !== '全部角色'">
                     <i nz-icon nzType="close-circle" nzTheme="outline"></i>
                     清除
-                </button>
+                </button> -->
             </div>
         </div>
     </nz-content>
@@ -159,7 +159,6 @@
                         </th>
                         <th nzWidth="150px">角色名稱</th>
                         <th nzWidth="200px">說明</th>
-                        <th>權限列表</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -173,22 +172,11 @@
                             <nz-tag [nzColor]="'blue'">{{ role.role_name }}</nz-tag>
                         </td>
                         <td>{{ role.description }}</td>
-                        <td>
-                            @if (getRolePermissions(role).length > 0) {
-                            @for (permission of getRolePermissions(role); track permission) {
-                            <nz-tag [nzColor]="'green'" style="margin: 2px;">
-                                {{ permission }}
-                            </nz-tag>
-                            }
-                            } @else {
-                            <span style="color: #999;">載入中...</span>
-                            }
-                        </td>
                     </tr>
                     }
                     } @else {
                     <tr>
-                        <td colspan="4" class="text-center">
+                        <td colspan="3" class="text-center">
                             @if (roleListLoading) {
                             載入中...
                             } @else {
@@ -206,7 +194,7 @@
                 <p style="margin: 0; color: #0050b3;">
                     <i nz-icon nzType="info-circle" nzTheme="outline"></i>
                     <strong style="margin-left: 8px;">提示：</strong>
-                    可以為管理人員分配多個角色，權限將自動合併。
+                    可以為管理人員分配多個角色，角色決定可訪問的頁面範圍。
                 </p>
             </div>
         </ng-container>
@@ -317,10 +305,8 @@
                                 <i nz-icon nzType="gift" nzTheme="outline"></i>
                                 發送點數
                             </button>
-                            <button nz-button nzType="default" 
-                                class="action-btn bind-admin-btn"
-                                [disabled]="data.is_admin_bound"
-                                (click)="bindMemberToAdmin(data)">
+                            <button nz-button nzType="default" class="action-btn bind-admin-btn"
+                                [disabled]="data.is_admin_bound" (click)="bindMemberToAdmin(data)">
                                 <i nz-icon nzType="user-add" nzTheme="outline"></i>
                                 綁定管理員
                             </button>
@@ -415,7 +401,8 @@
                     </div>
                 </div>
                 <!-- 確認訊息 -->
-                <div class="form-item info-box" style="display: flex; flex-direction: column; background: #e6f7ff; border-radius: 4px;">
+                <div class="form-item info-box"
+                    style="display: flex; flex-direction: column; background: #e6f7ff; border-radius: 4px;">
                     <span style="margin-left: 8px; color: #0050b3;">
                         <i nz-icon nzType="info-circle" nzTheme="outline" style="color: #1890ff;"></i>
                         綁定後，該會員將成為管理員。
