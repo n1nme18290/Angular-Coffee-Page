@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -99,7 +99,13 @@ export class PersonalInfoComponent implements OnInit {
   memberPointsHistoryList: IApiResponsePointsHistory[] = [];
   memberHistoryLoading = false;
 
-  constructor() {}
+  // ✅ 響應式 Modal 寬度
+  modalWidth: string = '600px';
+
+  constructor() {
+    // 初始化時設定 Modal 寬度
+    this.updateModalWidth();
+  }
 
   ngOnInit() {
     // 先取得會員 ID
@@ -115,6 +121,31 @@ export class PersonalInfoComponent implements OnInit {
     this.loadMemberInfo();
     this.loadMemberPoints();
     this.loadMemberLog();
+  }
+
+  // ✅ 監聽視窗大小變化
+  @HostListener('window:resize', ['$event'])
+  onResize(event?: Event) {
+    this.updateModalWidth();
+  }
+
+  // ✅ 動態更新 Modal 寬度
+  private updateModalWidth() {
+    const width = window.innerWidth;
+    
+    if (width <= 375) {
+      // 極小手機
+      this.modalWidth = '95%';
+    } else if (width <= 767) {
+      // 一般手機
+      this.modalWidth = '90%';
+    } else if (width <= 1024) {
+      // 平板
+      this.modalWidth = '500px';
+    } else {
+      // 桌面
+      this.modalWidth = '600px';
+    }
   }
 
   // ✅ 切換側邊欄
@@ -201,8 +232,14 @@ export class PersonalInfoComponent implements OnInit {
   }
 
   addpointhandleOk(receiverId: string, points: number) {
-    if (!receiverId || !points || points <= 0) {
-      this.message.warning('請填寫完整的轉贈資訊');
+    // ✅ 驗證輸入
+    if (!receiverId || receiverId.trim() === '') {
+      this.message.warning('請輸入轉贈對象學號');
+      return;
+    }
+
+    if (!points || points <= 0) {
+      this.message.warning('請輸入有效的點數數量');
       return;
     }
 
@@ -211,12 +248,22 @@ export class PersonalInfoComponent implements OnInit {
       return;
     }
 
+    // ✅ 防止轉贈給自己
+    if (receiverId.trim() === this.memberId) {
+      this.message.warning('無法轉贈點數給自己');
+      return;
+    }
+
     // ✅ 呼叫轉贈點數 API
-    this.pointsService.addMemberpoints(this.memberId, receiverId, points).subscribe({
+    this.pointsService.addMemberpoints(this.memberId, receiverId.trim(), points).subscribe({
       next: (res) => {
         if (res.isSuccess) {
           this.message.success('點數轉贈成功！');
           this.addpointisVisible = false;
+          
+          // 重置表單
+          this.addpointselectedValue = '';
+          this.pointvalue = 0;
           
           // 重新載入點數和紀錄
           this.loadMemberPoints();
@@ -227,13 +274,24 @@ export class PersonalInfoComponent implements OnInit {
       },
       error: (err) => {
         console.error('❌ 點數轉贈錯誤:', err);
-        this.message.error('點數轉贈時發生錯誤');
+        
+        // ✅ 更詳細的錯誤處理
+        if (err.status === 404) {
+          this.message.error('找不到該學號的使用者');
+        } else if (err.status === 400) {
+          this.message.error('轉贈資料有誤，請檢查後重試');
+        } else {
+          this.message.error('點數轉贈時發生錯誤');
+        }
       }
     });
   }
 
   addpointhandleCancel() {
     this.addpointisVisible = false;
+    // ✅ 重置表單
+    this.addpointselectedValue = '';
+    this.pointvalue = 0;
   }
 
   LogOut() {

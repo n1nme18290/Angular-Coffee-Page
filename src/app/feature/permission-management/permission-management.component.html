@@ -15,6 +15,54 @@
         </div>
     </nz-content>
 
+    <!-- 管理人員搜尋和篩選區域 -->
+    <nz-content>
+        <div class="search-filter-bar">
+            <div class="search-section">
+                <nz-input-group [nzSuffix]="adminSearchIcon" class="search-input">
+                    <input type="text" nz-input placeholder="輸入管理人員名稱搜尋" [(ngModel)]="adminSearchName"
+                        (keyup.enter)="searchAdmin()" />
+                </nz-input-group>
+                <ng-template #adminSearchIcon>
+                    <span nz-icon nzType="search" class="search-icon" (click)="searchAdmin()"></span>
+                </ng-template>
+
+                <button nz-button nzType="primary" class="search-btn" (click)="searchAdmin()">
+                    <i nz-icon nzType="search" nzTheme="outline"></i>
+                    搜尋
+                </button>
+
+                <button nz-button nz-dropdown [nzDropdownMenu]="adminRoleMenu" class="filter-dropdown">
+                    <i nz-icon nzType="filter" nzTheme="outline"></i>
+                    {{ getAdminRoleFilterLabel(adminFilterRole) }}
+                    <span nz-icon nzType="down"></span>
+                </button>
+                <nz-dropdown-menu #adminRoleMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                        <li nz-menu-item (click)="onAdminRoleFilterChange('全部角色')">
+                            <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                            全部角色
+                        </li>
+                        <li nz-menu-item (click)="onAdminRoleFilterChange('管理員')">
+                            <i nz-icon nzType="crown" nzTheme="outline"></i>
+                            管理員
+                        </li>
+                        <li nz-menu-item (click)="onAdminRoleFilterChange('學生')">
+                            <i nz-icon nzType="user" nzTheme="outline"></i>
+                            學生
+                        </li>
+                    </ul>
+                </nz-dropdown-menu>
+
+                <button nz-button nzType="default" class="clear-btn" (click)="clearAdminSearch()"
+                    *ngIf="adminSearchName || adminFilterRole !== '全部角色'">
+                    <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                    清除
+                </button>
+            </div>
+        </div>
+    </nz-content>
+
     <div class="admin-information-container">
         <div class="send-request">
             <!-- 管理人員列表 Table -->
@@ -185,6 +233,54 @@
         </div>
     </nz-content>
 
+    <!-- 會員搜尋和篩選區域 -->
+    <nz-content>
+        <div class="search-filter-bar">
+            <div class="search-section">
+                <nz-input-group [nzSuffix]="memberSearchIcon" class="search-input">
+                    <input type="text" nz-input placeholder="輸入會員ID搜尋" [(ngModel)]="memberSearchId"
+                        (keyup.enter)="searchMember()" />
+                </nz-input-group>
+                <ng-template #memberSearchIcon>
+                    <span nz-icon nzType="search" class="search-icon" (click)="searchMember()"></span>
+                </ng-template>
+
+                <button nz-button nzType="primary" class="search-btn" (click)="searchMember()">
+                    <i nz-icon nzType="search" nzTheme="outline"></i>
+                    搜尋
+                </button>
+
+                <button nz-button nz-dropdown [nzDropdownMenu]="memberCardMenu" class="filter-dropdown">
+                    <i nz-icon nzType="filter" nzTheme="outline"></i>
+                    {{ getMemberCardFilterLabel(memberFilterCard) }}
+                    <span nz-icon nzType="down"></span>
+                </button>
+                <nz-dropdown-menu #memberCardMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                        <li nz-menu-item (click)="onMemberCardFilterChange('全部類別')">
+                            <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                            全部類別
+                        </li>
+                        <li nz-menu-item (click)="onMemberCardFilterChange('學生卡')">
+                            <i nz-icon nzType="idcard" nzTheme="outline"></i>
+                            學生卡
+                        </li>
+                        <li nz-menu-item (click)="onMemberCardFilterChange('教職員卡')">
+                            <i nz-icon nzType="team" nzTheme="outline"></i>
+                            教職員卡
+                        </li>
+                    </ul>
+                </nz-dropdown-menu>
+
+                <button nz-button nzType="default" class="clear-btn" (click)="clearMemberSearch()"
+                    *ngIf="memberSearchId || memberFilterCard !== '全部類別'">
+                    <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                    清除
+                </button>
+            </div>
+        </div>
+    </nz-content>
+
     <div class="memberlist-information-container">
         <div class="send-request">
             <nz-table #memberTable [nzData]="memberlist || []" [nzBordered]="true" [nzLoading]="loading"
@@ -208,7 +304,7 @@
                     <tr>
                         <td>{{ data.student_id }}</td>
                         <td>{{ data.name }}</td>
-                        <td>{{ data.title }}</td>
+                        <td>{{ cardTypeMap[data.title] || data.title }}</td>
                         <td>{{ data.status }}</td>
                         <td>
                             <nz-tag [nzColor]="data.is_admin_bound === true ? 'purple' : 'blue'">
