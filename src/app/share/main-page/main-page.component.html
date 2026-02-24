@@ -1,43 +1,43 @@
 <nz-layout>
   <!-- 遮罩層：側欄展開時顯示，點擊關閉側欄 -->
   @if (!sidebarService.isCollapsed) {
-    <div class="sidebar-overlay" (click)="toggleCollapsed()"></div>
+  <div class="sidebar-overlay" (click)="toggleCollapsed()"></div>
   }
 
   <nz-sider nzCollapsible [(nzCollapsed)]="sidebarService.isCollapsed" [nzTrigger]="null" [nzWidth]="300">
     <div class="logo"></div>
     <div class="menu-container">
       <ul nz-menu nzTheme="dark" nzMode="inline" class="main-menu">
+        <!-- 個人資訊選單（所有人可見） -->
         @for (item of menuItems; track item.path) {
-          <li nz-menu-item (click)="item.method && item.method()">
-            <span nz-icon [nzType]="item.icon"></span>
-            <span class="menu-item-large">{{ item.label }}</span>
-          </li>
+        <li nz-menu-item (click)="item.method && item.method()">
+          <span nz-icon [nzType]="item.icon"></span>
+          <span class="menu-item-large">{{ item.label }}</span>
+        </li>
         }
-        
-<<<<<<< HEAD
-=======
+
         <!-- 系統管理子選單（根據角色顯示） -->
->>>>>>> d0f7a31ca05cc03037ff5da05382bcdcd666fb49
         @if (isSystemManagementVisible()) {
-          <li nz-submenu nzTitle="系統管理" nzIcon="setting" class="menu-item-large">
-            <ul>
-              @for (item of systemManagementItems; track item.path) {
-                <li nz-menu-item class="menu-item-large" (click)="item.method && item.method()">
-                  <span nz-icon [nzType]="item.icon" style="margin-right: 8px;"></span>
-                  {{ item.label }}
-                </li>
-              }
-              @if (systemManagementItems.length === 0) {
-                <li nz-menu-item class="menu-item-large" [nzDisabled]="true">
-                  <span style="color: #8c8c8c;">暫無可用功能</span>
-                </li>
-              }
-            </ul>
-          </li>
+        <li nz-submenu nzTitle="系統管理" nzIcon="setting" class="menu-item-large">
+          <ul>
+            @for (item of systemManagementItems; track item.path) {
+            <li nz-menu-item class="menu-item-large" (click)="item.method && item.method()">
+              <span nz-icon [nzType]="item.icon" style="margin-right: 8px;"></span>
+              {{ item.label }}
+            </li>
+            }
+
+            <!-- 如果沒有任何子項目可見，顯示提示 -->
+            @if (systemManagementItems.length === 0) {
+            <li nz-menu-item class="menu-item-large" [nzDisabled]="true">
+              <span style="color: #8c8c8c;">暫無可用功能</span>
+            </li>
+            }
+          </ul>
+        </li>
         }
       </ul>
-      
+
       <ul nz-menu nzTheme="dark" nzMode="inline" class="logout-menu">
         <li nz-menu-item>
           <div style="display: flex;">
