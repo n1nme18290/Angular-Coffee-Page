@@ -14,6 +14,7 @@
             </h1>
         </div>
         <button nz-button nzType="primary" class="btn-styles6" (click)="LogOut()">
+            <i nz-icon nzType="logout" nzTheme="outline"></i>
             <h3 nz-typography>登出</h3>
         </button>
     </nz-header>
@@ -157,8 +158,8 @@
     </nz-content>
 
     <!-- 轉贈點數 Modal -->
-    <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="transferFooter" 
-        [nzWidth]="modalWidth" nzWrapClassName="round-modal" nzCentered [nzClosable]="false">
+    <nz-modal [(nzVisible)]="addpointisVisible" nzTitle="轉贈點數" [nzFooter]="transferFooter" [nzWidth]="modalWidth"
+        nzWrapClassName="round-modal" nzCentered [nzClosable]="false">
         <ng-container *nzModalContent>
             <div class="modal-form">
                 <div class="form-item">

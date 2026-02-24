@@ -222,3 +222,27 @@ nz-sider.ant-layout-sider-collapsed {
         }
     }
 }
+
+/* 遮罩層：點擊空白處關閉側欄 */
+.sidebar-overlay {
+  display: none; /* 桌面預設隱藏 */
+}
+
+@media (max-width: 768px) {
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.073);
+    z-index: 99; 
+    cursor: pointer;
+  }
+
+  /* 確保側欄在遮罩上面 */
+  nz-sider {
+    z-index: 100;
+  }
+}

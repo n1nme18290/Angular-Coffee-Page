@@ -48,7 +48,7 @@ export class MainPageComponent implements OnInit {
 
   ngOnInit() {
     this.sidebarService.setShowSidebar(true);
-    
+
     // 訂閱權限變化，自動更新菜單
     this.permissionService.permissions$.subscribe(() => {
       this.updateVisibleMenuItems();
@@ -129,6 +129,10 @@ export class MainPageComponent implements OnInit {
   GoBackendManagement() { this.router.navigate(['/backend-management']); }
   GoHistoricalRecord() { this.router.navigate(['/historical-record']); }
   GoPermissionManagement() { this.router.navigate(['/permission-management']); }
+
+  toggleCollapsed(): void { //遮罩 點擊空白處即可關側欄
+    this.sidebarService.toggleCollapsed();
+  }
 }
 
 interface MenuItem {
