@@ -83,29 +83,18 @@ export class MainPageComponent implements OnInit {
       method: () => this.navigateTo(item.path)
     }));
 
-    this.menuItems = allMenuItems.filter(item => this.checkPermission(item.permissions, item.roles));
-    this.systemManagementItems = allSystemItems.filter(item => this.checkPermission(item.permissions, item.roles));
+    this.menuItems = allMenuItems.filter(item => this.checkPermission(item.roles));
+    this.systemManagementItems = allSystemItems.filter(item => this.checkPermission(item.roles));
   }
 
-  private checkPermission(permissions: string[], roles?: string[]): boolean {
+  private checkPermission(roles: string[]): boolean {
     // 無任何要求，所有人可見
-    if ((!permissions || permissions.length === 0) && (!roles || roles.length === 0)) {
+    if (!roles || roles.length === 0) {
       return true;
     }
 
-    // 檢查角色
-    if (roles && roles.length > 0) {
-      if (this.permissionService.hasAnyRole(roles)) {
-        return true;
-      }
-    }
-
-    // 檢查權限
-    if (permissions && permissions.length > 0) {
-      return this.permissionService.hasAnyPermission(permissions);
-    }
-
-    return false;
+    // 只檢查角色
+    return this.permissionService.hasAnyRole(roles);
   }
 
   navigateTo(path: string): void {
@@ -120,7 +109,7 @@ export class MainPageComponent implements OnInit {
   GoLogIn() {
     this.authService.logout();
     this.permissionService.clearPermissions();
-    this.router.navigate(['/log-in']);
+    this.router.navigate(['/']);
   }
   GoPersonalInfo() { this.router.navigate(['/personal-info']); }
   GoPointInformation() { this.router.navigate(['/point-information']); }
@@ -139,7 +128,6 @@ interface MenuItem {
   path: string;
   label: string;
   icon: string;
-  permissions: string[];
-  roles?: string[];
+  roles: string[];  // 只保留角色檢查
   method?: () => void;
 }

@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { authGuard } from '../feature/auth/auth-guard';
 import { permissionGuard } from '../feature/auth/permission-guard';
 
+import { SsoEntryComponent } from '../feature/sso-entry/sso-entry.component';
+import { SsoErrorComponent } from '../feature/sso-error/sso-error.component';
 import { LogInComponent } from '../feature/log-in/log-in.component';
 import { RegisterComponent } from '../feature/register/register.component';
 
@@ -20,8 +22,17 @@ import { MainPageComponent } from '../share/main-page/main-page.component';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/log-in', pathMatch: 'full' },
-  { path: 'log-in', component: LogInComponent },
+  // SSO 入口 - 預設首頁
+  { path: '', component: SsoEntryComponent },
+  
+  // SSO 錯誤頁面
+  { path: 'sso-error', component: SsoErrorComponent },
+  
+  // 後門登入
+  { 
+    path: 'backdoor/admin-login', 
+    component: LogInComponent,
+  },
   {
     path: '',
     component: MainPageComponent,
@@ -30,16 +41,17 @@ export const routes: Routes = [
       { 
         path: 'personal-info',
         component: PersonalInfoComponent,
-        canActivate: [permissionGuard],
+        // personal-info 不需要權限限制，所有登入用戶都可訪問
       },
       { 
         path: 'point-information',
         component: PointInformationComponent,
-        // canActivate: [permissionGuard],
+        // point-information 不需要權限限制，所有登入用戶都可訪問
       },
-      { path: 'equipment',
+      { 
+        path: 'equipment',
         component: EquipmentComponent,
-        // canActivate: [permissionGuard],
+        canActivate: [permissionGuard],
         children: [
           { path: 'equipment/equipment-information', component: EquipmentInformationComponent },
         ]
@@ -47,22 +59,22 @@ export const routes: Routes = [
       {
         path: 'backend-management',
         component: BackendManagementComponent,
-        // canActivate: [permissionGuard],
+        canActivate: [permissionGuard],
       },
       {
         path: 'historical-record',
         component: HistoricalRecordComponent,
-        // canActivate: [permissionGuard],
+        canActivate: [permissionGuard],
       },
       { 
         path: 'permission-management',
         component: PermissionManagementComponent,
-        // canActivate: [permissionGuard],
+        canActivate: [permissionGuard],
       },
-      {
-        path: 'test-page',
-        component: TestPageComponent,
-      }
+      // {
+      //   path: 'test-page',
+      //   component: TestPageComponent,
+      // }
     ]
   }
   // { path: 'demo-components', component: DemoComponentsComponent },

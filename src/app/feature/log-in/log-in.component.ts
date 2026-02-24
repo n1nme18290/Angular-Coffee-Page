@@ -27,7 +27,10 @@ export class LogInComponent {
 
   // 登入
   onLogin(email: string, password: string): void {
-    this.authService.loginAndSaveToken(email, password).subscribe({
+    // 檢查是否為後門登入
+    const isBackdoor = window.location.pathname.includes('backdoor-login');
+    
+    this.authService.loginAndSaveToken(email, password, isBackdoor).subscribe({
       next: (response) => {
         //登入成功，Token 已在 AuthService 儲存
         if (response.isSuccess) {
