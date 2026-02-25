@@ -16,7 +16,7 @@
 
 
 <div class="point-information-container">
-    <div class="send-request">
+    <div class="send-request" *ngIf="canEdit">
         <button nz-button nzType="primary" [disabled]="setOfCheckedId.size === 0" [nzLoading]="loading"
             (click)="sendRequest()">
             Send Request
@@ -29,7 +29,7 @@
         (nzPageSizeChange)="onPageSizeChange($event)" (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
         <thead>
             <tr>
-                <th [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)">
+                <th *ngIf="canEdit" [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)">
                     Select all</th>
                 <th>ID</th>
                 <th>會員ID</th>
@@ -41,7 +41,7 @@
             @if (pointsList && pointsList.length > 0) {
             @for (data of pointsList; track data.id) {
             <tr>
-                <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
+                <td *ngIf="canEdit" [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
                 <td>{{ data.id }}</td>
                 <td>{{ data.member_id }}</td>
                 <td>{{ data.balance }}</td>
@@ -50,7 +50,7 @@
             }
             } @else {
             <tr>
-                <td colspan="5" class="text-center">
+                <td [attr.colspan]="canEdit ? 5 : 4" class="text-center">
                     @if (loading) {
                     載入中...
                     } @else {

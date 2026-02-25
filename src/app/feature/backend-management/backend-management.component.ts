@@ -9,7 +9,8 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import * as echarts from 'echarts';
 import { Observable } from 'rxjs'; 
 import { SidebarService } from '../../share/service/sidebar.service';
-import { LogService } from '../../share/service/service'; 
+import { LogService } from '../../share/service/service';
+import { TokenService } from '../../share/service/token.service'; 
 
 // ======================= API 回傳格式介面 =======================
 interface IApiResponse<T> {
@@ -53,8 +54,16 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     @Inject(PLATFORM_ID) private platformId: Object, 
     public sidebarService: SidebarService,
     private logService: LogService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private tokenService: TokenService
   ) { }
+
+  /**
+   * 獲取當前用戶名稱
+   */
+  get currentUsername(): string {
+    return this.tokenService.getUsername();
+  }
 
   ngOnInit(): void {
   }

@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, of, switchMap, finalize, forkJoin, map, ca
 import { SecurityService } from './service';
 import { TokenService } from './token.service';
 import { IApiResponseSecurityRole } from './model';
-import { ROLE_ROUTE_ACCESS } from '../../core/config/role-permissions.config';
+import { ROLE_ROUTE_ACCESS, OPERATION_PERMISSIONS } from '../../core/config/role-permissions.config';
 
 @Injectable({
     providedIn: 'root'
@@ -203,6 +203,32 @@ export class PermissionService {
 
     getRoles(): string[] {
         return this.rolesSubject.value;
+    }
+    
+    /**
+     * 檢查當前用戶是否有編輯/操作權限
+     * 只有 SuperAdmin 和 Admin 可以進行編輯、刪除、新增等操作
+     */
+    canEdit(): boolean {
+        const userRoles = this.rolesSubject.value;
+        return OPERATION_PERMISSIONS.canEdit.some(role => userRoles.includes(role));
+    }
+    
+    /**
+     * 檢查當前用戶是否可以標記設備已清潔
+     * SuperAdmin、Admin 和維護人員可以標記設備清潔狀態
+     */
+    canMarkCleaned(): boolean {
+        const userRoles = this.rolesSubject.value;
+        return OPERATION_PERMISSIONS.canMarkCleaned.some(role => userRoles.includes(role));
+    }
+    
+    /**
+     * 檢查當前用戶是否為只讀角色
+     */
+    isReadOnly(): boolean {
+        const userRoles = this.rolesSubject.value;
+        return OPERATION_PERMISSIONS.readOnly.some(role => userRoles.includes(role));
     }
     
     /**

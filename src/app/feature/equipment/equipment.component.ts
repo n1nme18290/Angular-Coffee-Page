@@ -26,6 +26,7 @@ import { DeviceService } from '../../share/service/service';
 import { IApiResponseDevice } from '../../share/service/model';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { TokenService } from '../../share/service/token.service';
+import { PermissionService } from '../../share/service/permission.service';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -52,6 +53,7 @@ export class EquipmentComponent {
   sidebarService = inject(SidebarService);
   deviceService = inject(DeviceService);
   tokenService = inject(TokenService);
+  permissionService = inject(PermissionService);
 
   devicesList: IApiResponseDevice[] = [];
   checked = false;
@@ -84,6 +86,30 @@ export class EquipmentComponent {
   // 搜尋和篩選相關
   searchName: string = '';
   filterStatus: string = '全部狀態';
+
+  /**
+   * 獲取當前用戶名稱
+   */
+  get currentUsername(): string {
+    return this.tokenService.getUsername();
+  }
+
+  /**
+   * 檢查當前用戶是否有編輯權限
+   * 只有 SuperAdmin 和 Admin 可以進行新增、編輯、刪除等操作
+   * 維護人員和僅可檢視只能查看
+   */
+  get canEdit(): boolean {
+    return this.permissionService.canEdit();
+  }
+
+  /**
+   * 檢查當前用戶是否可以標記設備已清潔
+   * SuperAdmin、Admin 和維護人員可以標記清潔狀態
+   */
+  get canMarkCleaned(): boolean {
+    return this.permissionService.canMarkCleaned();
+  }
 
   ngOnInit() {
     this.getPageDevices();

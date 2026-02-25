@@ -8,6 +8,7 @@ export class TokenService {
     private baseTokenKey = 'coffee_auth_token';
     private baseMemberIdKey = 'coffee_member_id';
     private baseAdminIdKey = 'coffee_admin_id';
+    private baseUsernameKey = 'coffee_username';
 
     private tokenSubject = new BehaviorSubject<string | null>(this.getToken());
     private memberIdSubject = new BehaviorSubject<string | null>(this.getMemberId());
@@ -92,6 +93,19 @@ export class TokenService {
         const adminIdKey = this.getAdminIdKey();
         localStorage.removeItem(adminIdKey);
         console.log('✅ Admin ID 已清除:', adminIdKey);
+    }
+    
+    // Username 相關方法
+    setUsername(username: string): void {
+        localStorage.setItem(this.baseUsernameKey, username);
+    }
+
+    getUsername(): string {
+        return localStorage.getItem(this.baseUsernameKey) || '使用者';
+    }
+
+    removeUsername(): void {
+        localStorage.removeItem(this.baseUsernameKey);
     }
     
     // Observable 以便訂閱 token 和 member ID 的變化

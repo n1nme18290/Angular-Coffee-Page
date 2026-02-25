@@ -23,16 +23,16 @@ import { MainPageComponent } from '../share/main-page/main-page.component';
 
 
 export const routes: Routes = [
-  // SSO 入口 - 預設首頁
+  // SSO 入口 - 預設首頁（公開路由）
   { path: '', component: SsoEntryComponent },
   
-  // SSO 錯誤頁面
+  // SSO 錯誤頁面（公開路由）
   { path: 'sso-error', component: SsoErrorComponent },
   
-  // 登出成功頁面
+  // 登出成功頁面（公開路由）
   { path: 'logout-success', component: LogoutSuccessComponent },
   
-  // 後門登入
+  // 後門登入（公開路由）
   { 
     path: 'backdoor/admin-login', 
     component: LogInComponent,
@@ -45,17 +45,17 @@ export const routes: Routes = [
       { 
         path: 'personal-info',
         component: PersonalInfoComponent,
-        // personal-info 不需要權限限制，所有登入用戶都可訪問
+        // personal-info 為公開路由，所有登入用戶都可訪問（頁面 3）
       },
       { 
         path: 'point-information',
         component: PointInformationComponent,
-        // point-information 不需要權限限制，所有登入用戶都可訪問
+        canActivate: [permissionGuard], // 需要權限：Admin、僅可檢視（頁面 4）
       },
       { 
         path: 'equipment',
         component: EquipmentComponent,
-        canActivate: [permissionGuard],
+        canActivate: [permissionGuard], // 需要權限：Admin、維護人員（頁面 6）
         children: [
           { path: 'equipment/equipment-information', component: EquipmentInformationComponent },
         ]
@@ -63,17 +63,17 @@ export const routes: Routes = [
       {
         path: 'backend-management',
         component: BackendManagementComponent,
-        canActivate: [permissionGuard],
+        canActivate: [permissionGuard], // 需要權限：Admin、維護人員、僅可檢視（頁面 8）
       },
       {
         path: 'historical-record',
         component: HistoricalRecordComponent,
-        canActivate: [permissionGuard],
+        canActivate: [permissionGuard], // 需要權限：Admin、維護人員（tab2）、僅可檢視（頁面 7）
       },
       { 
         path: 'permission-management',
         component: PermissionManagementComponent,
-        canActivate: [permissionGuard],
+        canActivate: [permissionGuard], // 需要權限：Admin（頁面 5）
       },
       // {
       //   path: 'test-page',

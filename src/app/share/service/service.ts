@@ -449,6 +449,7 @@ export class AuthService extends BaseService {
     this.tokenService.removeToken();
     this.tokenService.removeMemberId();
     this.tokenService.removeAdminId();
+    this.tokenService.removeUsername();
   }
 }
 // Member 相關API

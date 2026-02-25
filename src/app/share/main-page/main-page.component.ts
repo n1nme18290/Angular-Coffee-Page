@@ -157,7 +157,6 @@ export class MainPageComponent implements OnInit {
     }, 500);
   }
   GoPersonalInfo() { this.router.navigate(['/personal-info']); }
-  GoPointInformation() { this.router.navigate(['/point-information']); }
   GoEquipment() { this.router.navigate(['/equipment']); }
   GoEquipmentInformation() { this.router.navigate(['/equipment-information']); }
   GoBackendManagement() { this.router.navigate(['/backend-management']); }

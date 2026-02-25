@@ -49,7 +49,12 @@ export class PermissionManagementComponent {
   pointService = inject(PointService);
   tokenService = inject(TokenService);
   message = inject(NzMessageService);
-
+  /**
+   * 獲取當前用戶名稱
+   */
+  get currentUsername(): string {
+    return this.tokenService.getUsername();
+  }
   adminList: IApiResponseAdmin[] = [];
   memberlist: IApiResponseMember[] = [];
 

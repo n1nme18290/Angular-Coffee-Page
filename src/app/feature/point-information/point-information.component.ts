@@ -23,6 +23,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 
 import { SidebarService } from '../../share/service/sidebar.service';
+import { PermissionService } from '../../share/service/permission.service';
 import { Observable } from 'rxjs';
 import { IApiResponsePoints } from '../../share/service/model';
 @Component({
@@ -40,6 +41,7 @@ export class PointInformationComponent {
   router = inject(Router);
   sidebarService = inject(SidebarService);
   pointService = inject(PointService);
+  permissionService = inject(PermissionService);
 
   pointsList: IApiResponsePoints[] = [];
   checked = false;
@@ -51,6 +53,14 @@ export class PointInformationComponent {
   currentPage = 1;
   pageSize = 5;
   total = 0;
+
+  /**
+   * 檢查當前用戶是否有編輯權限
+   * 僅可檢視角色不能操作 Send Request 按鈕
+   */
+  get canEdit(): boolean {
+    return this.permissionService.canEdit();
+  }
 
   ngOnInit() {
     // Initialization logic can go here

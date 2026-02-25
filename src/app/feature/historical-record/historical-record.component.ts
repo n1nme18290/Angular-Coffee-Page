@@ -29,6 +29,8 @@ import { LogService } from '../../share/service/service';
 import { IApiResponseGetPageDeviceLog, IApiResponsePoints, IApiResponsePointsHistory } from '../../share/service/model';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { PermissionService } from '../../share/service/permission.service';
+import { TokenService } from '../../share/service/token.service';
 
 
 @Component({
@@ -51,12 +53,48 @@ export class HistoricalRecordComponent {
   router = inject(Router);
   sidebarService = inject(SidebarService); // 側邊欄控制
   pointService = inject(PointService); // 點數服務
+  permissionService = inject(PermissionService); // 權限服務
+  tokenService = inject(TokenService); // Token服務
 
   // =================================== Tab切換 ===================================
   selectedIndex = 0;
   Title01 = '使用者使用紀錄';
   Title02 = '設備使用紀錄';
   Title03 = '會員點數資訊';
+
+  /**
+   * 檢查當前用戶是否可以看到特定的 Tab
+   * - SuperAdmin、Admin、僅可檢視: 可以看到所有 Tab (1, 2, 3)
+   * - 維護人員: 只能看到 Tab 2 (設備使用紀錄)
+   */
+  canViewTab(tabIndex: number): boolean {
+    const userRoles = this.permissionService.getRoles();
+    
+    // SuperAdmin 和 Admin 可以看到所有 Tab
+    if (userRoles.includes('SuperAdmin') || userRoles.includes('Admin')) {
+      return true;
+    }
+    
+    // 僅可檢視可以看到所有 Tab
+    if (userRoles.includes('僅可檢視')) {
+      return true;
+    }
+    
+    // 維護人員只能看到 Tab 2 (設備使用紀錄)
+    if (userRoles.includes('維護人員')) {
+      return tabIndex === 1; // Tab index 從 0 開始，所以 Tab 2 是 index 1
+    }
+    
+    // 其他角色默認可以看到所有 Tab
+    return true;
+  }
+
+  /**
+   * 獲取當前用戶名稱
+   */
+  get currentUsername(): string {
+    return this.tokenService.getUsername();
+  }
 
   // 取得目前標題
   getCurrentTitle(): string {
@@ -69,10 +107,29 @@ export class HistoricalRecordComponent {
   }
 
   ngOnInit() {
+    // 根據用戶角色設置初始 Tab
+    this.setInitialTab();
+    
     // 使用各自的 page/index 初始值
     this.getPagePoints();
     this.getPagePointsHistory();
     this.getPageDeviceLog();
+  }
+
+  /**
+   * 根據用戶角色設置初始顯示的 Tab
+   * - 維護人員：自動顯示 Tab 2 (設備使用紀錄)
+   * - 其他角色：顯示 Tab 1 (使用者使用紀錄)
+   */
+  private setInitialTab(): void {
+    const userRoles = this.permissionService.getRoles();
+    
+    // 維護人員只能看到 Tab 2，自動跳轉
+    if (userRoles.includes('維護人員')) {
+      this.selectedIndex = 1; // Tab 2 的索引為 1
+    } else {
+      this.selectedIndex = 0; // 默認顯示 Tab 1
+    }
   }
 
   // 控制側邊欄折疊

@@ -162,6 +162,8 @@ export class PersonalInfoComponent implements OnInit {
         if (res.isSuccess && res.data) {
           this.username = res.data.name || '';
           this.email = res.data.email || '';
+          // 保存用户名称到 TokenService，供其他页面使用
+          this.tokenService.setUsername(this.username);
           console.log('✅ 會員資訊載入成功');
         } else {
           console.error('❌ 會員資訊載入失敗:', res.message);
