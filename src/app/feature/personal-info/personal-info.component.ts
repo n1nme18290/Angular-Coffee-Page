@@ -303,8 +303,8 @@ export class PersonalInfoComponent implements OnInit {
     
     // 顯示登出成功彈窗（響應式寬度）
     this.modal.success({
-      nzTitle: '登出成功',
-      nzContent: '您已成功登出系統，即將關閉此分頁',
+      nzTitle: '即將登出',
+      nzContent: '您即將登出此系統，並關閉此分頁',
       nzOkText: '確定',
       nzWidth: this.getModalWidth(),
       nzCentered: true,
