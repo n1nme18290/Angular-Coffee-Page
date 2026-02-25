@@ -27,6 +27,7 @@ import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { MemberService, PointService, LogService, AuthService } from '../../share/service/service';
 import { IApiResponseMember, IApiResponsePointsHistory } from '../../share/service/model';
 import { SidebarService } from '../../share/service/sidebar.service';
@@ -78,6 +79,7 @@ export class PersonalInfoComponent implements OnInit {
   private permissionService = inject(PermissionService);
   private router = inject(Router);
   private message = inject(NzMessageService);
+  private modal = inject(NzModalService);
 
   // ✅ Tabs 控制
   selectedTabIndex = 0;
@@ -295,8 +297,51 @@ export class PersonalInfoComponent implements OnInit {
   }
 
   LogOut() {
+    // 先清除權限和 Token
     this.authService.logout();
     this.permissionService.clearPermissions();
-    this.router.navigate(['/']);
+    
+    // 顯示登出成功彈窗（響應式寬度）
+    this.modal.success({
+      nzTitle: '登出成功',
+      nzContent: '您已成功登出系統，即將關閉此分頁',
+      nzOkText: '確定',
+      nzWidth: this.getModalWidth(),
+      nzCentered: true,
+      nzOnOk: () => {
+        // 嘗試關閉分頁
+        this.closeTabOrRedirect();
+      }
+    });
+  }
+  
+  /**
+   * 取得 Modal 響應式寬度
+   */
+  private getModalWidth(): string {
+    const width = window.innerWidth;
+    if (width <= 576) {
+      return '90%';  // 手機
+    } else if (width <= 768) {
+      return '80%';  // 平板直向
+    } else if (width <= 992) {
+      return '500px'; // 平板橫向
+    } else {
+      return '520px'; // 桌面
+    }
+  }
+  
+  /**
+   * 嘗試關閉分頁，如果無法關閉則導向登出成功頁面
+   */
+  private closeTabOrRedirect(): void {
+    // 嘗試關閉分頁（只有在特定情況下才能成功）
+    window.close();
+    
+    // 如果 0.5 秒後分頁還沒關閉，則導向到登出成功頁面
+    setTimeout(() => {
+      // 如果分頁還在（沒被關閉），則導向到登出成功頁
+      this.router.navigate(['/logout-success']);
+    }, 500);
   }
 }

@@ -16,6 +16,7 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { Router } from '@angular/router';
 import { SidebarService } from '../service/sidebar.service';
 import { PermissionService } from '../service/permission.service';
@@ -27,7 +28,7 @@ import { MAIN_MENU_ITEMS, SYSTEM_MANAGEMENT_ITEMS, MenuItemConfig } from '../../
   standalone: true,
   imports: [RouterOutlet, NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule,
     NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule, CommonModule,
-    NzRadioModule, NzMenuModule, ɵEmptyOutletComponent],
+    NzRadioModule, NzMenuModule, NzModalModule, ɵEmptyOutletComponent],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.scss'
 })
@@ -35,6 +36,7 @@ export class MainPageComponent implements OnInit {
   private permissionService = inject(PermissionService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private modal = inject(NzModalService);
   public sidebarService = inject(SidebarService);
 
   menuItems: MenuItem[] = [];
@@ -107,9 +109,52 @@ export class MainPageComponent implements OnInit {
 
   // 導航方法
   GoLogIn() {
+    // 先清除權限和 Token
     this.authService.logout();
     this.permissionService.clearPermissions();
-    this.router.navigate(['/']);
+    
+    // 顯示登出成功彈窗（響應式寬度）
+    this.modal.success({
+      nzTitle: '登出成功',
+      nzContent: '您已成功登出系統，即將關閉此分頁',
+      nzOkText: '確定',
+      nzWidth: this.getModalWidth(),
+      nzCentered: true,
+      nzOnOk: () => {
+        // 嘗試關閉分頁
+        this.closeTabOrRedirect();
+      }
+    });
+  }
+  
+  /**
+   * 取得 Modal 響應式寬度
+   */
+  private getModalWidth(): string {
+    const width = window.innerWidth;
+    if (width <= 576) {
+      return '90%';  // 手機
+    } else if (width <= 768) {
+      return '80%';  // 平板直向
+    } else if (width <= 992) {
+      return '500px'; // 平板橫向
+    } else {
+      return '520px'; // 桌面
+    }
+  }
+  
+  /**
+   * 嘗試關閉分頁，如果無法關閉則導向登出成功頁面
+   */
+  private closeTabOrRedirect(): void {
+    // 嘗試關閉分頁（只有在特定情況下才能成功）
+    window.close();
+    
+    // 如果 0.5 秒後分頁還沒關閉，則導向到登出成功頁面
+    setTimeout(() => {
+      // 如果分頁還在（沒被關閉），則導向到登出成功頁
+      this.router.navigate(['/logout-success']);
+    }, 500);
   }
   GoPersonalInfo() { this.router.navigate(['/personal-info']); }
   GoPointInformation() { this.router.navigate(['/point-information']); }

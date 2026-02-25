@@ -4,6 +4,7 @@ import { permissionGuard } from '../feature/auth/permission-guard';
 
 import { SsoEntryComponent } from '../feature/sso-entry/sso-entry.component';
 import { SsoErrorComponent } from '../feature/sso-error/sso-error.component';
+import { LogoutSuccessComponent } from '../feature/logout-success/logout-success.component';
 import { LogInComponent } from '../feature/log-in/log-in.component';
 import { RegisterComponent } from '../feature/register/register.component';
 
@@ -27,6 +28,9 @@ export const routes: Routes = [
   
   // SSO 錯誤頁面
   { path: 'sso-error', component: SsoErrorComponent },
+  
+  // 登出成功頁面
+  { path: 'logout-success', component: LogoutSuccessComponent },
   
   // 後門登入
   { 
