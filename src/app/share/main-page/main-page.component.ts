@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 import { SidebarService } from '../service/sidebar.service';
 import { PermissionService } from '../service/permission.service';
 import { AuthService } from '../service/service';
+import { HostListener } from '@angular/core';
 import { MAIN_MENU_ITEMS, SYSTEM_MANAGEMENT_ITEMS, MenuItemConfig } from '../../core/config/role-permissions.config';
 
 @Component({
@@ -49,6 +50,7 @@ export class MainPageComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.sidebarService.isCollapsed = true; // 預設收合
     this.sidebarService.setShowSidebar(true);
 
     // 訂閱權限變化，自動更新菜單
@@ -112,7 +114,7 @@ export class MainPageComponent implements OnInit {
     // 先清除權限和 Token
     this.authService.logout();
     this.permissionService.clearPermissions();
-    
+
     // 顯示登出成功彈窗（響應式寬度）
     this.modal.success({
       nzTitle: '登出成功',
@@ -126,7 +128,7 @@ export class MainPageComponent implements OnInit {
       }
     });
   }
-  
+
   /**
    * 取得 Modal 響應式寬度
    */
@@ -142,14 +144,14 @@ export class MainPageComponent implements OnInit {
       return '520px'; // 桌面
     }
   }
-  
+
   /**
    * 嘗試關閉分頁，如果無法關閉則導向登出成功頁面
    */
   private closeTabOrRedirect(): void {
     // 嘗試關閉分頁（只有在特定情況下才能成功）
     window.close();
-    
+
     // 如果 0.5 秒後分頁還沒關閉，則導向到登出成功頁面
     setTimeout(() => {
       // 如果分頁還在（沒被關閉），則導向到登出成功頁
@@ -157,6 +159,7 @@ export class MainPageComponent implements OnInit {
     }, 500);
   }
   GoPersonalInfo() { this.router.navigate(['/personal-info']); }
+  GoPointInformation() { this.router.navigate(['/point-information']); }
   GoEquipment() { this.router.navigate(['/equipment']); }
   GoEquipmentInformation() { this.router.navigate(['/equipment-information']); }
   GoBackendManagement() { this.router.navigate(['/backend-management']); }
@@ -166,6 +169,19 @@ export class MainPageComponent implements OnInit {
   toggleCollapsed(): void { //遮罩 點擊空白處即可關側欄
     this.sidebarService.toggleCollapsed();
   }
+
+  // 依照裝置寬度動態回傳側欄寬度數值
+  get sidebarWidth(): number {
+    const width = window.innerWidth;
+    if (width <= 420) return 180;
+    if (width <= 768) return 220;
+    return 300;
+  }
+
+  // 監聽視窗大小變化事件
+  // 當使用者旋轉螢幕或縮放視窗時，Angular 會重新計算 sidebarWidth
+  @HostListener('window:resize')
+  onResize() { }
 }
 
 interface MenuItem {
