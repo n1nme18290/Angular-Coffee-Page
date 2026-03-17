@@ -72,7 +72,7 @@ export const MAIN_MENU_ITEMS: MenuItemConfig[] = [
         path: '/personal-info',
         label: '個人資訊',
         icon: 'user',
-        roles: []  // 所有登入用戶可見
+        roles: ['SuperAdmin', 'Admin', '維護人員', '僅可檢視' ]  // 所有登入用戶可見
     }
 ];
 

@@ -89,16 +89,13 @@ nz-breadcrumb {
 
 .main-menu {
     flex: 1;
+    overflow-y: auto;
 }
 
-.logout-menu {
-    margin-top: auto;
-    margin-bottom: 20px;
-}
-
-.logout-text {
-    transition: opacity 0.2s ease;
-    opacity: 1;
+// 登出項目：上方分隔線做視覺區隔，不再推到最底
+.logout-item {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 8px;
 }
 
 nz-sider {
@@ -111,15 +108,7 @@ nz-sider {
     z-index: 100;
 }
 
-nz-sider.ant-layout-sider-collapsed {
-    .logout-text {
-        opacity: 0;
-        width: 0;
-        overflow: hidden;
-        display: none;
-    }
-}
-
+// 有側邊欄時，內容區推開
 nz-layout > nz-layout {
     margin-left: 300px;
     transition: margin-left 0.2s;
@@ -129,10 +118,14 @@ nz-sider.ant-layout-sider-collapsed + nz-layout {
     margin-left: 80px;
 }
 
+// 無側邊欄（一般會員）：nz-sider 不渲染，nz-layout 是第一個子元素，margin 歸零
+nz-layout > nz-layout:first-child {
+    margin-left: 0 !important;
+}
+
 // ========== 選單互動效果 ==========
 
-ul.main-menu li[nz-menu-item],
-ul.logout-menu li[nz-menu-item] {
+ul.main-menu li[nz-menu-item] {
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
@@ -198,7 +191,8 @@ li[nz-menu-item]:hover .menu-item-large {
     font-weight: bold;
 }
 
-.logout-menu li[nz-menu-item]:hover {
+// 登出項目 hover 維持紅色效果
+ul.main-menu li.logout-item[nz-menu-item]:hover {
     background-color: rgba(255, 77, 79, 0.15) !important;
 
     span[nz-icon] {
@@ -219,14 +213,21 @@ nz-sider.ant-layout-sider-collapsed {
             transform: scale(1.3) rotate(360deg);
         }
     }
+
+    .logout-text {
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+        display: none;
+    }
 }
 
-/* ========== 遮罩層 ========== */
+// ========== 遮罩層 ==========
 .sidebar-overlay {
     display: none;
 }
 
-/* ========== 響應式：768px ========== */
+// ========== 響應式：768px ==========
 @media (max-width: 768px) {
     .sidebar-overlay {
         display: block;
@@ -248,12 +249,17 @@ nz-sider.ant-layout-sider-collapsed {
         margin-left: 80px !important;
     }
 
+    // 無側邊欄時在小螢幕也歸零
+    nz-layout > nz-layout:first-child {
+        margin-left: 0 !important;
+    }
+
     .menu-item-large {
         font-size: 20px;
     }
 }
 
-/* ========== 響應式：420px ========== */
+// ========== 響應式：420px ==========
 @media (max-width: 420px) {
     nz-layout > nz-layout {
         margin-left: 80px !important;
@@ -261,6 +267,10 @@ nz-sider.ant-layout-sider-collapsed {
 
     nz-sider.ant-layout-sider-collapsed + nz-layout {
         margin-left: 80px !important;
+    }
+
+    nz-layout > nz-layout:first-child {
+        margin-left: 0 !important;
     }
 
     .menu-item-large {
