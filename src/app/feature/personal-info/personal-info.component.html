@@ -13,6 +13,14 @@
                 {{username}}
             </h1>
         </div>
+
+        <!-- 登出按鈕 -->
+        <div class="header-right">
+            <button nz-button class="btn-logout" (click)="LogOut()">
+                <span nz-icon nzType="logout" nzTheme="outline"></span>
+                <span>登出</span>
+            </button>
+        </div>
     </nz-header>
 
     <!-- ===== 主要內容區 ===== -->
