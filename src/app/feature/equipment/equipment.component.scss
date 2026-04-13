@@ -1,745 +1,242 @@
-button[nz-button] {
-    margin-right: 8px;
-    margin-bottom: 1px;
-    height: 40px;
-    border-radius: 100px;
-    border: 1px solid #27496D;
-    font-weight: bold;
-    background-color: #ffffff;
-    color: #27496D;
+// Layout 基調
+.layout-container {
+    min-height: 100vh;
+    background-color: #f0f2f5;
 }
 
-button[nz-button].btn-styles4 {
-    background-color: transparent;
-    color: rgb(255, 255, 255);
-    border: none;
-    width: 64px;
-    height: 64px;
-    margin-bottom: 12px;
-    border-radius: 50%;
-    font-weight: 500;
-    transition: all 0.3s ease;
-
-    .big-icon {
-        font-size: 28px;
-        transition: all 0.3s ease;
-    }
-
-    &:hover {
-        color: #40a9ff;
-        background-color: rgba(24, 144, 255, 0.08);
-        box-shadow: 0 4px 10px rgba(24, 144, 255, 0.25);
-        transform: translateY(-1px);
-    }
-
-    &:hover .big-icon {
-        transform: scale(1.1);
-    }
-
-}
-
-
-
-.h2 {
-    color: #ffffff;
-}
-
-// Header 佈局和用戶資訊顯示
 nz-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 24px;
+    background: #001529;
 
     .header-left {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 12px;
+    }
+
+    .h2 {
+        color: #fff;
+        margin: 0;
+        font-size: 1.25rem;
     }
 
     .user-info {
+        color: rgba(255, 255, 255, 0.85);
         display: flex;
         align-items: center;
         gap: 8px;
-        color: #ffffff;
-        font-size: 14px;
-        padding: 8px 16px;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        transition: all 0.3s ease;
-
-        &:hover {
-            background-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .username {
-            font-weight: 500;
-        }
-
-        span[nz-icon] {
-            font-size: 16px;
-        }
     }
 }
 
-.row-style {
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    margin: 0 auto 20px;
+.devices-information-container {
+    padding: 24px;
 
-    .header-col {
-        display: flex;
-        align-items: center;
-
-        .boxword {
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 20px;
-            font-weight: 600;
-
-            i {
-                font-size: 24px;
-                color: #1890ff;
-            }
-        }
+    @media (max-width: 576px) {
+        padding: 12px;
     }
 }
 
-// 搜尋和篩選列樣式
-.search-filter-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-    .search-section {
-        display: flex;
-        gap: 12px;
-        flex: 1;
-        align-items: center;
-
-
-
-        .search-input {
-            max-width: 200px;
-            flex: 1;
-
-
-            ::ng-deep {
-                .ant-input {
-                    height: 40px;
-                    border-radius: 6px;
-                    font-size: 14px;
-
-                    &:focus {
-                        border-color: #1890ff;
-                        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
-                    }
-                }
-
-                .ant-input-suffix {
-                    .search-icon {
-                        color: #8c8c8c;
-                        cursor: pointer;
-                        transition: color 0.3s;
-
-                        &:hover {
-                            color: #1890ff;
-                        }
-                    }
-                }
-            }
-        }
-
-        .search-btn {
-            height: 35px;
-            border-radius: 6px;
-            font-weight: 500;
-            min-width: 110px;
-            box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
-
-
-            &:hover {
-                box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
-                transform: translateY(-1px);
-                border-color: #1890ff;
-                color: #1890ff;
-            }
-        }
-
-        .filter-dropdown {
-            height: 35px;
-            border-radius: 6px;
-            min-width: 160px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-
-
-            &:hover {
-                border-color: #1890ff;
-                color: #1890ff;
-                transform: translateY(-1px);
-            }
-
-            i {
-                font-size: 14px;
-            }
-        }
-
-        .clear-btn {
-            height: 35px;
-            border-radius: 6px;
-            min-width: 110px;
-            transition: all 0.3s ease;
-            color: rgb(170, 20, 20);
-            border-color: rgb(170, 20, 20);
-
-            &:hover {
-                border-color: #ff4d4f;
-                color: #ff4d4f;
-                transform: translateY(-1px);
-            }
-        }
-    }
-
-    .action-section {
-        display: flex;
-        gap: 12px;
-
-
-        .create-device-btn {
-            height: 35px;
-            font-size: 14px;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
-            transition: all 0.3s ease;
-            font-weight: 500;
-            min-width: 130px;
-
-            i {
-                font-size: 16px;
-            }
-
-            &:hover {
-                box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
-                transform: translateY(-1px);
-                border-color: #1890ff;
-                color: #1890ff;
-            }
-        }
-    }
-}
-
-// 下拉選單樣式
-::ng-deep {
-    .ant-dropdown-menu {
-        border-radius: 6px;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
-        padding: 4px 0;
-
-
-        .ant-dropdown-menu-item {
-            padding: 8px 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            transition: all 0.2s;
-
-            i {
-                font-size: 16px;
-            }
-
-            &:hover {
-                background-color: #f0f5ff;
-                color: #1890ff;
-            }
-        }
-
-        .ant-dropdown-menu-item-divider {
-            margin: 4px 0;
-        }
-    }
-}
-
-// 統計卡片樣式
 .stats-row {
     margin-bottom: 24px;
 
     .stat-card {
-        border-radius: 8px;
-        border: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease;
 
         &:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
         }
 
         ::ng-deep .ant-card-body {
-            padding: 20px;
+            padding: 16px;
         }
 
         .stat-content {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
+        }
 
-            .stat-icon {
-                width: 56px;
-                height: 56px;
-                border-radius: 12px;
-                display: flex;
-                align-items: center;
+        .stat-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-info {
+            flex: 1;
+
+            .stat-label {
+                color: #8c8c8c;
+                font-size: 14px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+                font-weight: 700;
+                line-height: 1.2;
+                color: #262626; // 電腦版預設顏色
+            }
+        }
+
+        // --- 電腦版樣式 (4欄) ---
+        &.stat-total .stat-icon-wrapper {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        &.stat-active .stat-icon-wrapper {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+
+        &.stat-maintenance .stat-icon-wrapper {
+            background: #fff7e6;
+            color: #faad14;
+        }
+
+        &.stat-offline .stat-icon-wrapper {
+            background: #fff1f0;
+            color: #ff4d4f;
+        }
+
+        // --- 響應式：變為 2x2 時 (小於 768px) ---
+        @media (max-width: 767px) {
+            .stat-content {
                 justify-content: center;
-                font-size: 28px;
+                text-align: center;
             }
 
-            .stat-info {
-                flex: 1;
-
-                .stat-label {
-                    font-size: 14px;
-                    color: #8c8c8c;
-                    margin-bottom: 4px;
-                }
-
-                .stat-value {
-                    font-size: 28px;
-                    font-weight: 600;
-                    line-height: 1;
-                }
-            }
-        }
-
-        &.stat-total {
-            .stat-icon {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: #fff;
+            // 強制隱藏圖示
+            .stat-icon-wrapper {
+                display: none !important;
             }
 
-            .stat-value {
-                color: #667eea;
-            }
-        }
-
-        &.stat-active {
-            .stat-icon {
-                background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
-                color: #fff;
+            // 提高權重確保顏色生效rgb(233, 224, 204)
+            &.stat-total .stat-info .stat-value {
+                color: #1890ff !important;
             }
 
-            .stat-value {
-                color: #52c41a;
-            }
-        }
-
-        &.stat-maintenance {
-            .stat-icon {
-                background: linear-gradient(135deg, #faad14 0%, #fa8c16 100%);
-                color: #fff;
+            &.stat-active .stat-info .stat-value {
+                color: #52c41a !important;
             }
 
-            .stat-value {
-                color: #faad14;
-            }
-        }
-
-        &.stat-offline {
-            .stat-icon {
-                background: linear-gradient(135deg, #ff4d4f 0%, #cf1322 100%);
-                color: #fff;
+            &.stat-maintenance .stat-info .stat-value {
+                color: #faad14 !important;
             }
 
-            .stat-value {
-                color: #ff4d4f;
+            &.stat-offline .stat-info .stat-value {
+                color: #ff4d4f !important;
+            }
+
+            .stat-info .stat-label {
+                margin-bottom: 2px;
             }
         }
     }
 }
 
-// 設備表格樣式
-.devices-information-container {
+// 搜尋工具列 RWD
+.search-filter-bar {
+    background: #fff;
     padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+
+    // 統一輸入框與按鈕高度
+    ::ng-deep {
+
+        .ant-input-affix-wrapper,
+        .ant-input {
+            height: 40px;
+        }
+    }
+
+    // 通用滿版按鈕樣式
+    .full-width-btn {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+
+    // 篩選按鈕特殊處理：避免文字溢出
+    .filter-dropdown {
+        .filter-text {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin: 0 4px;
+        }
+    }
+
+    .clear-btn {
+        color: #ff4d4f;
+        border-color: #ff4d4f;
+
+        &:hover {
+            background-color: #fff1f0;
+            color: #ff7875;
+            border-color: #ff7875;
+        }
+    }
+
+    // 右側新增按鈕區域
+    .action-col {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        @media (max-width: 991px) {
+            justify-content: flex-start; // 平板以下靠左
+        }
+
+        .create-device-btn {
+            height: 40px;
+            border-radius: 6px;
+            min-width: 120px;
+            font-weight: 600;
+
+            @media (max-width: 991px) {
+                width: 100%; // 手機版橫跨整列
+            }
+        }
+    }
 }
 
+// 搜尋圖示游標
+.search-icon {
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+        color: #1890ff;
+    }
+}
+
+// 表格與操作按鈕
 .device-table {
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
 
-    ::ng-deep {
-
-        // 強制固定表格佈局
-        .ant-table {
-            table-layout: fixed !important;
-        }
-
-        // 表頭置中
-        .ant-table-thead>tr>th {
-            text-align: center !important;
-            white-space: normal !important;
-            word-wrap: break-word !important;
-            line-height: 1.5 !important;
-            padding: 12px 8px !important;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        // 表身置中
-        .ant-table-tbody>tr>td {
-            text-align: center !important;
-            white-space: normal !important;
-            word-wrap: break-word !important;
-            padding: 8px 8px !important;
-            //line-height: 2.0 !important;
-            vertical-align: middle !important;
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        // 每列固定寬度
-        $column-widths: (
-            1: 100px,
-            // 序號(含展開按鈕)
-            2: 150px,
-            // 名稱
-            3: 140px,
-            // 地點
-            4: 110px,
-            // 狀態
-            5: 120px,
-            // 累積兌換杯數
-            6: 120px,
-            // 上次清潔時間
-            7: 250px // 操作
-        );
-
-    @each $index, $width in $column-widths {
-
-        .ant-table-thead>tr>th:nth-child(#{$index}),
-        .ant-table-tbody>tr>td:nth-child(#{$index}) {
-            width: $width !important;
-            min-width: $width !important;
-            max-width: $width !important;
-        }
-    }
-
-    // 展開內容樣式
-    .expand-content {
-        padding: 16px;
-        background: #fafafa;
-        border-radius: 4px;
-        text-align: center;
-
-        strong {
-            color: #262626;
-            font-weight: 600;
-        }
-    }
-
-    // 第一列(序號+展開按鈕)特殊處理
-    .ant-table-tbody>tr>td:first-child {
-        padding: 4px 8px !important;
-    }
-}
-
-.device-id,
-.device-ip {
-    background: #f5f5f5;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-family: 'Monaco', 'Menlo', monospace;
-    font-size: 12px;
-    color: #666;
-    display: inline-block;
-}
-
-.text-center {
-    text-align: center;
-    padding: 40px 0;
-    color: #999;
-}
-}
-
-// 操作按鈕統一樣式
-.action-btn {
-    height: 35px;
-    border-radius: 6px;
-    min-width: 80px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-
-    &.clean-btn {
-        background-color: #ffffff;
-        color: rgb(14, 57, 98);
-        border-color: rgb(14, 57, 98);
-        box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
-
-        &:hover {
-            background-color: #ffffff;
-            border-color: #40a9ff;
-            color: #40a9ff;
-            box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
-            transform: translateY(-1px);
-        }
-    }
-
-    &.edit-btn {
-        background-color: #ffffff;
-        color: rgb(14, 57, 98);
-        border-color: rgb(14, 57, 98);
-        box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
-
-        &:hover {
-            background-color: #ffffff;
-            border-color: #40a9ff;
-            color: #40a9ff;
-            box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
-            transform: translateY(-1px);
-        }
-    }
-
-    &.delete-btn {
-        background-color: #ffffff;
-        color: rgb(170, 20, 20);
-        border-color: rgb(170, 20, 20);
-        box-shadow: 0 2px 4px rgba(255, 24, 24, 0.2);
-
-        &:hover {
-            background-color: #ffffff;
-            border-color: #ff4040;
-            color: #ff4040;
-            box-shadow: 0 4px 8px rgba(255, 24, 24, 0.3);
-            transform: translateY(-1px);
-        }
-    }
-}
-
-// Modal 表單樣式
-.modal-form {
-    .form-item {
-        margin-bottom: 24px;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-
-        .form-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #262626;
-
-            i {
-                color: #1890ff;
-                font-size: 16px;
-            }
-
-            .required {
-                color: #ff4d4f;
-                margin-left: 4px;
-            }
-        }
-    }
-}
-
-// Modal 底部按鈕樣式
-::ng-deep {
-    .ant-modal-footer {
+    .action-btns {
         display: flex;
-        gap: 0;
-        padding: 16px;
-        border-top: 1px solid #f0f0f0;
-
-        button {
-
-            flex: 1;
-            height: 40px;
-            border-radius: 6px;
-            font-weight: 500;
-            font-size: 14px;
-            transition: all 0.3s ease;
-
-            &:first-child {
-                margin-left: 8px;
-                background-color: #ffffff;
-                color: rgb(170, 20, 20);
-                border-color: rgb(170, 20, 20);
-                box-shadow: 0 2px 4px rgba(255, 24, 24, 0.2);
-
-                &:hover {
-                    background-color: #ffffff;
-                    border-color: #ff4040;
-                    color: #ff4040;
-                    box-shadow: 0 4px 8px rgba(255, 24, 24, 0.3);
-                    transform: translateY(-1px);
-                }
-            }
-
-            &:last-child {
-                margin-left: 8px;
-                background-color: #ffffff;
-                color: rgb(14, 57, 98);
-                border-color: rgb(14, 57, 98);
-                box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
-
-                &:hover {
-                    background-color: #40a9ff;
-                    border-color: #40a9ff;
-                    color: #ffffff;
-                    box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
-                    transform: translateY(-1px);
-                }
-            }
-
-            i {
-                margin-right: 6px;
-            }
-        }
+        justify-content: center;
+        gap: 8px;
     }
-}
-
-// 清潔確認內容
-.clean-confirm-content {
-    text-align: center;
-    padding: 20px;
-
-    .confirm-icon {
-        font-size: 64px;
-        margin-bottom: 16px;
-
-        i {
-            font-size: 64px;
-        }
-    }
-
-    h3 {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 12px;
-        color: #262626;
-    }
-
-    p {
-        font-size: 14px;
-        color: #595959;
-        margin-bottom: 8px;
-
-        &.hint {
-            font-size: 12px;
-            color: #8c8c8c;
-            margin-top: 12px;
-            padding: 8px 12px;
-            background: #f5f5f5;
-            border-radius: 4px;
-        }
-    }
-}
-
-// 確認刪除內容
-.delete-confirm-content {
-    text-align: center;
-    padding: 20px;
-
-    .confirm-icon {
-        font-size: 64px;
-        margin-bottom: 16px;
-
-        i {
-            font-size: 64px;
-        }
-    }
-
-    h3 {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 12px;
-        color: #262626;
-    }
-
-    p {
-        font-size: 14px;
-        color: #595959;
-        margin-bottom: 8px;
-
-        &.hint {
-            font-size: 12px;
-            color: #8c8c8c;
-            margin-top: 12px;
-            padding: 8px 12px;
-            background: #f5f5f5;
-            border-radius: 4px;
-        }
-    }
-}
-
-// 響應式設計
-@media (max-width: 1200px) {
-    .search-filter-bar {
-        flex-direction: column;
-        gap: 16px;
-
-        .search-section,
-        .action-section {
-            width: 100%;
-        }
-
-        .action-section {
-            justify-content: flex-end;
-        }
-    }
-}
-
-@media (max-width: 768px) {
-    .stats-row {
-        [nz-col] {
-            margin-bottom: 16px;
-        }
-    }
-
-    .search-filter-bar {
-        .search-section {
-            flex-direction: column;
-
-            .search-input {
-                max-width: 100%;
-            }
-
-            .search-btn,
-            .filter-dropdown {
-                width: 100%;
-            }
-        }
-
-        .action-section {
-            width: 100%;
-
-            .create-device-btn {
-                width: 100%;
-            }
-        }
-    }
-
-}
-
-//彈窗置中
-.center-txt {
-    text-align: center;
 }
