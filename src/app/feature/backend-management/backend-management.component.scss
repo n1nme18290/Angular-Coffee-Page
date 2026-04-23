@@ -1,3 +1,4 @@
+/* ===== 全域按鈕樣式 ===== */
 button[nz-button] {
     margin-right: 8px;
     height: 40px;
@@ -24,7 +25,7 @@ button[nz-button].btn-styles3 {
     color: #ffffff;
 }
 
-/* 折疊按鈕 — 對齊 personal-info */
+/* 折疊按鈕 */
 button[nz-button].btn-styles4 {
     background-color: transparent;
     color: rgb(255, 255, 255);
@@ -54,6 +55,7 @@ button[nz-button].btn-styles4 {
     }
 }
 
+/* ===== 輸入框 ===== */
 .input-block {
     display: flex;
     flex-direction: column;
@@ -94,7 +96,7 @@ nz-breadcrumb {
     margin: 16px 0;
 }
 
-/* Header 佈局 — 對齊 personal-info */
+/* ===== Header ===== */
 nz-header {
     display: flex;
     justify-content: space-between;
@@ -148,6 +150,7 @@ nz-header {
     }
 }
 
+/* ===== 白色內容盒子 ===== */
 .box {
     width: 100%;
     margin: 16px;
@@ -155,4 +158,86 @@ nz-header {
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+
+    /* 圖表自適應寬度 */
+    div[style*="width:400px"] {
+        width: 100% !important;
+        height: 400px !important;
+    }
+}
+
+/* ===== RWD 斷點 ===== */
+
+/* 平板 */
+@media (max-width: 1024px) {
+    .box {
+        margin: 12px;
+    }
+}
+
+/* 手機橫向 / 小平板 */
+@media (max-width: 768px) {
+    nz-header {
+        padding: 0 16px !important;
+
+        .header-left {
+            gap: 8px;
+        }
+
+        .h2 {
+            font-size: 16px !important;
+        }
+
+        .user-info {
+            padding: 6px 10px;
+            font-size: 13px;
+
+            .username {
+                max-width: 80px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+
+    .box {
+        margin: 12px 8px;
+        padding: 12px;
+
+        div[style*="width:400px"] {
+            height: 300px !important;
+        }
+    }
+}
+
+/* 手機直向 */
+@media (max-width: 480px) {
+    nz-header {
+        padding: 0 12px !important;
+
+        .h2 {
+            font-size: 14px !important;
+        }
+
+        .user-info {
+            padding: 5px 8px;
+            gap: 4px;
+
+            /* 極小螢幕隱藏名稱，只保留 icon */
+            .username {
+                display: none;
+            }
+        }
+    }
+
+    .box {
+        margin: 8px 6px;
+        padding: 10px;
+
+        div[style*="width:400px"] {
+            height: 260px !important;
+        }
+    }
 }

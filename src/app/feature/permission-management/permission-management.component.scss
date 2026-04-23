@@ -26,7 +26,7 @@ button[nz-button].btn-styles3 {
     color: #ffffff;
 }
 
-/* 折疊按鈕 — 對齊 personal-info */
+/* 折疊按鈕 */
 button[nz-button].btn-styles4 {
     background-color: transparent;
     color: rgb(255, 255, 255);
@@ -96,7 +96,7 @@ nz-breadcrumb {
     margin: 16px 0;
 }
 
-/* Header 佈局 — 對齊 personal-info */
+/* ===== Header ===== */
 nz-header {
     display: flex;
     justify-content: space-between;
@@ -176,6 +176,8 @@ nz-header {
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* ✅ 防止表格超出容器 */
+    overflow-x: auto;
 }
 
 .send-request {
@@ -497,7 +499,7 @@ nz-content {
     }
 }
 
-/* ===== 發送點數 Modal 樣式 ===== */
+/* ===== Modal 表單樣式 ===== */
 .modal-form {
     .form-item {
         margin-bottom: 16px;
@@ -552,7 +554,9 @@ nz-content {
     }
 }
 
-/* ================= 響應式設計 ================= */
+/* ================= RWD ================= */
+
+/* 平板大 */
 @media (max-width: 1200px) {
     .search-filter-bar {
         flex-direction: column;
@@ -574,7 +578,32 @@ nz-content {
     }
 }
 
+/* 平板小 / 手機橫向 */
 @media (max-width: 768px) {
+    nz-header {
+        padding: 0 16px !important;
+
+        .header-left {
+            gap: 8px;
+        }
+
+        .h2 {
+            font-size: 16px !important;
+        }
+
+        .user-info {
+            padding: 6px 10px;
+            font-size: 13px;
+
+            .username {
+                max-width: 80px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+
     .search-filter-bar {
         flex-direction: column;
         margin: 0 12px 16px 12px;
@@ -610,9 +639,48 @@ nz-content {
             padding: 12px;
         }
     }
+
+    /* ✅ 表格操作按鈕在手機換行 */
+    .action-btn {
+        display: block;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 6px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    /* ✅ Modal 寬度自適應 */
+    ::ng-deep {
+        .ant-modal {
+            width: 90% !important;
+            max-width: 90vw !important;
+        }
+    }
 }
 
+/* 手機直向 */
 @media (max-width: 576px) {
+    nz-header {
+        padding: 0 12px !important;
+
+        .h2 {
+            font-size: 14px !important;
+        }
+
+        .user-info {
+            padding: 5px 8px;
+            gap: 4px;
+
+            /* 極小螢幕隱藏名稱，只保留 icon */
+            .username {
+                display: none;
+            }
+        }
+    }
+
     .search-filter-bar {
         margin: 0 12px 16px 12px;
         width: calc(100% - 24px);
@@ -625,6 +693,7 @@ nz-content {
     .admin-information-container,
     .memberlist-information-container {
         margin: 64px 12px 24px 12px;
+        padding: 10px;
     }
 
     .row-style {
@@ -641,14 +710,21 @@ nz-content {
     ::ng-deep {
         nz-table {
             .ant-table-thead>tr>th {
-                font-size: 15px;
-                padding: 12px 8px;
+                font-size: 13px;
+                padding: 10px 6px;
             }
 
             .ant-table-tbody>tr>td {
-                font-size: 15px;
-                padding: 10px 8px;
+                font-size: 13px;
+                padding: 8px 6px;
             }
+        }
+
+        /* ✅ Modal 在極小螢幕全寬 */
+        .ant-modal {
+            width: 95% !important;
+            max-width: 95vw !important;
+            margin: 0 auto !important;
         }
     }
 }
