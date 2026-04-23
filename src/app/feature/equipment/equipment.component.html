@@ -119,10 +119,22 @@
 
         <nz-dropdown-menu #statusMenu="nzDropdownMenu">
             <ul nz-menu>
-                <li nz-menu-item (click)="onStatusFilterChange('全部狀態')">全部狀態</li>
-                <li nz-menu-item (click)="onStatusFilterChange('運作中')">運作中</li>
-                <li nz-menu-item (click)="onStatusFilterChange('維護中')">維護中</li>
-                <li nz-menu-item (click)="onStatusFilterChange('離線')">離線</li>
+                <li nz-menu-item (click)="onStatusFilterChange('全部狀態')">
+                    <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                    全部狀態
+                </li>
+                <li nz-menu-item (click)="onStatusFilterChange('運作中')">
+                    <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                    運作中
+                </li>
+                <li nz-menu-item (click)="onStatusFilterChange('維護中')">
+                    <i nz-icon nzType="tool" nzTheme="outline"></i>
+                    維護中
+                </li>
+                <li nz-menu-item (click)="onStatusFilterChange('離線')">
+                    <i nz-icon nzType="warning" nzTheme="outline"></i>
+                    離線
+                </li>
             </ul>
         </nz-dropdown-menu>
 
@@ -152,10 +164,14 @@
                     <td>{{ data.cleaned_at || '尚未清潔' }}</td>
                     <td nzRight>
                         <div class="action-btns">
-                            <button *ngIf="canEdit" nz-button nzType="link"
-                                (click)="updateDeviceModal(data)">編輯</button>
-                            <button *ngIf="canEdit" nz-button nzType="link" nzDanger
-                                (click)="deleteDeviceModal(data)">刪除</button>
+                            <button *ngIf="canEdit" nz-button class="action-btn edit-btn"
+                                (click)="updateDeviceModal(data)">
+                                <i nz-icon nzType="edit" nzTheme="outline"></i>編輯
+                            </button>
+                            <button *ngIf="canEdit" nz-button class="action-btn delete-btn"
+                                (click)="deleteDeviceModal(data)">
+                                <i nz-icon nzType="delete" nzTheme="outline"></i>刪除
+                            </button>
                         </div>
                     </td>
                 </tr>

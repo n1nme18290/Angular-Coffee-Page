@@ -1,33 +1,106 @@
-// Layout 基調
 .layout-container {
     min-height: 100vh;
     background-color: #f0f2f5;
 }
 
+button[nz-button] {
+    margin-right: 8px;
+    height: 40px;
+    border-radius: 100px;
+    border: 1px solid #27496D;
+    font-weight: bold;
+    background-color: #ffffff;
+    color: #27496D;
+}
+
+/* 折疊按鈕 — 對齊 personal-info */
+button[nz-button].btn-styles4 {
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+    border: none;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0;
+    border-radius: 50%;
+    font-weight: 500;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+
+    .big-icon {
+        font-size: 24px;
+        transition: all 0.3s ease;
+    }
+
+    &:hover {
+        color: #40a9ff;
+        background-color: rgba(24, 144, 255, 0.08);
+        box-shadow: 0 4px 10px rgba(24, 144, 255, 0.25);
+        transform: translateY(-1px);
+    }
+
+    &:hover .big-icon {
+        transform: scale(1.1);
+    }
+}
+
+button[nz-button].btn-styles2 {
+    background-color: #27496D;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Header 佈局 — 對齊 personal-info */
 nz-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 24px;
-    background: #001529;
+    flex-shrink: 0;
+    height: 48px !important;
+    line-height: 48px !important;
 
     .header-left {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 16px;
+        flex: 1;
+        min-width: 0;
     }
 
     .h2 {
-        color: #fff;
+        color: #ffffff;
         margin: 0;
-        font-size: 1.25rem;
+        font-size: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
     }
 
     .user-info {
-        color: rgba(255, 255, 255, 0.85);
         display: flex;
         align-items: center;
         gap: 8px;
+        color: #ffffff;
+        font-size: 14px;
+        padding: 8px 16px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .username {
+            font-weight: 500;
+        }
+
+        span[nz-icon] {
+            font-size: 16px;
+        }
     }
 }
 
@@ -40,7 +113,7 @@ nz-header {
 }
 
 .stats-row {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 
     .stat-card {
         border-radius: 12px;
@@ -83,11 +156,10 @@ nz-header {
                 font-size: 24px;
                 font-weight: 700;
                 line-height: 1.2;
-                color: #262626; // 電腦版預設顏色
+                color: #262626;
             }
         }
 
-        // --- 電腦版樣式 (4欄) ---
         &.stat-total .stat-icon-wrapper {
             background: #e6f7ff;
             color: #1890ff;
@@ -108,34 +180,20 @@ nz-header {
             color: #ff4d4f;
         }
 
-        // --- 響應式：變為 2x2 時 (小於 768px) ---
         @media (max-width: 767px) {
             .stat-content {
                 justify-content: center;
                 text-align: center;
             }
 
-            // 強制隱藏圖示
             .stat-icon-wrapper {
                 display: none !important;
             }
 
-            // 提高權重確保顏色生效rgb(233, 224, 204)
-            &.stat-total .stat-info .stat-value {
-                color: #1890ff !important;
-            }
-
-            &.stat-active .stat-info .stat-value {
-                color: #52c41a !important;
-            }
-
-            &.stat-maintenance .stat-info .stat-value {
-                color: #faad14 !important;
-            }
-
-            &.stat-offline .stat-info .stat-value {
-                color: #ff4d4f !important;
-            }
+            &.stat-total .stat-info .stat-value { color: #1890ff !important; }
+            &.stat-active .stat-info .stat-value { color: #52c41a !important; }
+            &.stat-maintenance .stat-info .stat-value { color: #faad14 !important; }
+            &.stat-offline .stat-info .stat-value { color: #ff4d4f !important; }
 
             .stat-info .stat-label {
                 margin-bottom: 2px;
@@ -144,37 +202,49 @@ nz-header {
     }
 }
 
-// 搜尋工具列 RWD
+/* 搜尋工具列 */
 .search-filter-bar {
     background: #fff;
     padding: 20px;
     border-radius: 8px;
+    margin-top: 20px;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     display: flex;
 
-    // 統一輸入框與按鈕高度
     ::ng-deep {
-
         .ant-input-affix-wrapper,
         .ant-input {
             height: 40px;
         }
     }
 
-    // 通用滿版按鈕樣式
+    /* 搜尋按鈕 */
     .full-width-btn {
         width: 100%;
-        height: 40px;
+        height: 35px;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 6px;
         font-weight: 500;
+        box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+
+        &:hover {
+            box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+            transform: translateY(-1px);
+            border-color: #1890ff;
+            color: #1890ff;
+        }
     }
 
-    // 篩選按鈕特殊處理：避免文字溢出
+    /* 篩選下拉按鈕 */
     .filter-dropdown {
+        height: 35px;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+
         .filter-text {
             flex: 1;
             overflow: hidden;
@@ -182,27 +252,39 @@ nz-header {
             white-space: nowrap;
             margin: 0 4px;
         }
-    }
-
-    .clear-btn {
-        color: #ff4d4f;
-        border-color: #ff4d4f;
 
         &:hover {
-            background-color: #fff1f0;
-            color: #ff7875;
-            border-color: #ff7875;
+            border-color: #1890ff;
+            color: #1890ff;
+            transform: translateY(-1px);
         }
     }
 
-    // 右側新增按鈕區域
+    /* 清除按鈕 */
+    .clear-btn {
+        height: 35px;
+        border-radius: 6px;
+        font-weight: 500;
+        color: rgb(170, 20, 20);
+        border-color: rgb(170, 20, 20);
+        box-shadow: 0 2px 4px rgba(255, 24, 24, 0.15);
+        transition: all 0.3s ease;
+
+        &:hover {
+            border-color: #ff4d4f;
+            color: #ff4d4f;
+            box-shadow: 0 4px 8px rgba(255, 24, 24, 0.25);
+            transform: translateY(-1px);
+        }
+    }
+
     .action-col {
         display: flex;
         justify-content: flex-end;
         align-items: center;
 
         @media (max-width: 991px) {
-            justify-content: flex-start; // 平板以下靠左
+            justify-content: flex-start;
         }
 
         .create-device-btn {
@@ -212,13 +294,13 @@ nz-header {
             font-weight: 600;
 
             @media (max-width: 991px) {
-                width: 100%; // 手機版橫跨整列
+                width: 100%;
             }
         }
     }
 }
 
-// 搜尋圖示游標
+/* 搜尋圖示 */
 .search-icon {
     cursor: pointer;
     transition: color 0.3s;
@@ -228,7 +310,78 @@ nz-header {
     }
 }
 
-// 表格與操作按鈕
+/* 下拉選單 */
+::ng-deep {
+    .ant-dropdown-menu {
+        border-radius: 6px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        padding: 4px 0;
+
+        .ant-dropdown-menu-item {
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            transition: all 0.2s;
+
+            i {
+                font-size: 16px;
+            }
+
+            &:hover {
+                background-color: #f0f5ff;
+                color: #1890ff;
+            }
+        }
+
+        .ant-dropdown-menu-item-divider {
+            margin: 4px 0;
+        }
+    }
+}
+
+/* 表格操作按鈕 */
+.action-btn {
+    height: 35px;
+    border-radius: 6px;
+    min-width: 80px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-right: 4px;
+
+    &.edit-btn {
+        background-color: #ffffff;
+        color: rgb(14, 57, 98);
+        border-color: rgb(14, 57, 98);
+        box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+
+        &:hover {
+            background-color: #ffffff;
+            border-color: #40a9ff;
+            color: #40a9ff;
+            box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+            transform: translateY(-1px);
+        }
+    }
+
+    &.delete-btn {
+        background-color: #ffffff;
+        color: rgb(170, 20, 20);
+        border-color: rgb(170, 20, 20);
+        box-shadow: 0 2px 4px rgba(255, 24, 24, 0.2);
+
+        &:hover {
+            background-color: #ffffff;
+            border-color: #ff4040;
+            color: #ff4040;
+            box-shadow: 0 4px 8px rgba(255, 24, 24, 0.3);
+            transform: translateY(-1px);
+        }
+    }
+}
+
+/* 表格 */
 .device-table {
     background: #fff;
     border-radius: 8px;
@@ -238,5 +391,31 @@ nz-header {
         display: flex;
         justify-content: center;
         gap: 8px;
+    }
+}
+
+::ng-deep {
+    nz-table {
+        .ant-table {
+            line-height: 1.5;
+        }
+
+        .ant-table-thead>tr>th {
+            font-size: 16px;
+            font-weight: 600;
+            padding: 16px 15px;
+            line-height: 1.3;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .ant-table-tbody>tr>td {
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px 15px;
+            line-height: 1.3;
+            text-align: center;
+            vertical-align: middle;
+        }
     }
 }

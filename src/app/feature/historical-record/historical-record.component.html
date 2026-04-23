@@ -106,7 +106,8 @@
                                     @if (data.type === 'add_points') {
                                     <span class="amount-negative">-{{ data.amount }}</span>
                                     } @else {
-                                    <span [ngClass]="data.after_balance >= data.before_balance? 'amount-positive': 'amount-negative'">
+                                    <span
+                                        [ngClass]="data.after_balance >= data.before_balance? 'amount-positive': 'amount-negative'">
                                         {{ data.after_balance >= data.before_balance ? '+' : '-' }}{{ data.amount }}
                                     </span>
                                     }

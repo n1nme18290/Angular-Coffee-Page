@@ -26,19 +26,21 @@ button[nz-button].btn-styles3 {
     color: #ffffff;
 }
 
+/* 折疊按鈕 — 對齊 personal-info */
 button[nz-button].btn-styles4 {
     background-color: transparent;
     color: rgb(255, 255, 255);
     border: none;
-    width: 64px;
-    height: 64px;
-    margin-bottom: 12px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0;
     border-radius: 50%;
     font-weight: 500;
+    flex-shrink: 0;
     transition: all 0.3s ease;
 
     .big-icon {
-        font-size: 28px;
+        font-size: 24px;
         transition: all 0.3s ease;
     }
 
@@ -94,21 +96,32 @@ nz-breadcrumb {
     margin: 16px 0;
 }
 
-.h2 {
-    color: #ffffff;
-}
-
-// Header 佈局和用戶資訊顯示
+/* Header 佈局 — 對齊 personal-info */
 nz-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 24px;
+    flex-shrink: 0;
+    height: 48px !important;
+    line-height: 48px !important;
 
     .header-left {
         display: flex;
         align-items: center;
         gap: 16px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .h2 {
+        color: #ffffff;
+        margin: 0;
+        font-size: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
     }
 
     .user-info {
@@ -121,6 +134,7 @@ nz-header {
         background-color: rgba(255, 255, 255, 0.1);
         border-radius: 20px;
         transition: all 0.3s ease;
+        flex-shrink: 0;
 
         &:hover {
             background-color: rgba(255, 255, 255, 0.15);
@@ -182,7 +196,7 @@ nz-content {
 }
 
 /* ================= 搜尋和篩選列樣式 ================= */
-.search-filter-bar { 
+.search-filter-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -192,11 +206,10 @@ nz-content {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     width: calc(100% - 32px);
-    transition: all 0.3s ease; // ⭐ 加入過渡效果
+    transition: all 0.3s ease;
 
-    // ⭐ 當有清除按鈕時，增加底部間距
     &.has-clear-button {
-        margin-bottom: 24px; // 從 16px 增加到 24px
+        margin-bottom: 24px;
     }
 
     .search-section {
@@ -204,12 +217,12 @@ nz-content {
         gap: 12px;
         flex: 1;
         align-items: center;
-        flex-wrap: wrap; // ⭐ 允許換行
+        flex-wrap: wrap;
 
         .search-input {
             max-width: 200px;
             flex: 1;
-            min-width: 150px; // ⭐ 設定最小寬度
+            min-width: 150px;
 
             ::ng-deep {
                 .ant-input {
@@ -280,7 +293,7 @@ nz-content {
             transition: all 0.3s ease;
             color: rgb(170, 20, 20);
             border-color: rgb(170, 20, 20);
-            animation: fadeIn 0.3s ease; // ⭐ 加入淡入動畫
+            animation: fadeIn 0.3s ease;
 
             &:hover {
                 border-color: #ff4d4f;
@@ -291,7 +304,6 @@ nz-content {
     }
 }
 
-// ⭐ 淡入動畫
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -334,14 +346,13 @@ nz-content {
     }
 }
 
-/* ================= 表格統一樣式（管理人員表 + 會員表 + Modal 內表格） ================= */
+/* ================= 表格統一樣式 ================= */
 ::ng-deep {
     nz-table {
         .ant-table {
             line-height: 1.5;
         }
 
-        /* TITLE */
         .ant-table-thead>tr>th {
             font-size: 16px;
             font-weight: 600;
@@ -351,7 +362,6 @@ nz-content {
             white-space: nowrap;
         }
 
-        /* 欄位 */
         .ant-table-tbody>tr>td {
             font-size: 16px;
             font-weight: 500;
@@ -363,7 +373,7 @@ nz-content {
     }
 }
 
-/* ================= 操作按鈕樣式（編輯、發送點數） ================= */
+/* ================= 操作按鈕樣式 ================= */
 .action-btn {
     height: 35px;
     border-radius: 6px;
@@ -430,11 +440,10 @@ nz-content {
 
 /* ================= Modal 樣式 ================= */
 ::ng-deep {
-    // 內容樣式
     .ant-modal-body {
         font-size: 20px;
     }
-    // 底部樣式
+
     .ant-modal-footer {
         display: flex;
         gap: 0;
@@ -492,9 +501,11 @@ nz-content {
 .modal-form {
     .form-item {
         margin-bottom: 16px;
+
         .info-box {
             font-size: 20px;
         }
+
         .form-label {
             display: flex;
             align-items: center;
@@ -556,7 +567,7 @@ nz-content {
             flex-wrap: wrap;
         }
     }
-    
+
     .admin-information-container,
     .memberlist-information-container {
         margin-top: 48px;
@@ -627,7 +638,6 @@ nz-content {
         font-size: 18px;
     }
 
-    // 表格字體不要太小
     ::ng-deep {
         nz-table {
             .ant-table-thead>tr>th {

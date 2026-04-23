@@ -1,43 +1,44 @@
 button[nz-button] {
     margin-right: 8px;
-    height: 40px; //增加上下寬度
-    border-radius: 100px; //圓角設定
-    border: 2px solid #000000; //邊框設定
-    font-weight: bold; //粗體
-
-    background-color: #FFB433; //顏色設定
-    color: #000000; //字體顏色
+    height: 40px;
+    border-radius: 100px;
+    border: 2px solid #000000;
+    font-weight: bold;
+    background-color: #FFB433;
+    color: #000000;
 }
 
 button[nz-button].btn-styles1 {
-    background-color: #FFB433; //顏色設定
-    color: #000000; //字體顏色
+    background-color: #FFB433;
+    color: #000000;
 }
 
 button[nz-button].btn-styles2 {
-    background-color: #ffffff; //顏色設定
-    color: #000000; //字體顏色
+    background-color: #ffffff;
+    color: #000000;
 }
 
 button[nz-button].btn-styles3 {
     width: 40px;
-    background-color: #000000; //顏色設定
-    color: #ffffff; //字體顏色
+    background-color: #000000;
+    color: #ffffff;
 }
 
+/* 折疊按鈕 — 對齊 personal-info */
 button[nz-button].btn-styles4 {
     background-color: transparent;
     color: rgb(255, 255, 255);
     border: none;
-    width: 64px;
-    height: 64px;
-    margin-bottom: 12px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0;
     border-radius: 50%;
     font-weight: 500;
+    flex-shrink: 0;
     transition: all 0.3s ease;
 
     .big-icon {
-        font-size: 28px;
+        font-size: 24px;
         transition: all 0.3s ease;
     }
 
@@ -51,11 +52,7 @@ button[nz-button].btn-styles4 {
     &:hover .big-icon {
         transform: scale(1.1);
     }
-
 }
-
-
-
 
 .input-block {
     display: flex;
@@ -65,7 +62,6 @@ button[nz-button].btn-styles4 {
 
     input[nz-input] {
         border-radius: 10px;
-
         width: 100%;
     }
 
@@ -74,7 +70,6 @@ button[nz-button].btn-styles4 {
         border-radius: 10px;
         width: 100%;
 
-
         .ant-input-wrapper {
             border-radius: 10px;
         }
@@ -82,39 +77,49 @@ button[nz-button].btn-styles4 {
 }
 
 .trigger {
-        font-size: 18px;
-        line-height: 64px;
-        padding: 0 24px;
-        cursor: pointer;
-        transition: color 0.3s;
-      }
-
-
-      .logo {
-        height: 32px;
-        background-color:#001529;
-        margin: 16px;
-        
-      }
-
-      nz-breadcrumb {
-        margin: 16px 0;
-      }
-.h2 {
-    color: #ffffff;
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
 }
 
-// Header 佈局和用戶資訊顯示
+.logo {
+    height: 32px;
+    background-color: #001529;
+    margin: 16px;
+}
+
+nz-breadcrumb {
+    margin: 16px 0;
+}
+
+/* Header 佈局 — 對齊 personal-info */
 nz-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 24px;
+    flex-shrink: 0;
+    height: 48px !important;
+    line-height: 48px !important;
 
     .header-left {
         display: flex;
         align-items: center;
         gap: 16px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .h2 {
+        color: #ffffff;
+        margin: 0;
+        font-size: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
     }
 
     .user-info {
@@ -127,6 +132,7 @@ nz-header {
         background-color: rgba(255, 255, 255, 0.1);
         border-radius: 20px;
         transition: all 0.3s ease;
+        flex-shrink: 0;
 
         &:hover {
             background-color: rgba(255, 255, 255, 0.15);
@@ -142,7 +148,6 @@ nz-header {
     }
 }
 
-//whitebox
 .box {
     width: 100%;
     margin: 16px;
