@@ -21,10 +21,9 @@ interface IApiResponse<T> {
 
 // ======================= 圖表資料結構 =======================
 interface WeeklyExchangeData {
-  weeks: string[]; // 星期顯示文字
-  counts: number[]; // 對應的咖啡兌換數量
+  weeks: string[];
+  counts: number[];
 }
-
 
 @Component({
   selector: 'app-backend-management',
@@ -44,11 +43,10 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
   @ViewChild('echartContainer', { static: false }) chartEl?: ElementRef<HTMLDivElement>;
   private chartInstance?: echarts.ECharts;
 
-// ======================= 狀態控制 =======================
-  isLoading = false; // 是否載入中
-  hasError = false; // 是否發生錯誤
-  errorMessage = ''; // 錯誤訊息內容
-
+  // ======================= 狀態控制 =======================
+  isLoading = false;
+  hasError = false;
+  errorMessage = '';
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object, 
@@ -58,46 +56,38 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     private tokenService: TokenService
   ) { }
 
-  /**
-   * 獲取當前用戶名稱
-   */
   get currentUsername(): string {
     return this.tokenService.getUsername();
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-
-// ======================= View 初始化完成後 =======================
+  // ======================= View 初始化完成後 =======================
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
+      // ✅ 300ms 確保 .echart-container 的寬高已由 CSS 撐開
       setTimeout(() => {
-        this.initChart(); // 初始化圖表
-        this.loadChartData(); // 取得 API 資料
-      }, 100);
+        this.initChart();
+        this.loadChartData();
+      }, 300);
 
       window.addEventListener('resize', this.onResize);
     }
   }
 
-
-// ======================= Component 銷毀 =======================
+  // ======================= Component 銷毀 =======================
   ngOnDestroy(): void {
     if (isPlatformBrowser(this.platformId)) {
       window.removeEventListener('resize', this.onResize);
     }
-
     if (this.chartInstance) {
       this.chartInstance.dispose();
     }
   }
 
-// ======================= 初始化圖表 =======================
+  // ======================= 初始化圖表 =======================
   private initChart(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
+    if (!isPlatformBrowser(this.platformId)) return;
 
     try {
       if (!this.chartEl?.nativeElement) {
@@ -105,21 +95,21 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
         return;
       }
 
-      // 建立 ECharts 實例
       this.chartInstance = echarts.init(this.chartEl.nativeElement);
 
+      // ✅ 初始化後立即 resize，確保寬度正確
+      this.chartInstance.resize();
 
-      // 預設圖表設定
       const option: echarts.EChartsOption = {
-        title: { //標題
+        title: {
           text: '本週咖啡兌換數量',
           left: 'center'
         },
-        tooltip: { //圖表藍色長條狀註解
+        tooltip: {
           trigger: 'axis',
           formatter: '{b}<br/>兌換數量: {c} 杯'
         },
-        xAxis: { //橫軸
+        xAxis: {
           type: 'category',
           name: '星期',
           data: ['載入中...'],
@@ -127,7 +117,7 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
             rotate: 0
           }
         },
-        yAxis: { //縱軸
+        yAxis: {
           type: 'value',
           name: '數量(杯)',
           minInterval: 1
@@ -152,9 +142,8 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
-
-// ======================= 取得圖表資料 =======================
-  private loadChartData(deviceId?: string): void {
+  // ======================= 取得圖表資料 =======================
+  public loadChartData(deviceId?: string): void {
     this.isLoading = true;
     this.hasError = false;
 
@@ -166,10 +155,8 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
         this.isLoading = false;
         console.log('data:', response.data);
 
-
         if (response.isSuccess && response.data) {
           const transformedData = this.transformApiData(response.data);
-          
           if (isPlatformBrowser(this.platformId)) {
             this.updateChart(transformedData);
           }
@@ -186,41 +173,34 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     });
   }
 
-// ======================= API 資料轉換 =======================
+  // ======================= API 資料轉換 =======================
   private transformApiData(apiData: Array<{weekOfDay: number, coffeeCount: number}>): WeeklyExchangeData {
     const weekNames = ['一', '二', '三', '四', '五', '六', '日'];
-    
     const weeks = apiData.map(item => weekNames[item.weekOfDay - 1] || `週${item.weekOfDay}`);
     const counts = apiData.map(item => item.coffeeCount);
-    
     return { weeks, counts };
   }
 
-
-// ======================= 錯誤處理 =======================
+  // ======================= 錯誤處理 =======================
   private handleErrorDisplay(message: string): void {
     this.isLoading = false;
     this.hasError = true;
     this.errorMessage = message;
-
     if (isPlatformBrowser(this.platformId)) {
       this.message.error(this.errorMessage);
     }
   }
 
-
-// ======================= 無資料顯示 =======================
+  // ======================= 無資料顯示 =======================
   private showNoData(): void {
     if (isPlatformBrowser(this.platformId) && this.chartInstance) {
       this.updateChart({ weeks: ['暫無資料'], counts: [0] });
     }
   }
 
-// ======================= 更新圖表資料 =======================
+  // ======================= 更新圖表資料 =======================
   private updateChart(data: WeeklyExchangeData): void { 
-    if (!isPlatformBrowser(this.platformId)) { 
-      return; 
-    }
+    if (!isPlatformBrowser(this.platformId)) return;
 
     try {
       if (!this.chartInstance) {
@@ -237,15 +217,14 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
       }
 
       const option: echarts.EChartsOption = {
-        xAxis: {
-          data: weeks
-        },
-        series: [{
-          data: counts
-        }]
+        xAxis: { data: weeks },
+        series: [{ data: counts }]
       };
 
       this.chartInstance.setOption(option);
+
+      // ✅ 更新資料後也 resize 一次，確保寬度對齊
+      this.chartInstance.resize();
 
     } catch (error) {
       console.error('更新圖表錯誤:', error);
@@ -255,14 +234,12 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
-
-// ======================= 視窗縮放處理 =======================
+  // ======================= 視窗縮放處理 =======================
   private onResize = () => {
     this.chartInstance?.resize();
   };
 
-
-// ======================= 側邊欄切換 =======================
+  // ======================= 側邊欄切換 =======================
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }
