@@ -26,12 +26,14 @@ import { SidebarService } from '../../share/service/sidebar.service';
 import { PermissionService } from '../../share/service/permission.service';
 import { Observable } from 'rxjs';
 import { IApiResponsePoints } from '../../share/service/model';
+import { CommonHeaderComponent } from '../../share/common-header/common-header.component';
 @Component({
   selector: 'app-point-information',
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
-    , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,NzGridModule,
-    NzRadioModule, NzModalModule, CommonModule, NzTableModule, NzDividerModule, NzCheckboxModule],
+    , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzGridModule,
+    NzRadioModule, NzModalModule, CommonModule, NzTableModule, NzDividerModule, NzCheckboxModule,
+    CommonHeaderComponent],
   templateUrl: './point-information.component.html',
   styleUrl: './point-information.component.scss'
 })

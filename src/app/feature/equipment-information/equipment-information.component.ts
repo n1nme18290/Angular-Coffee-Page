@@ -15,13 +15,14 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { Router } from '@angular/router';
+import { CommonHeaderComponent } from '../../share/common-header/common-header.component';
 
 @Component({
   selector: 'app-equipment-information',
   standalone: true,
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
-    NzRadioModule,],
+    NzRadioModule, CommonHeaderComponent],
   templateUrl: './equipment-information.component.html',
   styleUrl: './equipment-information.component.scss'
 })

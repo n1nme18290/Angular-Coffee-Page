@@ -242,11 +242,11 @@ nz-sider.ant-layout-sider-collapsed {
     }
 
     nz-layout > nz-layout {
-        margin-left: 80px !important;
+        margin-left: 0 !important;
     }
 
     nz-sider.ant-layout-sider-collapsed + nz-layout {
-        margin-left: 80px !important;
+        margin-left: 0 !important;
     }
 
     // 無側邊欄時在小螢幕也歸零
@@ -256,24 +256,5 @@ nz-sider.ant-layout-sider-collapsed {
 
     .menu-item-large {
         font-size: 20px;
-    }
-}
-
-// ========== 響應式：420px ==========
-@media (max-width: 420px) {
-    nz-layout > nz-layout {
-        margin-left: 80px !important;
-    }
-
-    nz-sider.ant-layout-sider-collapsed + nz-layout {
-        margin-left: 80px !important;
-    }
-
-    nz-layout > nz-layout:first-child {
-        margin-left: 0 !important;
-    }
-
-    .menu-item-large {
-        font-size: 18px;
     }
 }

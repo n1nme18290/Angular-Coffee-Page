@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -32,6 +32,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { CommonHeaderComponent } from '../../share/common-header/common-header.component';
 
 @Component({
   selector: 'app-equipment',
@@ -40,7 +41,8 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
     CommonModule, NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule,
     NzDropDownModule, FormsModule, NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule,
     NzPageHeaderModule, NzDrawerModule, NzGridModule, NzRadioModule, NzModalModule, NzTableModule,
-    NzDividerModule, NzCheckboxModule, NzCardModule, NzBadgeModule, NzSpinModule, NzTagModule, NzMenuModule
+    NzDividerModule, NzCheckboxModule, NzCardModule, NzBadgeModule, NzSpinModule, NzTagModule, NzMenuModule,
+    CommonHeaderComponent
   ],
   templateUrl: './equipment.component.html',
   styleUrl: './equipment.component.scss'
@@ -86,6 +88,7 @@ export class EquipmentComponent {
   // 搜尋和篩選相關
   searchName: string = '';
   filterStatus: string = '全部狀態';
+  isMobile = false;
 
   /**
    * 獲取當前用戶名稱
@@ -114,9 +117,19 @@ export class EquipmentComponent {
   ngOnInit() {
     this.getPageDevices();
     this.getAllDevicesState();
+    this.updateViewportState();
   }
 
   ngAfterViewInit() { }
+
+  private updateViewportState(): void {
+    this.isMobile = window.innerWidth <= 768;
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.updateViewportState();
+  }
 
   // 計算流水號的方法
   getSerialNumber(index: number): number {

@@ -1,10 +1,4 @@
-<nz-header>
-    <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-        <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-            class="big-icon"></span>
-    </button>
-    <h2 nz-typography class="h2">點數資訊</h2>
-</nz-header>
+<app-common-header title="點數資訊"></app-common-header>
 <nz-content>
     <div nz-row class="row-style">
         <div nz-col [nzSpan]="12" class="left-col">
@@ -23,42 +17,44 @@
         </button>
         <span>Selected {{ setOfCheckedId.size }} items</span>
     </div>
-    <nz-table #basicTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading" [nzShowPagination]="true"
-        [nzFrontPagination]="false" [nzPageIndex]="currentPage" [nzPageSize]="pageSize" [nzTotal]="total"
-        [nzShowSizeChanger]="true" [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onPageIndexChange($event)"
-        (nzPageSizeChange)="onPageSizeChange($event)" (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
-        <thead>
-            <tr>
-                <th *ngIf="canEdit" [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)">
-                    Select all</th>
-                <th>ID</th>
-                <th>會員ID</th>
-                <th>點數數量</th>
-                <th>上次登入時間</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (pointsList && pointsList.length > 0) {
-            @for (data of pointsList; track data.id) {
-            <tr>
-                <td *ngIf="canEdit" [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
-                <td>{{ data.id }}</td>
-                <td>{{ data.member_id }}</td>
-                <td>{{ data.balance }}</td>
-                <td>{{ data.updated_at }}</td>
-            </tr>
-            }
-            } @else {
-            <tr>
-                <td [attr.colspan]="canEdit ? 5 : 4" class="text-center">
-                    @if (loading) {
-                    載入中...
-                    } @else {
-                    暫無資料
-                    }
-                </td>
-            </tr>
-            }
-        </tbody>    
-    </nz-table>
+    <div class="table-wrapper">
+        <nz-table #basicTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading" [nzShowPagination]="true"
+            [nzFrontPagination]="false" [nzPageIndex]="currentPage" [nzPageSize]="pageSize" [nzTotal]="total"
+            [nzShowSizeChanger]="true" [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onPageIndexChange($event)"
+            (nzPageSizeChange)="onPageSizeChange($event)" (nzCurrentPageDataChange)="onCurrentPageDataChange($event)" class="point-table">
+            <thead>
+                <tr>
+                    <th *ngIf="canEdit" [nzChecked]="checked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="onAllChecked($event)">
+                        Select all</th>
+                    <th>ID</th>
+                    <th>會員ID</th>
+                    <th>點數數量</th>
+                    <th>上次登入時間</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (pointsList && pointsList.length > 0) {
+                @for (data of pointsList; track data.id) {
+                <tr>
+                    <td *ngIf="canEdit" [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
+                    <td>{{ data.id }}</td>
+                    <td>{{ data.member_id }}</td>
+                    <td>{{ data.balance }}</td>
+                    <td>{{ data.updated_at }}</td>
+                </tr>
+                }
+                } @else {
+                <tr>
+                    <td [attr.colspan]="canEdit ? 5 : 4" class="text-center">
+                        @if (loading) {
+                        載入中...
+                        } @else {
+                        暫無資料
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>    
+        </nz-table>
+    </div>
 </div>

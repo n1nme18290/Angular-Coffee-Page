@@ -112,6 +112,10 @@ nz-header {
     }
 }
 
+.table-wrapper {
+    overflow-x: auto;
+}
+
 .stats-row {
     margin-bottom: 20px;
 
@@ -392,6 +396,24 @@ nz-header {
         justify-content: center;
         gap: 8px;
     }
+}
+
+@media (max-width: 768px) {
+    .device-table {
+        .action-btns {
+            flex-direction: column;
+            align-items: center;
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        .action-btn {
+            width: 76px;
+            min-width: 0;
+            margin-right: 0;
+        }
+    }
+
 }
 
 ::ng-deep {

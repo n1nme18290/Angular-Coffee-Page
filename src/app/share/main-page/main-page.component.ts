@@ -42,6 +42,7 @@ export class MainPageComponent implements OnInit {
 
   menuItems: MenuItem[] = [];
   systemManagementItems: MenuItem[] = [];
+  isMobile = false;
 
   get showSidebar(): boolean {
     return this.sidebarService.showSidebar;
@@ -52,6 +53,7 @@ export class MainPageComponent implements OnInit {
   ngOnInit() {
     this.sidebarService.isCollapsed = true; // 預設收合
     this.sidebarService.setShowSidebar(true);
+    this.updateViewportState();
 
     // 訂閱權限變化，自動更新菜單
     this.permissionService.permissions$.subscribe(() => {
@@ -170,6 +172,14 @@ export class MainPageComponent implements OnInit {
     this.sidebarService.toggleCollapsed();
   }
 
+  private updateViewportState(): void {
+    const isMobileView = window.innerWidth <= 768;
+    if (isMobileView && !this.isMobile) {
+      this.sidebarService.isCollapsed = true;
+    }
+    this.isMobile = isMobileView;
+  }
+
   // 依照裝置寬度動態回傳側欄寬度數值
   get sidebarWidth(): number {
     const width = window.innerWidth;
@@ -181,7 +191,9 @@ export class MainPageComponent implements OnInit {
   // 監聽視窗大小變化事件
   // 當使用者旋轉螢幕或縮放視窗時，Angular 會重新計算 sidebarWidth
   @HostListener('window:resize')
-  onResize() { }
+  onResize() {
+    this.updateViewportState();
+  }
 }
 
 interface MenuItem {

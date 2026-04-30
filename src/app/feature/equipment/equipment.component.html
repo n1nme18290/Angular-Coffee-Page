@@ -1,17 +1,5 @@
 <nz-layout class="layout-container">
-    <nz-header>
-        <div class="header-left">
-            <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-                <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-                    class="big-icon"></span>
-            </button>
-            <h2 nz-typography class="h2">設備管理頁面</h2>
-        </div>
-        <div class="user-info">
-            <span nz-icon nzType="user" nzTheme="outline"></span>
-            <span class="username">{{currentUsername}}</span>
-        </div>
-    </nz-header>
+    <app-common-header title="設備管理頁面"></app-common-header>
 
     <div class="devices-information-container">
         <div nz-row [nzGutter]="[16, 16]" class="stats-row">
@@ -138,44 +126,46 @@
             </ul>
         </nz-dropdown-menu>
 
-        <nz-table #basicTable [nzData]="devicesList || []" [nzBordered]="true" [nzLoading]="loading"
-            [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage" [nzPageSize]="pageSize"
-            [nzTotal]="total" [nzScroll]="{ x: '1000px' }" class="device-table">
-            <thead>
-                <tr>
-                    <th nzWidth="80px">序號</th>
-                    <th nzWidth="150px">名稱</th>
-                    <th nzWidth="140px">地點</th>
-                    <th nzWidth="110px">狀態</th>
-                    <th nzWidth="120px">兌換數</th>
-                    <th nzWidth="140px">清潔時間</th>
-                    <th nzWidth="250px" nzRight>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of devicesList; let i = index">
-                    <td>{{ getSerialNumber(i) }}</td>
-                    <td><strong>{{ data.name }}</strong></td>
-                    <td>{{ data.location }}</td>
-                    <td>
-                        <nz-tag [nzColor]="getStatusColor(data.status)">{{ data.status }}</nz-tag>
-                    </td>
-                    <td><nz-badge [nzCount]="+(data.water_level || 0)" [nzOverflowCount]="999"></nz-badge></td>
-                    <td>{{ data.cleaned_at || '尚未清潔' }}</td>
-                    <td nzRight>
-                        <div class="action-btns">
-                            <button *ngIf="canEdit" nz-button class="action-btn edit-btn"
-                                (click)="updateDeviceModal(data)">
-                                <i nz-icon nzType="edit" nzTheme="outline"></i>編輯
-                            </button>
-                            <button *ngIf="canEdit" nz-button class="action-btn delete-btn"
-                                (click)="deleteDeviceModal(data)">
-                                <i nz-icon nzType="delete" nzTheme="outline"></i>刪除
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table>
+        <div class="table-wrapper">
+            <nz-table #basicTable [nzData]="devicesList || []" [nzBordered]="true" [nzLoading]="loading"
+                [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage" [nzPageSize]="pageSize"
+                [nzTotal]="total" [nzScroll]="{ x: '1000px' }" class="device-table">
+                <thead>
+                    <tr>
+                        <th nzWidth="80px">序號</th>
+                        <th nzWidth="150px">名稱</th>
+                        <th nzWidth="140px">地點</th>
+                        <th nzWidth="110px">狀態</th>
+                        <th nzWidth="120px">兌換數</th>
+                        <th nzWidth="140px">清潔時間</th>
+                        <th [nzWidth]="isMobile ? '80px' : '180px'" nzRight>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of devicesList; let i = index">
+                        <td>{{ getSerialNumber(i) }}</td>
+                        <td><strong>{{ data.name }}</strong></td>
+                        <td>{{ data.location }}</td>
+                        <td>
+                            <nz-tag [nzColor]="getStatusColor(data.status)">{{ data.status }}</nz-tag>
+                        </td>
+                        <td><nz-badge [nzCount]="+(data.water_level || 0)" [nzOverflowCount]="999"></nz-badge></td>
+                        <td>{{ data.cleaned_at || '尚未清潔' }}</td>
+                        <td nzRight>
+                            <div class="action-btns">
+                                <button *ngIf="canEdit" nz-button class="action-btn edit-btn"
+                                    (click)="updateDeviceModal(data)">
+                                    <i nz-icon nzType="edit" nzTheme="outline"></i>編輯
+                                </button>
+                                <button *ngIf="canEdit" nz-button class="action-btn delete-btn"
+                                    (click)="deleteDeviceModal(data)">
+                                    <i nz-icon nzType="delete" nzTheme="outline"></i>刪除
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
     </div>
 </nz-layout>

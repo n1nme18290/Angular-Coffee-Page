@@ -1,12 +1,28 @@
 html, body, app-root {
   height: 100%; //設定整個頁面、body、Angular 根元件 app-root 高度為 100%
+  min-height: 100vh;
+  width: 100%;
   margin: 0; //移除預設的外距
+  overflow-x: hidden;
 }
 
 .ant-layout {
   height: 100%;//讓整個 layout 撐滿整個畫面高度
+  min-height: 100vh;
+  width: 100%;
   display: flex;//使用 flex 排版
   flex-direction: column; //設為直向排列：header → content → footer
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  nz-layout > nz-layout {
+    margin-left: 0 !important;
+  }
+
+  nz-sider.ant-layout-sider-collapsed + nz-layout {
+    margin-left: 0 !important;
+  }
 }
 
 .ant-layout-header {
@@ -26,7 +42,8 @@ html, body, app-root {
   flex: 1; // 撐滿剩餘空間 
   display: flex;
   align-items: flex-start; //垂直對齊「上方」開始
-  justify-content: center;//水平置中
+  justify-content: flex-start; //避免內容置中造成左右空白
+  width: 100%;
   padding-top: 35px;//上方留空間(把東西往下推)
   
 }

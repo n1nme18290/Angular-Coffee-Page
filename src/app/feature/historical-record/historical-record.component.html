@@ -1,17 +1,5 @@
 <nz-layout>
-    <nz-header>
-        <div class="header-left">
-            <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
-                <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"
-                    class="big-icon"></span>
-            </button>
-            <h2 nz-typography class="h2">{{ getCurrentTitle() }}</h2>
-        </div>
-        <div class="user-info">
-            <span nz-icon nzType="user" nzTheme="outline"></span>
-            <span class="username">{{currentUsername}}</span>
-        </div>
-    </nz-header>
+    <app-common-header [title]="getCurrentTitle()"></app-common-header>
 
     <nz-tabset [(nzSelectedIndex)]="selectedIndex" class="tabs">
 

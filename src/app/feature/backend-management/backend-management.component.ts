@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 import { SidebarService } from '../../share/service/sidebar.service';
 import { LogService } from '../../share/service/service';
 import { TokenService } from '../../share/service/token.service'; 
+import { CommonHeaderComponent } from '../../share/common-header/common-header.component';
 
 // ======================= API 回傳格式介面 =======================
 interface IApiResponse<T> {
@@ -34,7 +35,8 @@ interface WeeklyExchangeData {
     NzIconModule,
     NzTypographyModule,
     NzSpinModule,
-    CommonModule
+    CommonModule,
+    CommonHeaderComponent
   ],
   templateUrl: './backend-management.component.html',
   styleUrl: './backend-management.component.scss'

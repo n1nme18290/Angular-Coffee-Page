@@ -6,6 +6,7 @@
   @if (showSidebar) {
     <nz-sider nzCollapsible [(nzCollapsed)]="sidebarService.isCollapsed"
       [nzTrigger]="null"
+      [nzCollapsedWidth]="isMobile ? 0 : 80"
       [nzWidth]="sidebarWidth">
       <div class="logo"></div>
       <div class="menu-container">

@@ -31,6 +31,7 @@ import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { PermissionService } from '../../share/service/permission.service';
 import { TokenService } from '../../share/service/token.service';
+import { CommonHeaderComponent } from '../../share/common-header/common-header.component';
 
 
 @Component({
@@ -39,7 +40,8 @@ import { TokenService } from '../../share/service/token.service';
   imports: [NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule,
     NzRadioModule, NzModalModule, CommonModule, NzSpinModule,
-    NzTableModule, NzDividerModule, NzCheckboxModule, NzGridModule, NzCollapseModule, NzDatePickerModule],
+    NzTableModule, NzDividerModule, NzCheckboxModule, NzGridModule, NzCollapseModule, NzDatePickerModule,
+    CommonHeaderComponent],
   templateUrl: './historical-record.component.html',
   styleUrl: './historical-record.component.scss'
 })

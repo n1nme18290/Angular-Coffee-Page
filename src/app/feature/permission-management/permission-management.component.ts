@@ -27,6 +27,7 @@ import { IApiResponseAdmin, IApiResponseMember, IApiResponseSecurityRole } from 
 import { AdminService, MemberService, SecurityService, PointService } from '../../share/service/service';
 import { TokenService } from '../../share/service/token.service';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { CommonHeaderComponent } from '../../share/common-header/common-header.component';
 
 
 @Component({
@@ -34,7 +35,8 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
   standalone: true,
   imports: [CommonModule, NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzGridModule,
-    NzRadioModule, NzModalModule, CommonModule, NzTableModule, NzDividerModule, NzCheckboxModule, NzTagModule],
+    NzRadioModule, NzModalModule, CommonModule, NzTableModule, NzDividerModule, NzCheckboxModule, NzTagModule,
+    CommonHeaderComponent],
   templateUrl: './permission-management.component.html',
   styleUrl: './permission-management.component.scss'
 })

@@ -1,0 +1,149 @@
+.common-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    flex-shrink: 0;
+    height: 48px !important;
+    line-height: 48px !important;
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+    }
+
+    .h2 {
+        color: #ffffff;
+        margin: 0;
+        font-size: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+    }
+}
+
+button[nz-button].btn-styles4 {
+    background-color: transparent;
+    color: #ffffff;
+    border: none;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0;
+    border-radius: 50%;
+    font-weight: 500;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+
+    .big-icon {
+        font-size: 24px;
+        transition: all 0.3s ease;
+    }
+
+    &:hover {
+        color: #40a9ff;
+        background-color: rgba(24, 144, 255, 0.08);
+        box-shadow: 0 4px 10px rgba(24, 144, 255, 0.25);
+        transform: translateY(-1px);
+    }
+
+    &:hover .big-icon {
+        transform: scale(1.1);
+    }
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    padding: 8px 16px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .username {
+        font-weight: 500;
+    }
+
+    span[nz-icon] {
+        font-size: 16px;
+    }
+}
+
+.btn-logout[nz-button] {
+    height: 32px;
+    border-radius: 16px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+@media (max-width: 768px) {
+    .common-header {
+        padding: 0 16px !important;
+
+        .header-left {
+            gap: 8px;
+        }
+
+        .h2 {
+            font-size: 16px !important;
+        }
+
+        .user-info {
+            padding: 6px 10px;
+            font-size: 13px;
+
+            .username {
+                max-width: 80px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    .common-header {
+        padding: 0 12px !important;
+
+        .h2 {
+            font-size: 14px !important;
+        }
+
+        .user-info {
+            padding: 5px 8px;
+            gap: 4px;
+
+            .username {
+                display: none;
+            }
+        }
+    }
+}
