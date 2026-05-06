@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterOutlet, ɵEmptyOutletComponent } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -29,7 +29,7 @@ import { MAIN_MENU_ITEMS, SYSTEM_MANAGEMENT_ITEMS, MenuItemConfig } from '../../
   standalone: true,
   imports: [RouterOutlet, NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule,
     NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule, CommonModule,
-    NzRadioModule, NzMenuModule, NzModalModule, ɵEmptyOutletComponent],
+    NzRadioModule, NzMenuModule, NzModalModule],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.scss'
 })
@@ -183,8 +183,8 @@ export class MainPageComponent implements OnInit {
   // 依照裝置寬度動態回傳側欄寬度數值
   get sidebarWidth(): number {
     const width = window.innerWidth;
-    if (width <= 420) return 180;
-    if (width <= 768) return 220;
+    if (width <= 420) return 160;
+    if (width <= 768) return 200;
     return 300;
   }
 

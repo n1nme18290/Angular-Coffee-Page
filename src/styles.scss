@@ -42,7 +42,8 @@ html, body, app-root {
   flex: 1; // 撐滿剩餘空間 
   display: flex;
   align-items: flex-start; //垂直對齊「上方」開始
-  justify-content: flex-start; //避免內容置中造成左右空白
+  // justify-content: flex-start; //避免內容置中造成左右空白
+  justify-content: center;
   width: 100%;
   padding-top: 35px;//上方留空間(把東西往下推)
   
