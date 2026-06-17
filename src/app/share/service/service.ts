@@ -208,6 +208,49 @@ export class LogService extends BaseService {
 
     return this.http.get<IApiResponse<any>>(apiUrl);
   }
+
+  // 取得日/月/週咖啡兌換數量
+  getExchangeSummary(
+    range: 'day' | 'week' | 'month',
+    startDate?: string,
+    endDate?: string,
+    deviceId?: string
+  ): Observable<IApiResponse<any>> {
+    const params = new URLSearchParams();
+    params.set('range', range);
+    if (startDate) params.set('start_date', startDate);
+    if (endDate) params.set('end_date', endDate);
+    if (deviceId) params.set('device_id', deviceId);
+    return this.http.get<IApiResponse<any>>(`${this.url}${this.LogUrl}get_exchange_summary?${params}`);
+  }
+
+  // 取得教職員/學生咖啡兌換數量
+  getExchangeByIdentity(
+    range: 'day' | 'week' | 'month',
+    startDate?: string,
+    endDate?: string,
+    deviceId?: string
+  ): Observable<IApiResponse<any>> {
+    const params = new URLSearchParams();
+    params.set('range', range);
+    if (startDate) params.set('start_date', startDate);
+    if (endDate) params.set('end_date', endDate);
+    if (deviceId) params.set('device_id', deviceId);
+    return this.http.get<IApiResponse<any>>(`${this.url}${this.LogUrl}get_exchange_by_identity?${params}`);
+  }
+
+  // 取得日/月/週點數發放數量
+  getPointsIssuedByRange(
+    range: 'day' | 'week' | 'month',
+    startDate?: string,
+    endDate?: string
+  ): Observable<IApiResponse<any>> {
+    const params = new URLSearchParams();
+    params.set('range', range);
+    if (startDate) params.set('start_date', startDate);
+    if (endDate) params.set('end_date', endDate);
+    return this.http.get<IApiResponse<any>>(`${this.url}${this.LogUrl}get_points_issue_summary?${params}`);
+  }
 }
 
 // Admin 相關API

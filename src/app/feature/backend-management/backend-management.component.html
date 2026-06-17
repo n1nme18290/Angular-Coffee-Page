@@ -1,13 +1,67 @@
 <app-common-header title="兌換資料分析頁面"></app-common-header>
 
 <nz-content>
-    <div class="box">
-        <div style="padding:16px">
-            <!-- 載入中狀態 -->
-            <nz-spin [nzSpinning]="isLoading">
-                <!-- 圖表容器 -->
-                <div #echartContainer class="echart-container"></div>
+    <div class="charts-container">
+
+        <!-- ===== 圖表一：咖啡兌換數量 ===== -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <span class="chart-title">咖啡兌換數量</span>
+                <div class="chart-controls">
+                    <nz-radio-group [(ngModel)]="chart1Range" nzButtonStyle="solid"
+                        (ngModelChange)="loadChart1Data()">
+                        <label nz-radio-button nzValue="day">日</label>
+                        <label nz-radio-button nzValue="week">週</label>
+                        <label nz-radio-button nzValue="month">月</label>
+                    </nz-radio-group>
+                    <p class="range-hint">日：當日｜週：前七天｜月：當月</p>
+                </div>
+            </div>
+            <nz-spin [nzSpinning]="chart1Loading">
+                <div #chart1Container class="echart-container"></div>
             </nz-spin>
         </div>
+
+        <!-- ===== 圖表二：教職員/學生咖啡兌換數量 ===== -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <span class="chart-title">教職員／學生兌換數量</span>
+                <div class="chart-controls">
+                    <nz-radio-group [(ngModel)]="chart2Range" nzButtonStyle="solid"
+                        (ngModelChange)="loadChart2Data()">
+                        <label nz-radio-button nzValue="day">日</label>
+                        <label nz-radio-button nzValue="week">週</label>
+                        <label nz-radio-button nzValue="month">月</label>
+                    </nz-radio-group>
+                    <p class="range-hint">日：當日｜週：前七天｜月：當月</p>
+                </div>
+            </div>
+            <nz-spin [nzSpinning]="chart2Loading">
+                <div #chart2Container class="echart-container"></div>
+            </nz-spin>
+        </div>
+
+        <!-- ===== 圖表三：點數發放數量 ===== -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="title-wrapper">
+                    <span class="chart-title">點數發放數量</span>
+                    <span class="chart-remark">※ 該數量為使用者收集的點數數量</span>
+                </div>
+                <div class="chart-controls">
+                    <nz-radio-group [(ngModel)]="chart3Range" nzButtonStyle="solid"
+                        (ngModelChange)="loadChart3Data()">
+                        <label nz-radio-button nzValue="day">日</label>
+                        <label nz-radio-button nzValue="week">週</label>
+                        <label nz-radio-button nzValue="month">月</label>
+                    </nz-radio-group>
+                    <p class="range-hint">日：當日｜週：前七天｜月：當月</p>
+                </div>
+            </div>
+            <nz-spin [nzSpinning]="chart3Loading">
+                <div #chart3Container class="echart-container"></div>
+            </nz-spin>
+        </div>
+
     </div>
 </nz-content>

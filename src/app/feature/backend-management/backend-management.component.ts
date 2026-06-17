@@ -1,62 +1,53 @@
-import {Component,AfterViewInit,ViewChild,ElementRef,OnDestroy,OnInit,Inject,PLATFORM_ID} from '@angular/core';
-import { isPlatformBrowser, CommonModule } from '@angular/common'; 
+import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { FormsModule } from '@angular/forms';
 import * as echarts from 'echarts';
-import { Observable } from 'rxjs'; 
 import { SidebarService } from '../../share/service/sidebar.service';
 import { LogService } from '../../share/service/service';
-import { TokenService } from '../../share/service/token.service'; 
+import { TokenService } from '../../share/service/token.service';
 import { CommonHeaderComponent } from '../../share/common-header/common-header.component';
-
-// ======================= API 回傳格式介面 =======================
-interface IApiResponse<T> {
-  data: T;
-  isSuccess: boolean;
-  message: string;
-}
-
-// ======================= 圖表資料結構 =======================
-interface WeeklyExchangeData {
-  weeks: string[];
-  counts: number[];
-}
 
 @Component({
   selector: 'app-backend-management',
   standalone: true,
   imports: [
-    NzLayoutModule,
-    NzButtonModule,
-    NzIconModule,
-    NzTypographyModule,
-    NzSpinModule,
-    CommonModule,
-    CommonHeaderComponent
+    NzLayoutModule, NzButtonModule, NzIconModule, NzTypographyModule,
+    NzSpinModule, CommonModule, CommonHeaderComponent, NzRadioModule, FormsModule
   ],
   templateUrl: './backend-management.component.html',
   styleUrl: './backend-management.component.scss'
 })
 export class BackendManagementComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('echartContainer', { static: false }) chartEl?: ElementRef<HTMLDivElement>;
-  private chartInstance?: echarts.ECharts;
+  @ViewChild('chart1Container', { static: false }) chart1El?: ElementRef<HTMLDivElement>;
+  @ViewChild('chart2Container', { static: false }) chart2El?: ElementRef<HTMLDivElement>;
+  @ViewChild('chart3Container', { static: false }) chart3El?: ElementRef<HTMLDivElement>;
 
-  // ======================= 狀態控制 =======================
-  isLoading = false;
-  hasError = false;
-  errorMessage = '';
+  private chart1Instance?: echarts.ECharts;
+  private chart2Instance?: echarts.ECharts;
+  private chart3Instance?: echarts.ECharts;
+
+  chart1Loading = false;
+  chart2Loading = false;
+  chart3Loading = false;
+
+  chart1Range: 'day' | 'week' | 'month' = 'week';
+  chart2Range: 'day' | 'week' | 'month' = 'week';
+  chart3Range: 'day' | 'week' | 'month' = 'week';
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object, 
+    @Inject(PLATFORM_ID) private platformId: Object,
     public sidebarService: SidebarService,
     private logService: LogService,
     private message: NzMessageService,
     private tokenService: TokenService
-  ) { }
+  ) {}
 
   get currentUsername(): string {
     return this.tokenService.getUsername();
@@ -64,184 +55,200 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
 
   ngOnInit(): void {}
 
-  // ======================= View 初始化完成後 =======================
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // ✅ 300ms 確保 .echart-container 的寬高已由 CSS 撐開
       setTimeout(() => {
-        this.initChart();
-        this.loadChartData();
+        this.initChart1();
+        this.initChart2();
+        this.initChart3();
+        this.loadChart1Data();
+        this.loadChart2Data();
+        this.loadChart3Data();
       }, 300);
-
       window.addEventListener('resize', this.onResize);
     }
   }
 
-  // ======================= Component 銷毀 =======================
   ngOnDestroy(): void {
     if (isPlatformBrowser(this.platformId)) {
       window.removeEventListener('resize', this.onResize);
     }
-    if (this.chartInstance) {
-      this.chartInstance.dispose();
-    }
+    this.chart1Instance?.dispose();
+    this.chart2Instance?.dispose();
+    this.chart3Instance?.dispose();
   }
 
   // ======================= 初始化圖表 =======================
-  private initChart(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
 
-    try {
-      if (!this.chartEl?.nativeElement) {
-        console.error('圖表容器不存在');
-        return;
-      }
-
-      this.chartInstance = echarts.init(this.chartEl.nativeElement);
-
-      // ✅ 初始化後立即 resize，確保寬度正確
-      this.chartInstance.resize();
-
-      const option: echarts.EChartsOption = {
-        title: {
-          text: '本週咖啡兌換數量',
-          left: 'center'
-        },
-        tooltip: {
-          trigger: 'axis',
-          formatter: '{b}<br/>兌換數量: {c} 杯'
-        },
-        xAxis: {
-          type: 'category',
-          name: '星期',
-          data: ['載入中...'],
-          axisLabel: {
-            rotate: 0
-          }
-        },
-        yAxis: {
-          type: 'value',
-          name: '數量(杯)',
-          minInterval: 1
-        },
-        series: [{
-          type: 'bar',
-          data: [0],
-          itemStyle: {
-            color: '#718eaaff'
-          },
-          label: {
-            show: true,
-            position: 'top'
-          }
-        }]
-      };
-
-      this.chartInstance.setOption(option);
-    } catch (e) {
-      console.error('echarts 初始化錯誤:', e);
-      this.handleErrorDisplay('圖表初始化失敗');
-    }
+  private initChart1(): void {
+    if (!isPlatformBrowser(this.platformId) || !this.chart1El?.nativeElement) return;
+    this.chart1Instance = echarts.init(this.chart1El.nativeElement);
+    this.chart1Instance.setOption({
+      tooltip: { trigger: 'axis', formatter: '{b}<br/>兌換數量: {c} 杯' },
+      grid: { top: 42, left: 12, right: 8, bottom: 8, containLabel: true },
+      xAxis: { type: 'category', data: ['載入中...'] },
+      yAxis: { type: 'value', name: '數量(杯)', minInterval: 1 },
+      series: [{
+        type: 'bar', data: [0],
+        itemStyle: { color: '#718eaa' },
+        label: { show: true, position: 'top' }
+      }]
+    } as echarts.EChartsOption);
+    this.chart1Instance.resize();
   }
 
-  // ======================= 取得圖表資料 =======================
-  public loadChartData(deviceId?: string): void {
-    this.isLoading = true;
-    this.hasError = false;
+  private initChart2(): void {
+    if (!isPlatformBrowser(this.platformId) || !this.chart2El?.nativeElement) return;
+    this.chart2Instance = echarts.init(this.chart2El.nativeElement);
+    // 單系列：X軸為身分別（教職員/學生），各 bar 不同顏色
+    this.chart2Instance.setOption({
+      tooltip: { trigger: 'axis', formatter: '{b}<br/>兌換數量: {c} 杯' },
+      grid: { top: 42, left: 12, right: 8, bottom: 8, containLabel: true },
+      xAxis: { type: 'category', data: ['載入中...'] },
+      yAxis: { type: 'value', name: '數量(杯)', minInterval: 1 },
+      series: [{
+        type: 'bar', data: [0],
+        itemStyle: {
+          color: (params: any) => ['#5b8db8', '#f4a261'][params.dataIndex % 2]
+        },
+        label: { show: true, position: 'top' }
+      }]
+    } as echarts.EChartsOption);
+    this.chart2Instance.resize();
+  }
 
-    const apiCall: Observable<IApiResponse<Array<{weekOfDay: number, coffeeCount: number}>>> =
-      this.logService.getWeeklyCoffeeExchange() as Observable<IApiResponse<Array<{weekOfDay: number, coffeeCount: number}>>>;
+  private initChart3(): void {
+    if (!isPlatformBrowser(this.platformId) || !this.chart3El?.nativeElement) return;
+    this.chart3Instance = echarts.init(this.chart3El.nativeElement);
+    this.chart3Instance.setOption({
+      tooltip: { trigger: 'axis', formatter: '{b}<br/>發放數量: {c} 點' },
+      grid: { top: 42, left: 12, right: 8, bottom: 8, containLabel: true },
+      xAxis: { type: 'category', data: ['載入中...'] },
+      yAxis: { type: 'value', name: '數量(點)', minInterval: 1 },
+      series: [{
+        type: 'bar', data: [0],
+        itemStyle: { color: '#2a9d8f' },
+        label: { show: true, position: 'top' }
+      }]
+    } as echarts.EChartsOption);
+    this.chart3Instance.resize();
+  }
 
-    apiCall.subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        console.log('data:', response.data);
+  // ======================= 載入資料 =======================
 
-        if (response.isSuccess && response.data) {
-          const transformedData = this.transformApiData(response.data);
-          if (isPlatformBrowser(this.platformId)) {
-            this.updateChart(transformedData);
-          }
+  // "YYYY-Wnn" → "MM/DD~MM/DD"（往前推七天至今日）
+  // "YYYY-MM-DD" → "週X"
+  private formatWeekLabel(label: string): string {
+    if (/^\d{4}-W\d{1,2}$/.test(label)) {
+      const today = new Date();
+      const start = new Date(today);
+      start.setDate(today.getDate() - 6);
+      return `${this.toMMDD(start)} ~ ${this.toMMDD(today)}`;
+    }
+    const parts = label.split('-');
+    if (parts.length === 3) {
+      const date = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+      return ['週日', '週一', '週二', '週三', '週四', '週五', '週六'][date.getDay()];
+    }
+    return label;
+  }
+
+  private toMMDD(date: Date): string {
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${m}-${d}`;
+  }
+
+  private formatXAxisLabel(label: string, range: 'day' | 'week' | 'month'): string {
+    if (range === 'week') return this.formatWeekLabel(label);
+    if (range === 'day') {
+      // "YYYY-MM-DD" → "MM-DD"
+      const parts = label.split('-');
+      if (parts.length === 3) return `${parts[1]}-${parts[2]}`;
+    }
+    return label;
+  }
+
+  // 圖表一：{label, total_count}
+  loadChart1Data(): void {
+    this.chart1Loading = true;
+    this.logService.getExchangeSummary(this.chart1Range).subscribe({
+      next: (res) => {
+        this.chart1Loading = false;
+        if (res?.isSuccess && Array.isArray(res.data) && res.data.length > 0) {
+          const labels = res.data.map((item: any) => this.formatXAxisLabel(item.label ?? '', this.chart1Range));
+          const values = res.data.map((item: any) => item.total_count ?? 0);
+          this.chart1Instance?.setOption({ xAxis: { data: labels }, series: [{ data: values }] });
         } else {
-          this.handleErrorDisplay(response.message || '取得資料失敗');
-          this.showNoData();
+          this.chart1Instance?.setOption({ xAxis: { data: ['暫無資料'] }, series: [{ data: [0] }] });
         }
+        this.chart1Instance?.resize();
       },
-      error: (error: any) => {
-        console.error('API 錯誤:', error);
-        this.handleErrorDisplay('載入資料時發生錯誤');
-        this.showNoData();
+      error: (err) => {
+        console.error('Chart1 error:', err);
+        this.chart1Loading = false;
+        this.chart1Instance?.setOption({ xAxis: { data: ['載入失敗'] }, series: [{ data: [0] }] });
+        this.chart1Instance?.resize();
       }
     });
   }
 
-  // ======================= API 資料轉換 =======================
-  private transformApiData(apiData: Array<{weekOfDay: number, coffeeCount: number}>): WeeklyExchangeData {
-    const weekNames = ['一', '二', '三', '四', '五', '六', '日'];
-    const weeks = apiData.map(item => weekNames[item.weekOfDay - 1] || `週${item.weekOfDay}`);
-    const counts = apiData.map(item => item.coffeeCount);
-    return { weeks, counts };
-  }
-
-  // ======================= 錯誤處理 =======================
-  private handleErrorDisplay(message: string): void {
-    this.isLoading = false;
-    this.hasError = true;
-    this.errorMessage = message;
-    if (isPlatformBrowser(this.platformId)) {
-      this.message.error(this.errorMessage);
-    }
-  }
-
-  // ======================= 無資料顯示 =======================
-  private showNoData(): void {
-    if (isPlatformBrowser(this.platformId) && this.chartInstance) {
-      this.updateChart({ weeks: ['暫無資料'], counts: [0] });
-    }
-  }
-
-  // ======================= 更新圖表資料 =======================
-  private updateChart(data: WeeklyExchangeData): void { 
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    try {
-      if (!this.chartInstance) {
-        console.error('圖表實例不存在');
-        return;
+  // 圖表二：{identity_type, total_count}
+  loadChart2Data(): void {
+    this.chart2Loading = true;
+    this.logService.getExchangeByIdentity(this.chart2Range).subscribe({
+      next: (res) => {
+        this.chart2Loading = false;
+        if (res?.isSuccess && Array.isArray(res.data) && res.data.length > 0) {
+          const labels = res.data.map((item: any) => item.identity_type ?? '');
+          const values = res.data.map((item: any) => item.total_count ?? 0);
+          this.chart2Instance?.setOption({ xAxis: { data: labels }, series: [{ data: values }] });
+        } else {
+          this.chart2Instance?.setOption({ xAxis: { data: ['暫無資料'] }, series: [{ data: [0] }] });
+        }
+        this.chart2Instance?.resize();
+      },
+      error: (err) => {
+        console.error('Chart2 error:', err);
+        this.chart2Loading = false;
+        this.chart2Instance?.setOption({ xAxis: { data: ['載入失敗'] }, series: [{ data: [0] }] });
+        this.chart2Instance?.resize();
       }
-
-      let weeks: string[] = data.weeks || [];
-      let counts: number[] = data.counts || [];
-
-      if (weeks.length === 0 || counts.length === 0) {
-        weeks = ['暫無資料'];
-        counts = [0];
-      }
-
-      const option: echarts.EChartsOption = {
-        xAxis: { data: weeks },
-        series: [{ data: counts }]
-      };
-
-      this.chartInstance.setOption(option);
-
-      // ✅ 更新資料後也 resize 一次，確保寬度對齊
-      this.chartInstance.resize();
-
-    } catch (error) {
-      console.error('更新圖表錯誤:', error);
-      if (isPlatformBrowser(this.platformId)) {
-        this.message.error('圖表更新失敗');
-      }
-    }
+    });
   }
 
-  // ======================= 視窗縮放處理 =======================
-  private onResize = () => {
-    this.chartInstance?.resize();
+  // 圖表三：{label, total_points}
+  loadChart3Data(): void {
+    this.chart3Loading = true;
+    this.logService.getPointsIssuedByRange(this.chart3Range).subscribe({
+      next: (res) => {
+        this.chart3Loading = false;
+        if (res?.isSuccess && Array.isArray(res.data) && res.data.length > 0) {
+          const labels = res.data.map((item: any) => this.formatXAxisLabel(item.label ?? '', this.chart3Range));
+          const values = res.data.map((item: any) => item.total_points ?? 0);
+          this.chart3Instance?.setOption({ xAxis: { data: labels }, series: [{ data: values }] });
+        } else {
+          this.chart3Instance?.setOption({ xAxis: { data: ['暫無資料'] }, series: [{ data: [0] }] });
+        }
+        this.chart3Instance?.resize();
+      },
+      error: (err) => {
+        console.error('Chart3 error:', err);
+        this.chart3Loading = false;
+        this.chart3Instance?.setOption({ xAxis: { data: ['載入失敗'] }, series: [{ data: [0] }] });
+        this.chart3Instance?.resize();
+      }
+    });
+  }
+
+  // ======================= 視窗縮放 =======================
+
+  private onResize = (): void => {
+    this.chart1Instance?.resize();
+    this.chart2Instance?.resize();
+    this.chart3Instance?.resize();
   };
 
-  // ======================= 側邊欄切換 =======================
   toggleCollapsed(): void {
     this.sidebarService.toggleCollapsed();
   }
