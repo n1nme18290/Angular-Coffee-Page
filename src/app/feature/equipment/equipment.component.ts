@@ -25,6 +25,7 @@ import { SidebarService } from '../../share/service/sidebar.service';
 import { DeviceService } from '../../share/service/service';
 import { IApiResponseDevice } from '../../share/service/model';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { TokenService } from '../../share/service/token.service';
 import { PermissionService } from '../../share/service/permission.service';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -56,6 +57,7 @@ export class EquipmentComponent {
   deviceService = inject(DeviceService);
   tokenService = inject(TokenService);
   permissionService = inject(PermissionService);
+  message = inject(NzMessageService);
 
   devicesList: IApiResponseDevice[] = [];
   checked = false;
@@ -169,13 +171,13 @@ export class EquipmentComponent {
       next: (res) => {
         this.createDeviceVisible = false;
         this.resetDeviceForm();
+        this.message.success('設備新增成功');
         this.getPageDevices();
         this.getAllDevicesState();
       },
       error: (error) => {
         console.error('Error creating device:', error);
-        this.getPageDevices();
-        this.getAllDevicesState();
+        this.message.error('設備新增失敗，請稍後再試');
       }
     });
   }
@@ -189,16 +191,14 @@ export class EquipmentComponent {
     if (!this.editingDeviceId) return;
     this.deviceService.deleteDevice(this.editingDeviceId).subscribe({
       next: (res) => {
-        // Handle successful deletion
         this.deleteDeviceVisible = false;
+        this.message.success('設備刪除成功');
         this.getPageDevices();
         this.getAllDevicesState();
       },
       error: (error) => {
-        // Handle error
         console.error('Error deleting device:', error);
-        this.getPageDevices();
-        this.getAllDevicesState();
+        this.message.error('設備刪除失敗，請稍後再試');
       }
     });
   }
@@ -227,13 +227,14 @@ export class EquipmentComponent {
       next: (res) => {
         this.updateDeviceVisible = false;
         this.resetDeviceForm();
+        this.message.success('設備更新成功');
         this.getPageDevices();
         this.getAllDevicesState();
       },
       error: (error) => {
-        this.resetDeviceForm();
-        this.getAllDevicesState();
         console.error('Error updating device:', error);
+        this.message.error('設備更新失敗，請稍後再試');
+        this.resetDeviceForm();
       }
     });
   }

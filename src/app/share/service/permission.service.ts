@@ -49,7 +49,6 @@ export class PermissionService {
         Object.entries(ROLE_ROUTE_ACCESS).forEach(([roleName, routes]) => {
             this.roleRouteAccessCache.set(roleName, routes);
         });
-        console.log('🛡️ 角色路由訪問權限已載入:', this.roleRouteAccessCache);
     }
 
     /**
@@ -63,9 +62,7 @@ export class PermissionService {
             return of(void 0);
         }
 
-        // 如果已經載入過該使用者的權限，就不再載入
         if (this.lastLoadedAdminId === adminId && this.rolesSubject.value.length > 0) {
-            console.log('✅ 權限已從快取載入，跳過 API 呼叫');
             return of(void 0);
         }
 
@@ -79,26 +76,14 @@ export class PermissionService {
                     const ownedRoles = res.data.filter((role: IApiResponseSecurityRole) => role.is_owned);
 
                     if (ownedRoles.length === 0) {
-                        console.log('⚠️ 該管理員沒有分配任何角色');
                         this.setDefaultPermissions();
                         return of(void 0);
                     }
 
-                    // 儲存角色名稱
                     const roleNames = ownedRoles.map((role: IApiResponseSecurityRole) => role.role_name);
                     this.rolesSubject.next(roleNames);
                     this.lastLoadedAdminId = adminId;
-                    
-                    // 動態分類角色類型
                     this.categorizeRoles(roleNames);
-
-                    console.log('📥 已取得角色列表:', roleNames);
-                    console.log('🎯 角色分類:', {
-                        admin: Array.from(this.roleTypesCache.adminRoles),
-                        maintenance: Array.from(this.roleTypesCache.maintenanceRoles),
-                        logViewer: Array.from(this.roleTypesCache.logViewerRoles),
-                        student: Array.from(this.roleTypesCache.studentRoles)
-                    });
 
                     // 為每個角色呼叫 getRolePermissions API
                     const permissionRequests = ownedRoles.map((role: IApiResponseSecurityRole) =>
@@ -111,7 +96,7 @@ export class PermissionService {
                                 return [];
                             }),
                             catchError(err => {
-                                console.error(`❌ 取得角色 ${role.role_name} 的權限失敗:`, err);
+                                console.error(`取得角色 ${role.role_name} 的權限失敗:`, err);
                                 return of([]);
                             })
                         )
@@ -128,8 +113,6 @@ export class PermissionService {
 
                             const finalPermissions = Array.from(mergedPermissions);
                             this.permissionsSubject.next(finalPermissions);
-                            
-                            console.log('✅ 已從 API 載入權限:', finalPermissions);
                             return void 0;
                         })
                     );
@@ -160,7 +143,6 @@ export class PermissionService {
     private setDefaultPermissions(): void {
         this.rolesSubject.next(['學生']);
         this.permissionsSubject.next([]);
-        console.log('⚠️ 使用預設學生權限（無特殊權限）');
     }
 
     hasAnyPermission(requiredPermissions: string[]): boolean {

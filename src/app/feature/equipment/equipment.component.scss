@@ -441,3 +441,27 @@ nz-header {
         }
     }
 }
+
+/* ===== Modal 表單 ===== */
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    .form-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .required {
+        color: #ff4d4f;
+        margin-left: 2px;
+    }
+}

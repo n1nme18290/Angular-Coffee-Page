@@ -92,6 +92,7 @@ export class PersonalInfoComponent implements OnInit {
 
   // Modal 控制
   addpointisVisible = false;
+  isTransferLoading = false;
 
   // 表單值
   addpointselectedValue: string = '';
@@ -114,7 +115,6 @@ export class PersonalInfoComponent implements OnInit {
     this.memberId = this.tokenService.getCurrentUserId() || '';
     
     if (!this.memberId) {
-      console.error('❌ 無法取得會員 ID');
       this.message.error('無法取得會員資訊,請重新登入');
       return;
     }
@@ -162,16 +162,13 @@ export class PersonalInfoComponent implements OnInit {
         if (res.isSuccess && res.data) {
           this.username = res.data.name || '';
           this.email = res.data.email || '';
-          // 保存用户名称到 TokenService，供其他页面使用
           this.tokenService.setUsername(this.username);
-          console.log('✅ 會員資訊載入成功');
         } else {
-          console.error('❌ 會員資訊載入失敗:', res.message);
           this.message.error(res.message || '載入會員資訊失敗');
         }
       },
       error: (err) => {
-        console.error('❌ 載入會員資訊錯誤:', err);
+        console.error('載入會員資訊錯誤:', err);
         this.message.error('載入會員資訊時發生錯誤');
       }
     });
@@ -183,14 +180,12 @@ export class PersonalInfoComponent implements OnInit {
       next: (res) => {
         if (res.isSuccess && res.data) {
           this.userpoint = res.data.balance || 0;
-          console.log('✅ 會員點數載入成功:', this.userpoint);
         } else {
-          console.warn('⚠️ 查無點數資料:', res.message);
           this.userpoint = 0;
         }
       },
       error: (err) => {
-        console.error('❌ 載入會員點數錯誤:', err);
+        console.error('載入會員點數錯誤:', err);
         this.userpoint = 0;
       }
     });
@@ -198,29 +193,21 @@ export class PersonalInfoComponent implements OnInit {
 
   // ✅ 載入會員點數異動紀錄（使用 LogService）
   loadMemberLog(page: number = 1, perPage: number = 10) {
-    if (!this.memberId) {
-      console.error('❌ 無法取得會員ID');
-      return;
-    }
+    if (!this.memberId) return;
 
     this.memberHistoryLoading = true;
     this.logService.getMemberLog(this.memberId, page, perPage).subscribe({
       next: (response) => {
-        console.log('📋 Member Log API Response:', response);
-        
         if (response.isSuccess && response.data) {
-          // 處理分頁結構的資料
           this.memberPointsHistoryList = response.data.data || [];
-          console.log('✅ 點數異動紀錄載入成功:', this.memberPointsHistoryList.length);
         } else {
-          console.warn('⚠️ 查無異動紀錄:', response.message);
           this.memberPointsHistoryList = [];
         }
         
         this.memberHistoryLoading = false;
       },
       error: (error) => {
-        console.error('❌ 載入點數異動紀錄失敗:', error);
+        console.error('載入點數異動紀錄失敗:', error);
         this.memberPointsHistoryList = [];
         this.memberHistoryLoading = false;
         this.message.error('載入點數異動紀錄時發生錯誤');
@@ -258,18 +245,15 @@ export class PersonalInfoComponent implements OnInit {
       return;
     }
 
-    // ✅ 呼叫轉贈點數 API
+    this.isTransferLoading = true;
     this.pointsService.addMemberpoints(this.memberId, receiverId.trim(), points).subscribe({
       next: (res) => {
+        this.isTransferLoading = false;
         if (res.isSuccess) {
           this.message.success('點數轉贈成功！');
           this.addpointisVisible = false;
-          
-          // 重置表單
           this.addpointselectedValue = '';
           this.pointvalue = 0;
-          
-          // 重新載入點數和紀錄
           this.loadMemberPoints();
           this.loadMemberLog();
         } else {
@@ -277,9 +261,8 @@ export class PersonalInfoComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('❌ 點數轉贈錯誤:', err);
-        
-        // ✅ 更詳細的錯誤處理
+        this.isTransferLoading = false;
+        console.error('點數轉贈錯誤:', err);
         if (err.status === 404) {
           this.message.error('找不到該學號的使用者');
         } else if (err.status === 400) {

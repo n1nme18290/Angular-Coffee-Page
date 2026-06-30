@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TokenService {
+    private platformId = inject(PLATFORM_ID);
     private baseTokenKey = 'coffee_auth_token';
     private baseMemberIdKey = 'coffee_member_id';
     private baseAdminIdKey = 'coffee_admin_id';
@@ -14,6 +16,10 @@ export class TokenService {
     private memberIdSubject = new BehaviorSubject<string | null>(this.getMemberId());
 
     constructor() { }
+
+    private get storage(): Storage | null {
+        return isPlatformBrowser(this.platformId) ? localStorage : null;
+    }
 
     // 獲取當前用戶的 token key
     private getTokenKey(): string {
@@ -34,28 +40,25 @@ export class TokenService {
 
     // 獲取當前用戶 ID
     getCurrentUserId(name?: string): string | null {
-        return localStorage.getItem(name ? `${this.baseMemberIdKey}_${name}` : this.baseMemberIdKey);
+        return this.storage?.getItem(name ? `${this.baseMemberIdKey}_${name}` : this.baseMemberIdKey) ?? null;
     }
 
     // 獲取當前管理員 ID
     getCurrentAdminId(name?: string): string | null {
-        return localStorage.getItem(name ? `${this.baseAdminIdKey}_${name}` : this.baseAdminIdKey);
+        return this.storage?.getItem(name ? `${this.baseAdminIdKey}_${name}` : this.baseAdminIdKey) ?? null;
     }
 
     // Token 相關方法
     setToken(token: string): void {
-        const tokenKey = this.getTokenKey();
-        localStorage.setItem(tokenKey, token);
+        this.storage?.setItem(this.getTokenKey(), token);
     }
 
     getToken(): string | null {
-        const tokenKey = this.getTokenKey();
-        return localStorage.getItem(tokenKey);
+        return this.storage?.getItem(this.getTokenKey()) ?? null;
     }
 
     removeToken(): void {
-        const tokenKey = this.getTokenKey();
-        localStorage.removeItem(tokenKey);
+        this.storage?.removeItem(this.getTokenKey());
     }
 
     hasToken(): boolean {
@@ -64,23 +67,19 @@ export class TokenService {
 
     // Member ID 相關方法
     setMemberId(memberId: string): void {
-        const memberIdKey = this.getMemberIdKey();
-        localStorage.setItem(memberIdKey, memberId);
+        this.storage?.setItem(this.getMemberIdKey(), memberId);
     }
 
     setCurrentAdminId(adminId: string): void {
-        const adminIdKey = this.getAdminIdKey();
-        localStorage.setItem(adminIdKey, adminId);
+        this.storage?.setItem(this.getAdminIdKey(), adminId);
     }
 
     getMemberId(): string {
-        const memberIdKey = this.getMemberIdKey();
-        return localStorage.getItem(memberIdKey) || '';
+        return this.storage?.getItem(this.getMemberIdKey()) || '';
     }
 
     removeMemberId(): void {
-        const memberIdKey = this.getMemberIdKey();
-        localStorage.removeItem(memberIdKey);
+        this.storage?.removeItem(this.getMemberIdKey());
         this.memberIdSubject.next(null);
     }
 
@@ -90,22 +89,20 @@ export class TokenService {
 
     // Admin ID 相關方法
     removeAdminId(): void {
-        const adminIdKey = this.getAdminIdKey();
-        localStorage.removeItem(adminIdKey);
-        console.log('✅ Admin ID 已清除:', adminIdKey);
+        this.storage?.removeItem(this.getAdminIdKey());
     }
-    
+
     // Username 相關方法
     setUsername(username: string): void {
-        localStorage.setItem(this.baseUsernameKey, username);
+        this.storage?.setItem(this.baseUsernameKey, username);
     }
 
     getUsername(): string {
-        return localStorage.getItem(this.baseUsernameKey) || '使用者';
+        return this.storage?.getItem(this.baseUsernameKey) || '使用者';
     }
 
     removeUsername(): void {
-        localStorage.removeItem(this.baseUsernameKey);
+        this.storage?.removeItem(this.baseUsernameKey);
     }
     
     // Observable 以便訂閱 token 和 member ID 的變化

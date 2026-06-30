@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
+import { of, switchMap, catchError } from 'rxjs';
 import { TokenService } from '../../share/service/token.service';
 import { PermissionService } from '../../share/service/permission.service';
 import { PUBLIC_ROUTES } from '../../core/config/role-permissions.config';
@@ -29,29 +30,26 @@ export const permissionGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // 取得當前用戶角色
+  const checkAccess = () => {
+    if (permissionService.canAccessRouteByRole(routePath)) {
+      return true;
+    }
+    router.navigate(['/personal-info'], { queryParams: { error: 'permission_denied' } });
+    return false;
+  };
+
+  // 角色已載入：直接決定
   const cachedRoles = permissionService.getRoles();
-  
-  console.log(`🔍 檢查路由 ${routePath} 的訪問權限`);
-  console.log('👤 用戶角色:', cachedRoles);
-
-  // 如果角色還沒載入完成，先允許訪問，避免卡住
-  if (cachedRoles.length === 0) {
-    console.log('⚠️ 角色尚未載入，暫時允許訪問');
-    return true;
+  if (cachedRoles.length > 0) {
+    return checkAccess();
   }
 
-  // 使用角色路由訪問權限檢查
-  if (permissionService.canAccessRouteByRole(routePath)) {
-    console.log(`✅ 角色允許訪問 ${routePath}`);
-    return true;
-  }
-
-  console.log('❌ 角色權限不足，拒絕訪問');
-  console.log('🛡️ 用戶角色:', cachedRoles);
-  console.log('📍 嘗試訪問:', routePath);
-  router.navigate(['/personal-info'], {
-    queryParams: { error: 'permission_denied' }
-  });
-  return false;
+  // 角色未載入（例如頁面重新整理）：先載入再決定，避免未驗證即放行
+  return permissionService.loadUserPermissions().pipe(
+    switchMap(() => of(checkAccess())),
+    catchError(() => {
+      router.navigate(['/']);
+      return of(false);
+    })
+  );
 };

@@ -168,4 +168,103 @@
             </nz-table>
         </div>
     </div>
+
+<!-- ===== 新增設備 Modal ===== -->
+<nz-modal [(nzVisible)]="createDeviceVisible" nzTitle="新增設備"
+    [nzFooter]="createFooter" nzCentered [nzClosable]="false">
+    <ng-container *nzModalContent>
+        <div class="modal-form">
+            <div class="form-item">
+                <label class="form-label">設備名稱 <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入設備名稱" [(ngModel)]="deviceName" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">設備地點 <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入設備地點" [(ngModel)]="deviceLocation" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">設備狀態 <span class="required">*</span></label>
+                <nz-select [(ngModel)]="deviceStatus" nzPlaceHolder="請選擇狀態" style="width: 100%;">
+                    <nz-option nzValue="運作中" nzLabel="運作中"></nz-option>
+                    <nz-option nzValue="維護中" nzLabel="維護中"></nz-option>
+                    <nz-option nzValue="離線" nzLabel="離線"></nz-option>
+                </nz-select>
+            </div>
+            <div class="form-item">
+                <label class="form-label">Machine ID <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入 Machine ID" [(ngModel)]="machine_id" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">Machine IP <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入 Machine IP" [(ngModel)]="machine_ip" />
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #createFooter>
+        <button nz-button (click)="createDeviceVisible = false; resetDeviceForm()">取消</button>
+        <button nz-button nzType="primary" [disabled]="!isFormValid()" (click)="createDevice()">確認新增</button>
+    </ng-template>
+</nz-modal>
+
+<!-- ===== 編輯設備 Modal ===== -->
+<nz-modal [(nzVisible)]="updateDeviceVisible" nzTitle="編輯設備"
+    [nzFooter]="updateFooter" nzCentered [nzClosable]="false">
+    <ng-container *nzModalContent>
+        <div class="modal-form">
+            <div class="form-item">
+                <label class="form-label">設備名稱 <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入設備名稱" [(ngModel)]="deviceName" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">設備地點 <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入設備地點" [(ngModel)]="deviceLocation" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">設備狀態 <span class="required">*</span></label>
+                <nz-select [(ngModel)]="deviceStatus" nzPlaceHolder="請選擇狀態" style="width: 100%;">
+                    <nz-option nzValue="運作中" nzLabel="運作中"></nz-option>
+                    <nz-option nzValue="維護中" nzLabel="維護中"></nz-option>
+                    <nz-option nzValue="離線" nzLabel="離線"></nz-option>
+                </nz-select>
+            </div>
+            <div class="form-item">
+                <label class="form-label">Machine ID <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入 Machine ID" [(ngModel)]="machine_id" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">Machine IP <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入 Machine IP" [(ngModel)]="machine_ip" />
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #updateFooter>
+        <button nz-button (click)="updateDeviceVisible = false; resetDeviceForm()">取消</button>
+        <button nz-button nzType="primary" [disabled]="!isFormValid()" (click)="updateDevice()">確認更新</button>
+    </ng-template>
+</nz-modal>
+
+<!-- ===== 刪除設備 Modal ===== -->
+<nz-modal [(nzVisible)]="deleteDeviceVisible" nzTitle="確認刪除"
+    [nzFooter]="deleteFooter" nzCentered [nzClosable]="false">
+    <ng-container *nzModalContent>
+        <p>確定要刪除此設備嗎？此操作無法復原。</p>
+    </ng-container>
+    <ng-template #deleteFooter>
+        <button nz-button (click)="deleteDeviceVisible = false">取消</button>
+        <button nz-button nzType="primary" nzDanger (click)="deleteDevice()">確認刪除</button>
+    </ng-template>
+</nz-modal>
+
+<!-- ===== 設備清潔 Modal ===== -->
+<nz-modal [(nzVisible)]="cleanedDeviceVisible" nzTitle="標記已清潔"
+    [nzFooter]="cleanedFooter" nzCentered [nzClosable]="false">
+    <ng-container *nzModalContent>
+        <p>確定要將此設備標記為已清潔嗎？</p>
+    </ng-container>
+    <ng-template #cleanedFooter>
+        <button nz-button (click)="cleanedDeviceVisible = false">取消</button>
+        <button nz-button nzType="primary" (click)="deviceCleaned()">確認</button>
+    </ng-template>
+</nz-modal>
+
 </nz-layout>

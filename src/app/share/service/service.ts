@@ -1,5 +1,5 @@
 import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
-import { inject, Injectable, Type } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
 import { IApiResponse, IApiResponseAdmin, IApiResponseAdminLogin, IApiResponseDevice, IApiResponseMember, IApiResponseNormal, IApiResponsePages, IApiResponsePointsHistory, IApiResponseGetProduct, IApiResponseGetPageProduct, IApiResponseProductList, IApiResponseGetPageDeviceLog, IApiResponseMemberSSOLogin, IApiResponseSecurityRole, IApiResponseDeviceState, IApiResponseNormal2, IApiResponseRolePermission } from './model';
 import { IApiResponsePoints } from './model';
@@ -360,14 +360,12 @@ export class AuthService extends BaseService {
     // TODO: 發送到後端進行審計
     // this.http.post('/api/audit/login-attempt', logEntry).subscribe();
 
-    // 暫時存儲到 localStorage（實際應該發送到後端）
-    const logs = JSON.parse(localStorage.getItem('login_audit_logs') || '[]');
-    logs.push(logEntry);
-    // 只保留最近 200 筆記錄
-    if (logs.length > 200) {
-      logs.shift();
+    if (typeof localStorage !== 'undefined') {
+      const logs = JSON.parse(localStorage.getItem('login_audit_logs') || '[]');
+      logs.push(logEntry);
+      if (logs.length > 200) logs.shift();
+      localStorage.setItem('login_audit_logs', JSON.stringify(logs));
     }
-    localStorage.setItem('login_audit_logs', JSON.stringify(logs));
   }
 
   /**
@@ -415,7 +413,7 @@ export class AuthService extends BaseService {
             }
             // 儲存 admin_id
             if (response.data.admin_id) {
-              this.tokenService.setMemberId(response.data.admin_id);
+              this.tokenService.setCurrentAdminId(response.data.admin_id);
             }
           }
           observer.next(response);

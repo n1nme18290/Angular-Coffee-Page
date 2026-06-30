@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { forkJoin, of, switchMap, map } from 'rxjs';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -60,6 +61,10 @@ export class PermissionManagementComponent {
   adminList: IApiResponseAdmin[] = [];
   memberlist: IApiResponseMember[] = [];
 
+  // 篩選模式下的完整資料快取（前端分頁用）
+  private allAdminData: IApiResponseAdmin[] = [];
+  private allMemberData: IApiResponseMember[] = [];
+
   checked = false;
   loading = false;
   indeterminate = false;
@@ -107,25 +112,9 @@ export class PermissionManagementComponent {
   };
 
   ngOnInit() {
-    console.log('🔧 權限管理頁面初始化');
-    console.log('💡 提示：在瀏覽器 Console 中輸入 window.debugPermissions() 可查看權限診斷資訊');
-    
-    // 先確保角色列表已加載
     this.loadAvailableRoles();
-    // 同時加載管理員和會員列表
     this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
     this.getPageMember(this.memberCurrentPage, this.memberPageSize);
-    
-    // 暴露診斷方法到 window（僅供開發調試）
-    if (typeof window !== 'undefined') {
-      (window as any).debugPermissions = () => {
-        console.log('=== 權限診斷資訊 ===');
-        console.log('📋 可用角色列表:', this.availableRoles);
-        console.log('👥 管理員列表:', this.adminList);
-        console.log(' 管理員角色快取:', this.adminRolesCache);
-        console.log('===================');
-      };
-    }
   }
 
   // ==================== 管理人員搜尋篩選功能 ====================
@@ -186,19 +175,14 @@ export class PermissionManagementComponent {
 
   // 載入所有可用角色
   loadAvailableRoles(): void {
-    console.log('🔄 開始加載角色列表...');
     this.roleListLoading = true;
-    
+
     this.securityService.getAllRolesList().subscribe({
       next: (res) => {
-        console.log('📥 後端返回的原始響應:', res);
-        
         if (res?.data) {
           let roleData: any = res.data;
-          
-          // 如果返回的 data 本身不是數組，嘗試提取內部數據
+
           if (!Array.isArray(roleData)) {
-            console.warn('⚠️ 角色數據不是數組，嘗試提取...');
             if (roleData.data && Array.isArray(roleData.data)) {
               roleData = roleData.data;
             } else if (roleData.list && Array.isArray(roleData.list)) {
@@ -207,44 +191,26 @@ export class PermissionManagementComponent {
               roleData = roleData.roles;
             }
           }
-          
+
           if (Array.isArray(roleData) && roleData.length > 0) {
-            console.log('📊 找到 ' + roleData.length + ' 個角色');
-            console.log('📋 第一個角色的結構:', roleData[0]);
-            
-            this.availableRoles = roleData.map((role: any) => {
-              const mappedRole = {
-                role_id: role.role_id || role.id || '',
-                role_name: role.role_name || role.name || '',
-                description: role.description || '',
-                is_owned: false
-              };
-              console.log('✓ 映射角色:', role, '→', mappedRole);
-              return mappedRole;
-            });
-            
-            console.log('✅ 角色列表已加載:', this.availableRoles.length + ' 個角色');
-            console.log('📌 最終角色列表:', JSON.stringify(this.availableRoles));
+            this.availableRoles = roleData.map((role: any) => ({
+              role_id: role.role_id || role.id || '',
+              role_name: role.role_name || role.name || '',
+              description: role.description || '',
+              is_owned: false
+            }));
           } else {
-            console.warn('⚠️ 角色數據為空或不是數組');
             this.availableRoles = [];
           }
         } else {
-          console.warn('⚠️ 響應中沒有 data 字段');
           this.availableRoles = [];
         }
-        
+
         this.roleListLoading = false;
       },
       error: (err) => {
-        console.error('❌ 載入角色列表失敗:', err);
-        console.error('❌ 錯誤詳情:', {
-          status: err.status,
-          statusText: err.statusText,
-          message: err.message,
-          error: err.error
-        });
-        this.message.error('載入角色列表失敗: ' + (err.error?.message || err.message));
+        console.error('載入角色列表失敗:', err);
+        this.message.error('載入角色列表失敗');
         this.availableRoles = [];
         this.roleListLoading = false;
       }
@@ -254,119 +220,193 @@ export class PermissionManagementComponent {
   // Admin 頁面數據變更時
   onAdminPageIndexChange(pageIndex: number): void {
     this.adminCurrentPage = pageIndex;
-    this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
+    if (this.isAdminFiltering()) {
+      this.applyAdminPage();
+    } else {
+      this.getPageAdmin(pageIndex, this.adminPageSize);
+    }
   }
 
   // Admin 每頁筆數變更時
   onAdminPageSizeChange(pageSize: number): void {
     this.adminPageSize = pageSize;
     this.adminCurrentPage = 1;
-    this.getPageAdmin(this.adminCurrentPage, this.adminPageSize);
+    if (this.isAdminFiltering()) {
+      this.applyAdminPage();
+    } else {
+      this.getPageAdmin(1, pageSize);
+    }
   }
 
-  // 取得分頁 Admin（含搜尋篩選）
+  // 平行拉完所有頁（per_page 固定用 20，符合後端限制）
+  private fetchAllAdmins() {
+    return this.adminService.getPageAdmins(1, 20).pipe(
+      switchMap(first => {
+        const firstData = first?.data?.data ?? [];
+        const totalPages = first?.data?.total_pages ?? 1;
+        if (totalPages <= 1) return of(firstData);
+        const rest = Array.from({ length: totalPages - 1 }, (_, i) =>
+          this.adminService.getPageAdmins(i + 2, 20)
+        );
+        return forkJoin(rest).pipe(
+          map(pages => [...firstData, ...pages.flatMap(r => r?.data?.data ?? [])])
+        );
+      })
+    );
+  }
+
+  private fetchAllMembers() {
+    return this.memberService.getPageMembers(1, 20).pipe(
+      switchMap(first => {
+        const firstData = first?.data?.data ?? [];
+        const totalPages = first?.data?.total_pages ?? 1;
+        if (totalPages <= 1) return of(firstData);
+        const rest = Array.from({ length: totalPages - 1 }, (_, i) =>
+          this.memberService.getPageMembers(i + 2, 20)
+        );
+        return forkJoin(rest).pipe(
+          map(pages => [...firstData, ...pages.flatMap(r => r?.data?.data ?? [])])
+        );
+      })
+    );
+  }
+
+  private isAdminFiltering(): boolean {
+    return !!(this.adminSearchName?.trim()) || this.adminFilterRole !== '全部角色';
+  }
+
+  private applyAdminPage(): void {
+    const start = (this.adminCurrentPage - 1) * this.adminPageSize;
+    this.adminList = this.allAdminData.slice(start, start + this.adminPageSize);
+  }
+
+  // 取得分頁 Admin
   getPageAdmin(page: number, pageSize: number): void {
     this.loading = true;
-    this.adminService.getPageAdmins(page, pageSize).subscribe({
-      next: (res) => {
-        const data = res?.data?.data;
-        let adminData: IApiResponseAdmin[] = [];
-        
-        if (Array.isArray(data)) {
-          adminData = data;
-          
-          // 前端篩選：名稱搜尋
-          if (this.adminSearchName && this.adminSearchName.trim()) {
-            const searchLower = this.adminSearchName.toLowerCase().trim();
-            adminData = adminData.filter(admin =>
-              admin.name.toLowerCase().includes(searchLower)
-            );
+
+    if (this.isAdminFiltering()) {
+      this.fetchAllAdmins().subscribe({
+        next: (allData) => {
+          let data = allData;
+          if (this.adminSearchName?.trim()) {
+            const lower = this.adminSearchName.toLowerCase().trim();
+            data = data.filter(a => a.name.toLowerCase().includes(lower));
           }
-          
-          // 前端篩選：角色篩選
           if (this.adminFilterRole !== '全部角色') {
-            adminData = adminData.filter(admin => {
-              const roleNames = this.getAdminRoleNames(admin);
-              return roleNames.includes(this.adminFilterRole);
-            });
+            data = data.filter(a => this.getAdminRoleNames(a).includes(this.adminFilterRole));
           }
-          
-          this.adminList = adminData;
-          this.totalAdmin = adminData.length;
-        } else {
+          this.allAdminData = data;
+          this.totalAdmin = data.length;
+          this.adminCurrentPage = 1;
+          this.applyAdminPage();
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('取得管理員列表失敗:', err);
+          this.message.error('取得管理員列表失敗');
           this.adminList = [];
           this.totalAdmin = 0;
+          this.loading = false;
         }
-        
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('取得管理員列表失敗:', err);
-        this.message.error('取得管理員列表失敗');
-        this.adminList = [];
-        this.totalAdmin = 0;
-        this.loading = false;
-      }
-    });
+      });
+    } else {
+      // 無篩選：後端分頁
+      this.adminService.getPageAdmins(page, pageSize).subscribe({
+        next: (res) => {
+          this.adminList = res?.data?.data ?? [];
+          this.totalAdmin = res?.data?.total ?? this.adminList.length;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('取得管理員列表失敗:', err);
+          this.message.error('取得管理員列表失敗');
+          this.adminList = [];
+          this.totalAdmin = 0;
+          this.loading = false;
+        }
+      });
+    }
   }
 
   // Member 頁面數據變更時
   onMemberPageIndexChange(pageIndex: number): void {
     this.memberCurrentPage = pageIndex;
-    this.getPageMember(this.memberCurrentPage, this.memberPageSize);
+    if (this.isMemberFiltering()) {
+      this.applyMemberPage();
+    } else {
+      this.getPageMember(pageIndex, this.memberPageSize);
+    }
   }
 
   // Member 一頁幾筆變更時
   onMemberPageSizeChange(pageSize: number): void {
     this.memberPageSize = pageSize;
     this.memberCurrentPage = 1;
-    this.getPageMember(this.memberCurrentPage, this.memberPageSize);
+    if (this.isMemberFiltering()) {
+      this.applyMemberPage();
+    } else {
+      this.getPageMember(1, pageSize);
+    }
   }
 
-  // 取得分頁 Member（含搜尋篩選）
+  private isMemberFiltering(): boolean {
+    return !!(this.memberSearchId?.trim()) || this.memberFilterCard !== '全部類別';
+  }
+
+  private applyMemberPage(): void {
+    const start = (this.memberCurrentPage - 1) * this.memberPageSize;
+    this.memberlist = this.allMemberData.slice(start, start + this.memberPageSize);
+  }
+
+  // 取得分頁 Member
   getPageMember(page: number, pageSize: number): void {
     this.loading = true;
-    this.memberService.getPageMembers(page, pageSize).subscribe({
-      next: (res) => {
-        const data = res?.data?.data;
-        let memberData: IApiResponseMember[] = [];
-        
-        if (Array.isArray(data)) {
-          memberData = data;
-          
-          // 前端篩選：ID搜尋
-          if (this.memberSearchId && this.memberSearchId.trim()) {
+
+    if (this.isMemberFiltering()) {
+      this.fetchAllMembers().subscribe({
+        next: (allData) => {
+          let data = allData;
+          if (this.memberSearchId?.trim()) {
             const searchId = this.memberSearchId.trim();
-            memberData = memberData.filter(member =>
-              member.student_id.includes(searchId)
-            );
+            data = data.filter(m => m.student_id.includes(searchId));
           }
-          
-          // 前端篩選：卡片類別篩選
           if (this.memberFilterCard !== '全部類別') {
-            memberData = memberData.filter(member => {
-              const cardType = this.cardTypeMap[member.title] || member.title;
+            data = data.filter(m => {
+              const cardType = this.cardTypeMap[m.title] || m.title;
               return cardType === this.memberFilterCard;
             });
           }
-          
-          this.memberlist = memberData;
-          this.totalMember = memberData.length;
-        } else {
+          this.allMemberData = data;
+          this.totalMember = data.length;
+          this.memberCurrentPage = 1;
+          this.applyMemberPage();
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('取得會員列表失敗:', err);
+          this.message.error('取得會員列表失敗');
           this.memberlist = [];
           this.totalMember = 0;
+          this.loading = false;
         }
-        
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('取得會員列表失敗:', err);
-        this.message.error('取得會員列表失敗');
-        this.memberlist = [];
-        this.totalMember = 0;
-        this.loading = false;
-      }
-    });
+      });
+    } else {
+      // 無篩選：後端分頁
+      this.memberService.getPageMembers(page, pageSize).subscribe({
+        next: (res) => {
+          this.memberlist = res?.data?.data ?? [];
+          this.totalMember = res?.data?.total ?? this.memberlist.length;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('取得會員列表失敗:', err);
+          this.message.error('取得會員列表失敗');
+          this.memberlist = [];
+          this.totalMember = 0;
+          this.loading = false;
+        }
+      });
+    }
   }
 
   // 編輯管理員角色彈跳視窗
@@ -382,13 +422,8 @@ export class PermissionManagementComponent {
     this.currentEditAdmin = admin;
     this.setOfCheckedRoleId.clear();
     
-    // 如果可用角色列表還沒加載完，先加載
     if (this.availableRoles.length === 0) {
-      console.log('🔄 角色列表為空，開始加載...');
-      this.roleListLoading = true;
       this.loadAvailableRoles();
-    } else {
-      console.log('✅ 角色列表已存在，直接使用');
     }
     
     // 標記正在加載該管理員的現有角色
@@ -398,11 +433,7 @@ export class PermissionManagementComponent {
     this.securityService.getRolePermission(admin.id).subscribe({
       next: (res) => {
         if (res?.data && Array.isArray(res.data)) {
-          // 篩選出 is_owned 為 true 的角色，並預先勾選
           const ownedRoles = res.data.filter((role: IApiResponseSecurityRole) => role.is_owned);
-          
-          console.log('👤 該管理員已擁有的角色:', ownedRoles);
-          
           ownedRoles.forEach((role: IApiResponseSecurityRole) => {
             this.setOfCheckedRoleId.add(role.role_id);
           });

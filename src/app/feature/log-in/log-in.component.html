@@ -6,12 +6,15 @@
       <h2 nz-typography>SSO 登入</h2>
       <!--學號輸入框-->
       <div class="input-block">
-        <h5 nz-typography style="margin: 0;">請輸入學號（要加s）：</h5>
-        <input nz-input placeholder="請輸入學號" nzSize="large" [(ngModel)]="studentId" />
+        <h5 nz-typography class="input-label">請輸入學號：</h5>
+        <input nz-input placeholder="例：s123456789" nzSize="large"
+          [(ngModel)]="studentId" (keydown.enter)="onSSOLogin()" />
       </div>
       <br>
       <!--SSO 登入按鈕-->
-      <button nz-button nzType="primary" nzBlock class="btn-styles1" (click)="onSSOLogin()">SSO 登入</button>
+      <button nz-button nzType="primary" nzBlock class="btn-styles1"
+        [nzLoading]="isLoading" [disabled]="isLoading"
+        (click)="onSSOLogin()">SSO 登入</button>
     </div>
   </nz-content>
 

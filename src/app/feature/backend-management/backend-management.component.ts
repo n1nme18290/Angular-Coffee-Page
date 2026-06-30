@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -28,14 +29,17 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
   @ViewChild('chart1Container', { static: false }) chart1El?: ElementRef<HTMLDivElement>;
   @ViewChild('chart2Container', { static: false }) chart2El?: ElementRef<HTMLDivElement>;
   @ViewChild('chart3Container', { static: false }) chart3El?: ElementRef<HTMLDivElement>;
+  @ViewChild('chart4Container', { static: false }) chart4El?: ElementRef<HTMLDivElement>;
 
   private chart1Instance?: echarts.ECharts;
   private chart2Instance?: echarts.ECharts;
   private chart3Instance?: echarts.ECharts;
+  private chart4Instance?: echarts.ECharts;
 
   chart1Loading = false;
   chart2Loading = false;
   chart3Loading = false;
+  chart4Loading = false;
 
   chart1Range: 'day' | 'week' | 'month' = 'week';
   chart2Range: 'day' | 'week' | 'month' = 'week';
@@ -53,6 +57,13 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     return this.tokenService.getUsername();
   }
 
+  get weekRangeLabel(): string {
+    const today = new Date();
+    const start = new Date(today);
+    start.setDate(today.getDate() - 6);
+    return `${this.toMMDD(start)} ~ ${this.toMMDD(today)}`;
+  }
+
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
@@ -61,9 +72,11 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
         this.initChart1();
         this.initChart2();
         this.initChart3();
+        this.initChart4();
         this.loadChart1Data();
         this.loadChart2Data();
         this.loadChart3Data();
+        this.loadChart4Data();
       }, 300);
       window.addEventListener('resize', this.onResize);
     }
@@ -76,6 +89,7 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     this.chart1Instance?.dispose();
     this.chart2Instance?.dispose();
     this.chart3Instance?.dispose();
+    this.chart4Instance?.dispose();
   }
 
   // ======================= 初始化圖表 =======================
@@ -132,6 +146,50 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
       }]
     } as echarts.EChartsOption);
     this.chart3Instance.resize();
+  }
+
+  private initChart4(): void {
+    if (!isPlatformBrowser(this.platformId) || !this.chart4El?.nativeElement) return;
+    this.chart4Instance = echarts.init(this.chart4El.nativeElement);
+    this.chart4Instance.setOption({
+      legend: { data: ['總計', '學生'], top: 4 },
+      tooltip: {
+        trigger: 'axis',
+        formatter: (params: any) => {
+          const lines = params.map((p: any) => `${p.marker}${p.seriesName}：${p.value} 杯`).join('<br/>');
+          return `${params[0]?.name ?? ''}<br/>${lines}`;
+        }
+      },
+      grid: { top: 48, left: 12, right: 24, bottom: 8, containLabel: true },
+      xAxis: { type: 'category', data: ['載入中...'], boundaryGap: false },
+      yAxis: { type: 'value', name: '數量(杯)', minInterval: 1 },
+      series: [
+        {
+          name: '總計',
+          type: 'line',
+          data: [0],
+          smooth: true,
+          symbol: 'circle',
+          symbolSize: 8,
+          itemStyle: { color: '#5470c6' },
+          lineStyle: { width: 2 },
+          areaStyle: { color: 'rgba(84, 112, 198, 0.12)' },
+          label: { show: true, position: 'top' }
+        },
+        {
+          name: '學生',
+          type: 'line',
+          data: [0],
+          smooth: true,
+          symbol: 'circle',
+          symbolSize: 8,
+          itemStyle: { color: '#ee6666' },
+          lineStyle: { width: 2 },
+          label: { show: true, position: 'top' }
+        }
+      ]
+    } as echarts.EChartsOption);
+    this.chart4Instance.resize();
   }
 
   // ======================= 載入資料 =======================
@@ -241,12 +299,80 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     });
   }
 
+  // 圖表四：近七天每日兌換數量（折線圖，總計 + 學生）
+  loadChart4Data(): void {
+    this.chart4Loading = true;
+    const today = new Date();
+    const start = new Date(today);
+    start.setDate(today.getDate() - 6);
+    const startDate = this.toDateString(start);
+    const endDate = this.toDateString(today);
+
+    forkJoin({
+      summary: this.logService.getExchangeSummary('day', startDate, endDate),
+      identity: this.logService.getExchangeByIdentity('day', startDate, endDate)
+    }).subscribe({
+      next: ({ summary, identity }) => {
+        this.chart4Loading = false;
+        const summaryData: any[] = (summary?.isSuccess && Array.isArray(summary.data)) ? summary.data : [];
+        const identityData: any[] = (identity?.isSuccess && Array.isArray(identity.data)) ? identity.data : [];
+
+        if (summaryData.length === 0) {
+          this.chart4Instance?.setOption({ xAxis: { data: ['暫無資料'] }, series: [{ data: [0] }, { data: [0] }] });
+          this.chart4Instance?.resize();
+          return;
+        }
+
+        const labels = summaryData.map((item: any) => this.formatDayOfWeekLabel(item.label ?? ''));
+        const totalValues = summaryData.map((item: any) => item.total_count ?? 0);
+
+        // 以日期為 key 建立學生每日查找表
+        const studentMap = new Map<string, number>();
+        identityData
+          .filter((item: any) => item.identity_type === '學生')
+          .forEach((item: any) => studentMap.set(item.label ?? '', item.total_count ?? 0));
+        const studentValues = summaryData.map((item: any) => studentMap.get(item.label ?? '') ?? 0);
+
+        this.chart4Instance?.setOption({
+          xAxis: { data: labels },
+          series: [{ data: totalValues }, { data: studentValues }]
+        });
+        this.chart4Instance?.resize();
+      },
+      error: (err) => {
+        console.error('Chart4 error:', err);
+        this.chart4Loading = false;
+        this.chart4Instance?.setOption({ xAxis: { data: ['載入失敗'] }, series: [{ data: [0] }, { data: [0] }] });
+        this.chart4Instance?.resize();
+      }
+    });
+  }
+
+  // "YYYY-MM-DD" → "週X\nMM/DD"
+  private formatDayOfWeekLabel(label: string): string {
+    const parts = label.split('-');
+    if (parts.length === 3) {
+      const date = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+      const dayName = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'][date.getDay()];
+      return `${dayName}\n${parts[1]}/${parts[2]}`;
+    }
+    return label;
+  }
+
+  private toDateString(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
   // ======================= 視窗縮放 =======================
 
   private onResize = (): void => {
     this.chart1Instance?.resize();
     this.chart2Instance?.resize();
     this.chart3Instance?.resize();
+    this.chart4Instance?.resize();
   };
 
   toggleCollapsed(): void {

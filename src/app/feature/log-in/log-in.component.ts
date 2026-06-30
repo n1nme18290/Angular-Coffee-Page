@@ -4,6 +4,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../share/service/service';
@@ -19,72 +20,63 @@ import { PermissionService } from '../../share/service/permission.service';
 export class LogInComponent {
 
   studentId: string = '';
+  isLoading = false;
 
   private permissionService = inject(PermissionService);
-  private router = inject(Router)
+  private router = inject(Router);
   private authService = inject(AuthService);
-  constructor() { }
+  private message = inject(NzMessageService);
 
-  // 登入
   onLogin(email: string, password: string): void {
-    // 檢查是否為後門登入
     const isBackdoor = window.location.pathname.includes('backdoor-login');
-    
+    this.isLoading = true;
+
     this.authService.loginAndSaveToken(email, password, isBackdoor).subscribe({
       next: (response) => {
-        //登入成功，Token 已在 AuthService 儲存
         if (response.isSuccess) {
-          console.log('登入成功，token 已儲存');
-          // 登入成功導航到主頁面
           this.permissionService.loadUserPermissions().subscribe(() => {
-            console.log('使用者權限已載入');
+            this.isLoading = false;
             this.router.navigate(['/personal-info']);
           });
         } else {
-          //回傳錯誤訊息
-          console.error('登入失敗:', response.message);
+          this.isLoading = false;
+          this.message.error(response.message || '帳號或密碼錯誤');
         }
       },
-      // 處理登入失敗的邏輯
-      error: (error) => {
-        console.error('登入錯誤:', error);
+      error: () => {
+        this.isLoading = false;
+        this.message.error('登入失敗，請稍後再試');
       }
     });
   }
 
-  // adminLogin() {
-  //   this.authService.adminLogin(this.email, this.password).subscribe({
-  //     next: (response) => {
-  //       // 處理成功登入的邏輯
-  //       console.log('登入成功', response.message);
-  //       // 登入成功導航到主頁面
-  //       this.router.navigate(['/personal-info']);
-  //     },
-  //     error: (error) => {
-  //       // 處理登入失敗的邏輯
-  //       console.error('登入失敗', error);
-  //     }
-  //   });
-  // }
-
-  //sso 單一登入流程
   onSSOLogin(): void {
-    this.authService.ssoLoginAndSaveToken(this.studentId).subscribe({
+    if (!this.studentId.trim()) {
+      this.message.warning('請輸入學號');
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.authService.ssoLoginAndSaveToken(this.studentId.trim()).subscribe({
       next: (response) => {
         if (response.isSuccess) {
-          console.log('登入成功，token 已儲存');
           this.permissionService.loadUserPermissions().subscribe(() => {
-            console.log('使用者權限已載入');
+            this.isLoading = false;
             this.router.navigate(['/personal-info']);
           });
+        } else {
+          this.isLoading = false;
+          this.message.error(response.message || '學號登入失敗');
         }
       },
-      error: (error) => {
-        console.error('SSO 登入錯誤:', error);
+      error: () => {
+        this.isLoading = false;
+        this.message.error('登入失敗，請稍後再試');
       }
     });
   }
-    //登出
+
   onLogout(): void {
     this.authService.logout();
     this.permissionService.clearPermissions();

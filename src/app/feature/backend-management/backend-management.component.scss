@@ -133,6 +133,16 @@ nz-content {
     flex: 1;
 }
 
+/* 折線圖容器略矮，橫向空間更重要 */
+.echart-container--line {
+    height: 300px;
+}
+
+/* 第四張圖佔兩欄寬 */
+.chart-card--full {
+    grid-column: span 2;
+}
+
 /* ===== RWD ===== */
 
 /* 平板：三欄 → 兩欄，第三張圖置中 */
