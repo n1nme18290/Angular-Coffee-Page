@@ -1,0 +1,51 @@
+<nz-layout>
+  @if (showSidebar && !sidebarService.isCollapsed) {
+    <div class="sidebar-overlay" (click)="toggleCollapsed()"></div>
+  }
+
+  @if (showSidebar) {
+    <nz-sider nzCollapsible [(nzCollapsed)]="sidebarService.isCollapsed"
+      [nzTrigger]="null"
+      [nzCollapsedWidth]="isMobile ? 0 : 80"
+      [nzWidth]="sidebarWidth">
+      <div class="logo"></div>
+      <div class="menu-container">
+        <ul nz-menu nzTheme="dark" nzMode="inline" class="main-menu">
+          @for (item of menuItems; track item.path) {
+            <li nz-menu-item (click)="item.method && item.method()">
+              <span nz-icon [nzType]="item.icon"></span>
+              <span class="menu-item-large">{{ item.label }}</span>
+            </li>
+          }
+
+          @if (isSystemManagementVisible()) {
+            <li nz-submenu nzTitle="系統管理" nzIcon="setting" class="menu-item-large">
+              <ul>
+                @for (item of systemManagementItems; track item.path) {
+                  <li nz-menu-item class="menu-item-large" (click)="item.method && item.method()">
+                    <span nz-icon [nzType]="item.icon" style="margin-right: 8px;"></span>
+                    {{ item.label }}
+                  </li>
+                }
+                @if (systemManagementItems.length === 0) {
+                  <li nz-menu-item class="menu-item-large" [nzDisabled]="true">
+                    <span style="color: #8c8c8c;">暫無可用功能</span>
+                  </li>
+                }
+              </ul>
+            </li>
+          }
+
+          <!-- <li nz-menu-item (click)="GoLogIn()" class="logout-item">
+            <span nz-icon nzType="logout"></span>
+            <span class="menu-item-large logout-text">登出</span>
+          </li> -->
+        </ul>
+      </div>
+    </nz-sider>
+  }
+
+  <nz-layout>
+    <router-outlet></router-outlet>
+  </nz-layout>
+</nz-layout>

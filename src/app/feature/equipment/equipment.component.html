@@ -1,0 +1,270 @@
+<nz-layout class="layout-container">
+    <app-common-header title="設備管理頁面"></app-common-header>
+
+    <div class="devices-information-container">
+        <div nz-row [nzGutter]="[16, 16]" class="stats-row">
+            <div nz-col [nzXs]="12" [nzSm]="12" [nzMd]="6">
+                <nz-card class="stat-card stat-total" [nzBordered]="false">
+                    <div class="stat-content">
+                        <div class="stat-icon-wrapper">
+                            <i nz-icon nzType="laptop"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">總設備</div>
+                            <div class="stat-value">{{ getTotalDeviceCount() }}</div>
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
+            <div nz-col [nzXs]="12" [nzSm]="12" [nzMd]="6">
+                <nz-card class="stat-card stat-active" [nzBordered]="false">
+                    <div class="stat-content">
+                        <div class="stat-icon-wrapper">
+                            <i nz-icon nzType="check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">運作中</div>
+                            <div class="stat-value">{{ getActiveDeviceCount() }}</div>
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
+            <div nz-col [nzXs]="12" [nzSm]="12" [nzMd]="6">
+                <nz-card class="stat-card stat-maintenance" [nzBordered]="false">
+                    <div class="stat-content">
+                        <div class="stat-icon-wrapper">
+                            <i nz-icon nzType="tool"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">維護中</div>
+                            <div class="stat-value">{{ getMaintenanceDeviceCount() }}</div>
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
+            <div nz-col [nzXs]="12" [nzSm]="12" [nzMd]="6">
+                <nz-card class="stat-card stat-offline" [nzBordered]="false">
+                    <div class="stat-content">
+                        <div class="stat-icon-wrapper">
+                            <i nz-icon nzType="warning"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-label">離線</div>
+                            <div class="stat-value">{{ getOfflineDeviceCount() }}</div>
+                        </div>
+                    </div>
+                </nz-card>
+            </div>
+        </div>
+
+        <div class="search-filter-bar">
+            <div nz-row [nzGutter]="[12, 12]" style="width: 100%;">
+
+                <div nz-col [nzXs]="24" [nzLg]="18">
+                    <div nz-row [nzGutter]="[8, 8]">
+                        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
+                            <nz-input-group [nzSuffix]="suffixIconSearch">
+                                <input type="text" nz-input placeholder="輸入設備名稱搜尋" [(ngModel)]="searchName"
+                                    (keyup.enter)="searchDevices()" />
+                            </nz-input-group>
+                            <ng-template #suffixIconSearch>
+                                <span nz-icon nzType="search" class="search-icon" (click)="searchDevices()"></span>
+                            </ng-template>
+                        </div>
+
+                        <div nz-col [nzXs]="12" [nzSm]="6" [nzMd]="4">
+                            <button nz-button nzType="primary" class="full-width-btn" (click)="searchDevices()">
+                                <i nz-icon nzType="search"></i>搜尋
+                            </button>
+                        </div>
+
+                        <div nz-col [nzXs]="12" [nzSm]="6" [nzMd]="5">
+                            <button nz-button nz-dropdown [nzDropdownMenu]="statusMenu"
+                                class="full-width-btn filter-dropdown">
+                                <i nz-icon nzType="filter"></i>
+                                <span class="filter-text">{{ filterStatus }}</span>
+                                <span nz-icon nzType="down"></span>
+                            </button>
+                        </div>
+
+                        <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="4" *ngIf="searchName || filterStatus !== '全部狀態'">
+                            <button nz-button nzType="default" class="full-width-btn clear-btn"
+                                (click)="clearEqipmentSearch()">
+                                <i nz-icon nzType="close-circle"></i>清除
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div nz-col [nzXs]="24" [nzLg]="6" class="action-col" *ngIf="canEdit">
+                    <button nz-button nzType="primary" (click)="createDeviceModal()" class="create-device-btn">
+                        <i nz-icon nzType="plus-circle"></i>新增設備
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <nz-dropdown-menu #statusMenu="nzDropdownMenu">
+            <ul nz-menu>
+                <li nz-menu-item (click)="onStatusFilterChange('全部狀態')">
+                    <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                    全部狀態
+                </li>
+                <li nz-menu-item (click)="onStatusFilterChange('運作中')">
+                    <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+                    運作中
+                </li>
+                <li nz-menu-item (click)="onStatusFilterChange('維護中')">
+                    <i nz-icon nzType="tool" nzTheme="outline"></i>
+                    維護中
+                </li>
+                <li nz-menu-item (click)="onStatusFilterChange('離線')">
+                    <i nz-icon nzType="warning" nzTheme="outline"></i>
+                    離線
+                </li>
+            </ul>
+        </nz-dropdown-menu>
+
+        <div class="table-wrapper">
+            <nz-table #basicTable [nzData]="devicesList || []" [nzBordered]="true" [nzLoading]="loading"
+                [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage" [nzPageSize]="pageSize"
+                [nzTotal]="total" [nzScroll]="{ x: '1000px' }" class="device-table">
+                <thead>
+                    <tr>
+                        <th nzWidth="80px">序號</th>
+                        <th nzWidth="150px">名稱</th>
+                        <th nzWidth="140px">地點</th>
+                        <th nzWidth="110px">狀態</th>
+                        <th nzWidth="120px">兌換數</th>
+                        <th nzWidth="140px">清潔時間</th>
+                        <th [nzWidth]="isMobile ? '80px' : '180px'" nzRight>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of devicesList; let i = index">
+                        <td>{{ getSerialNumber(i) }}</td>
+                        <td><strong>{{ data.name }}</strong></td>
+                        <td>{{ data.location }}</td>
+                        <td>
+                            <nz-tag [nzColor]="getStatusColor(data.status)">{{ data.status }}</nz-tag>
+                        </td>
+                        <td><nz-badge [nzCount]="+(data.water_level || 0)" [nzOverflowCount]="999"></nz-badge></td>
+                        <td>{{ data.cleaned_at || '尚未清潔' }}</td>
+                        <td nzRight>
+                            <div class="action-btns">
+                                <button *ngIf="canEdit" nz-button class="action-btn edit-btn"
+                                    (click)="updateDeviceModal(data)">
+                                    <i nz-icon nzType="edit" nzTheme="outline"></i>編輯
+                                </button>
+                                <button *ngIf="canEdit" nz-button class="action-btn delete-btn"
+                                    (click)="deleteDeviceModal(data)">
+                                    <i nz-icon nzType="delete" nzTheme="outline"></i>刪除
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+
+<!-- ===== 新增設備 Modal ===== -->
+<nz-modal [(nzVisible)]="createDeviceVisible" nzTitle="新增設備"
+    [nzFooter]="createFooter" nzCentered [nzClosable]="false">
+    <ng-container *nzModalContent>
+        <div class="modal-form">
+            <div class="form-item">
+                <label class="form-label">設備名稱 <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入設備名稱" [(ngModel)]="deviceName" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">設備地點 <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入設備地點" [(ngModel)]="deviceLocation" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">設備狀態 <span class="required">*</span></label>
+                <nz-select [(ngModel)]="deviceStatus" nzPlaceHolder="請選擇狀態" style="width: 100%;">
+                    <nz-option nzValue="運作中" nzLabel="運作中"></nz-option>
+                    <nz-option nzValue="維護中" nzLabel="維護中"></nz-option>
+                    <nz-option nzValue="離線" nzLabel="離線"></nz-option>
+                </nz-select>
+            </div>
+            <div class="form-item">
+                <label class="form-label">Machine ID <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入 Machine ID" [(ngModel)]="machine_id" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">Machine IP <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入 Machine IP" [(ngModel)]="machine_ip" />
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #createFooter>
+        <button nz-button (click)="createDeviceVisible = false; resetDeviceForm()">取消</button>
+        <button nz-button nzType="primary" [disabled]="!isFormValid()" (click)="createDevice()">確認新增</button>
+    </ng-template>
+</nz-modal>
+
+<!-- ===== 編輯設備 Modal ===== -->
+<nz-modal [(nzVisible)]="updateDeviceVisible" nzTitle="編輯設備"
+    [nzFooter]="updateFooter" nzCentered [nzClosable]="false">
+    <ng-container *nzModalContent>
+        <div class="modal-form">
+            <div class="form-item">
+                <label class="form-label">設備名稱 <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入設備名稱" [(ngModel)]="deviceName" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">設備地點 <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入設備地點" [(ngModel)]="deviceLocation" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">設備狀態 <span class="required">*</span></label>
+                <nz-select [(ngModel)]="deviceStatus" nzPlaceHolder="請選擇狀態" style="width: 100%;">
+                    <nz-option nzValue="運作中" nzLabel="運作中"></nz-option>
+                    <nz-option nzValue="維護中" nzLabel="維護中"></nz-option>
+                    <nz-option nzValue="離線" nzLabel="離線"></nz-option>
+                </nz-select>
+            </div>
+            <div class="form-item">
+                <label class="form-label">Machine ID <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入 Machine ID" [(ngModel)]="machine_id" />
+            </div>
+            <div class="form-item">
+                <label class="form-label">Machine IP <span class="required">*</span></label>
+                <input nz-input placeholder="請輸入 Machine IP" [(ngModel)]="machine_ip" />
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #updateFooter>
+        <button nz-button (click)="updateDeviceVisible = false; resetDeviceForm()">取消</button>
+        <button nz-button nzType="primary" [disabled]="!isFormValid()" (click)="updateDevice()">確認更新</button>
+    </ng-template>
+</nz-modal>
+
+<!-- ===== 刪除設備 Modal ===== -->
+<nz-modal [(nzVisible)]="deleteDeviceVisible" nzTitle="確認刪除"
+    [nzFooter]="deleteFooter" nzCentered [nzClosable]="false">
+    <ng-container *nzModalContent>
+        <p>確定要刪除此設備嗎？此操作無法復原。</p>
+    </ng-container>
+    <ng-template #deleteFooter>
+        <button nz-button (click)="deleteDeviceVisible = false">取消</button>
+        <button nz-button nzType="primary" nzDanger (click)="deleteDevice()">確認刪除</button>
+    </ng-template>
+</nz-modal>
+
+<!-- ===== 設備清潔 Modal ===== -->
+<nz-modal [(nzVisible)]="cleanedDeviceVisible" nzTitle="標記已清潔"
+    [nzFooter]="cleanedFooter" nzCentered [nzClosable]="false">
+    <ng-container *nzModalContent>
+        <p>確定要將此設備標記為已清潔嗎？</p>
+    </ng-container>
+    <ng-template #cleanedFooter>
+        <button nz-button (click)="cleanedDeviceVisible = false">取消</button>
+        <button nz-button nzType="primary" (click)="deviceCleaned()">確認</button>
+    </ng-template>
+</nz-modal>
+
+</nz-layout>

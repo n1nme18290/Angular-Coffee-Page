@@ -1,0 +1,141 @@
+button[nz-button] {
+    margin-right: 8px;
+    margin-bottom: 12px;
+    height: 40px; //增加上下寬度
+    border-radius: 100px; //圓角設定
+    border: 1px solid #27496D; //邊框設定
+    font-weight: bold; //粗體
+
+    background-color: #ffffff; //顏色設定
+    color: #27496D; //字體顏色
+}
+
+button[nz-button].btn-styles1 {
+    background-color: #FFD014; //顏色設定
+    color: #ffffff; //字體顏色
+}
+
+button[nz-button].btn-styles2 {
+    background-color: #27496D; //顏色設定
+    color: #ffffff; //字體顏色
+    border: 1px solid #ffffff; //邊框設定
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button[nz-button].btn-styles3 {
+    width: 40px;
+    background-color: #000000; //顏色設定
+    color: #ffffff; //字體顏色
+}
+
+button[nz-button].btn-styles4 {
+    //icon 圓形
+    //icon btn
+    background-color: #27496D;
+    color: #ffffff;
+    border: 2px solid #27496D;
+    width: 64px;
+    height: 64px;
+
+    .big-icon {
+        font-size: 28px; // 控制 icon 大小
+    }
+}
+
+
+
+.input-block {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4px;
+    width: 100%;
+
+    input[nz-input] {
+        border-radius: 10px;
+
+        width: 100%;
+    }
+
+    nz-input-group {
+        margin-top: 5px;
+        border-radius: 10px;
+        width: 100%;
+
+
+        .ant-input-wrapper {
+            border-radius: 10px;
+        }
+    }
+}
+
+.trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+
+.logo {
+    height: 32px;
+    background-color: #001529;
+    margin: 16px;
+
+}
+
+nz-breadcrumb {
+    margin: 16px 0;
+}
+
+.h2 {
+    color: #ffffff;
+}
+
+.boxword {
+    color: #27496D;
+    margin: 0;
+    //background-color: #FFB433;
+
+
+}
+
+.row-style {
+    width: 100%;
+    margin: 0;
+
+    .left-col,
+    .right-col {
+        padding: 16px;
+    }
+
+    .left-col {
+        //background-color: #00aeff; 
+    }
+
+    .right-col {
+        //background-color: #ffeeab; 
+    }
+}
+
+
+.point-information-container {
+    margin: 16px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.send-request {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.send-request span {
+    margin-left: 8px;
+}
