@@ -239,7 +239,7 @@ export class LogService extends BaseService {
     return this.http.get<IApiResponse<any>>(`${this.url}${this.LogUrl}get_exchange_by_identity?${params}`);
   }
 
-  // 取得日/月/週點數發放數量
+  // 取得日/月/週點數累積數量
   getPointsIssuedByRange(
     range: 'day' | 'week' | 'month',
     startDate?: string,
