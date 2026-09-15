@@ -4,7 +4,6 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
@@ -42,7 +41,6 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     @Inject(PLATFORM_ID) private platformId: Object,
     public sidebarService: SidebarService,
     private logService: LogService,
-    private message: NzMessageService,
     private tokenService: TokenService
   ) {}
 
@@ -75,28 +73,85 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
 
   private twoLevelOption(yUnit: string): echarts.EChartsOption {
     return {
-      legend: { data: ['教職員', '學生'], top: 4 },
+      legend: { data: ['教職員', '學生'], top: 6, right: 24 },
       tooltip: { trigger: 'axis' },
       axisPointer: { link: [{ xAxisIndex: 'all' }] },
       grid: [
-        { top: 36,    left: 56, right: 16, height: '35%' },
-        { top: '56%', left: 56, right: 16, bottom: 32   }
+        { top: 72,    left: 72, right: 28, height: '34%' },
+        { top: '60%', left: 72, right: 28, bottom: 48   }
       ],
       xAxis: [
-        { type: 'category', gridIndex: 0, data: ['載入中...'], axisLabel: { show: false } },
-        { type: 'category', gridIndex: 1, data: ['載入中...'] }
+        { type: 'category', gridIndex: 0, data: ['載入中...'],
+          axisLabel: { margin: 8 }, axisTick: { show: true, alignWithLabel: true }, axisLine: { show: true } },
+        { type: 'category', gridIndex: 1, data: ['載入中...'], axisLabel: { margin: 8 } }
       ],
       yAxis: [
-        { type: 'value', gridIndex: 0, name: `總計(${yUnit})`, minInterval: 1, nameTextStyle: { fontSize: 11 } },
-        { type: 'value', gridIndex: 1, name: `分類(${yUnit})`, minInterval: 1, nameTextStyle: { fontSize: 11 } }
+        { type: 'value', gridIndex: 0, name: `總計(${yUnit})`, minInterval: 1, scale: true,
+          nameLocation: 'end', nameGap: 8,
+          nameTextStyle: { fontSize: 12, fontWeight: 'bold', color: '#555', align: 'left' },
+          max: (v: { min: number; max: number }) => Math.ceil(v.max * 1.2) || 1,
+          splitLine: { lineStyle: { type: 'dashed' } } },
+        { type: 'value', gridIndex: 1, name: `教職員/學生(${yUnit})`, minInterval: 1, scale: true,
+          nameLocation: 'end', nameGap: 8,
+          nameTextStyle: { fontSize: 12, fontWeight: 'bold', color: '#555', align: 'left' },
+          max: (v: { min: number; max: number }) => Math.ceil(v.max * 1.2) || 1,
+          splitLine: { lineStyle: { type: 'dashed' } } }
       ],
       series: [
-        { name: '總計', type: 'bar', xAxisIndex: 0, yAxisIndex: 0, data: [0],
-          itemStyle: { color: '#718eaa' }, label: { show: true, position: 'top' } },
+        { name: '總計',  type: 'bar', xAxisIndex: 0, yAxisIndex: 0, data: [0],
+          itemStyle: { color: '#718eaa' },
+          label: { show: true, position: 'top', fontSize: 11, color: '#555' } },
         { name: '教職員', type: 'bar', xAxisIndex: 1, yAxisIndex: 1, data: [0],
-          itemStyle: { color: '#5b8db8' }, label: { show: true, position: 'top' } },
+          itemStyle: { color: '#5b8db8' },
+          label: { show: true, position: 'top', fontSize: 11, color: '#555' } },
         { name: '學生',   type: 'bar', xAxisIndex: 1, yAxisIndex: 1, data: [0],
-          itemStyle: { color: '#f4a261' }, label: { show: true, position: 'top' } }
+          itemStyle: { color: '#f4a261' },
+          label: { show: true, position: 'top', fontSize: 11, color: '#555' } }
+      ]
+    } as echarts.EChartsOption;
+  }
+
+  private lineChartOption(
+    yUnit: string,
+    labels: string[],
+    totalValues: number[],
+    staffValues: number[],
+    studentValues: number[]
+  ): echarts.EChartsOption {
+    const labelStyle = { show: true, position: 'top' as const, fontSize: 11, color: '#555' };
+    const nameStyle  = { fontSize: 12, fontWeight: 'bold' as const, color: '#555', align: 'left' as const };
+    return {
+      legend: { data: ['教職員', '學生'], top: 6, right: 24 },
+      tooltip: { trigger: 'axis' },
+      axisPointer: { link: [{ xAxisIndex: 'all' }] },
+      grid: [
+        { top: 48,    left: 72, right: 28, height: '34%' },
+        { top: '58%', left: 72, right: 28, bottom: 44   }
+      ],
+      xAxis: [
+        { type: 'category', gridIndex: 0, data: labels,
+          axisLabel: { margin: 8 }, axisTick: { show: true, alignWithLabel: true }, axisLine: { show: true } },
+        { type: 'category', gridIndex: 1, data: labels, axisLabel: { margin: 8 },
+          axisTick: { alignWithLabel: true } }
+      ],
+      yAxis: [
+        { type: 'value', gridIndex: 0, name: `總計(${yUnit})`, minInterval: 1, scale: true,
+          nameLocation: 'end', nameGap: 8, nameTextStyle: nameStyle,
+          max: (v: { min: number; max: number }) => Math.ceil(v.max * 1.2) || 1,
+          splitLine: { lineStyle: { type: 'dashed' } } },
+        { type: 'value', gridIndex: 1, name: `教職員/學生(${yUnit})`, minInterval: 1, scale: true,
+          nameLocation: 'end', nameGap: 8, nameTextStyle: nameStyle,
+          max: (v: { min: number; max: number }) => Math.ceil(v.max * 1.2) || 1,
+          splitLine: { lineStyle: { type: 'dashed' } } }
+      ],
+      series: [
+        { name: '總計',   type: 'line', xAxisIndex: 0, yAxisIndex: 0, data: totalValues,
+          symbol: 'circle', symbolSize: 6,
+          itemStyle: { color: '#718eaa' }, lineStyle: { width: 2 }, label: labelStyle },
+        { name: '教職員', type: 'bar',  xAxisIndex: 1, yAxisIndex: 1, data: staffValues,
+          itemStyle: { color: '#5b8db8' }, label: labelStyle },
+        { name: '學生',   type: 'bar',  xAxisIndex: 1, yAxisIndex: 1, data: studentValues,
+          itemStyle: { color: '#f4a261' }, label: labelStyle }
       ]
     } as echarts.EChartsOption;
   }
@@ -117,35 +172,43 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
 
   // ======================= 載入資料 =======================
 
-  // "YYYY-Wnn" → "MM/DD~MM/DD"（往前推七天至今日）
-  // "YYYY-MM-DD" → "週X"
-  private formatWeekLabel(label: string): string {
-    if (/^\d{4}-W\d{1,2}$/.test(label)) {
-      const today = new Date();
-      const start = new Date(today);
-      start.setDate(today.getDate() - 6);
-      return `${this.toMMDD(start)} ~ ${this.toMMDD(today)}`;
-    }
-    const parts = label.split('-');
-    if (parts.length === 3) {
-      const date = new Date(+parts[0], +parts[1] - 1, +parts[2]);
-      return ['週日', '週一', '週二', '週三', '週四', '週五', '週六'][date.getDay()];
-    }
-    return label;
-  }
-
   private toMMDD(date: Date): string {
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');
-    return `${m}-${d}`;
+    return `${m}/${d}`;
   }
 
   private formatXAxisLabel(label: string, range: 'day' | 'week' | 'month'): string {
-    if (range === 'week') return this.formatWeekLabel(label);
     if (range === 'day') {
-      // "YYYY-MM-DD" → "MM-DD"
+      // "YYYY-MM-DD" → "MM/DD"
       const parts = label.split('-');
-      if (parts.length === 3) return `${parts[1]}-${parts[2]}`;
+      if (parts.length === 3) return `${parts[1]}/${parts[2]}`;
+    }
+    if (range === 'week') {
+      // "YYYY-Wnn" → 計算該週週一~週日的 MM/DD~MM/DD
+      if (/^\d{4}-W\d{1,2}$/.test(label)) {
+        const [yearStr, weekStr] = label.split('-W');
+        const year = +yearStr;
+        const week = +weekStr;
+        // ISO 8601：1月4日一定在第1週，週一為一週起點
+        const jan4 = new Date(year, 0, 4);
+        const monday = new Date(jan4);
+        monday.setDate(jan4.getDate() - ((jan4.getDay() + 6) % 7) + (week - 1) * 7);
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        return `${this.toMMDD(monday)}~${this.toMMDD(sunday)}`;
+      }
+      // "YYYY-MM-DD" → 星期幾
+      const parts = label.split('-');
+      if (parts.length === 3) {
+        const date = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+        return ['週日', '週一', '週二', '週三', '週四', '週五', '週六'][date.getDay()];
+      }
+    }
+    if (range === 'month') {
+      // "YYYY-MM" → "M月"
+      const parts = label.split('-');
+      if (parts.length === 2) return `${+parts[1]}月`;
     }
     return label;
   }
@@ -171,15 +234,24 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
       next: (res) => {
         this.chart2Loading = false;
         if (res?.isSuccess && Array.isArray(res.data) && res.data.length > 0) {
-          const labels       = res.data.map((item: any) => this.formatXAxisLabel(item.label ?? '', this.sharedRange));
-          const totalValues  = res.data.map((item: any) => item.total_count   ?? 0);
-          const staffValues  = res.data.map((item: any) => item.staff_count   ?? 0);
+          const labels        = res.data.map((item: any) => this.formatXAxisLabel(item.label ?? '', this.sharedRange));
+          const totalValues   = res.data.map((item: any) => item.total_count   ?? 0);
+          const staffValues   = res.data.map((item: any) => item.staff_count   ?? 0);
           const studentValues = res.data.map((item: any) => item.student_count ?? 0);
-          this.chart2Instance?.setOption({
-            xAxis: [{ data: labels }, { data: labels }],
-            series: [{ data: totalValues }, { data: staffValues }, { data: studentValues }]
-          });
+          if (totalValues.length > 1) {
+            this.chart2Instance?.setOption(
+              this.lineChartOption('杯', labels, totalValues, staffValues, studentValues),
+              { notMerge: true }
+            );
+          } else {
+            this.chart2Instance?.setOption(this.twoLevelOption('杯'), { notMerge: true });
+            this.chart2Instance?.setOption({
+              xAxis: [{ data: labels }, { data: labels }],
+              series: [{ data: totalValues }, { data: staffValues }, { data: studentValues }]
+            });
+          }
         } else {
+          this.chart2Instance?.setOption(this.twoLevelOption('杯'), { notMerge: true });
           this.chart2Instance?.setOption({
             xAxis: [{ data: ['暫無資料'] }, { data: ['暫無資料'] }],
             series: [{ data: [0] }, { data: [0] }, { data: [0] }]
@@ -211,11 +283,20 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
           const totalValues   = res.data.map((item: any) => item.total_points   ?? 0);
           const staffValues   = res.data.map((item: any) => item.staff_points   ?? 0);
           const studentValues = res.data.map((item: any) => item.student_points ?? 0);
-          this.chart3Instance?.setOption({
-            xAxis: [{ data: labels }, { data: labels }],
-            series: [{ data: totalValues }, { data: staffValues }, { data: studentValues }]
-          });
+          if (totalValues.length > 1) {
+            this.chart3Instance?.setOption(
+              this.lineChartOption('點', labels, totalValues, staffValues, studentValues),
+              { notMerge: true }
+            );
+          } else {
+            this.chart3Instance?.setOption(this.twoLevelOption('點'), { notMerge: true });
+            this.chart3Instance?.setOption({
+              xAxis: [{ data: labels }, { data: labels }],
+              series: [{ data: totalValues }, { data: staffValues }, { data: studentValues }]
+            });
+          }
         } else {
+          this.chart3Instance?.setOption(this.twoLevelOption('點'), { notMerge: true });
           this.chart3Instance?.setOption({
             xAxis: [{ data: ['暫無資料'] }, { data: ['暫無資料'] }],
             series: [{ data: [0] }, { data: [0] }, { data: [0] }]

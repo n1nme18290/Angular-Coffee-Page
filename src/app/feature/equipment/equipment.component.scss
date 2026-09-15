@@ -354,6 +354,21 @@ nz-header {
     transition: all 0.3s ease;
     margin-right: 4px;
 
+    &.clean-btn {
+        background-color: #ffffff;
+        color: rgb(35, 120, 65);
+        border-color: rgb(35, 120, 65);
+        box-shadow: 0 2px 4px rgba(82, 196, 26, 0.2);
+
+        &:hover {
+            background-color: #ffffff;
+            border-color: #52c41a;
+            color: #52c41a;
+            box-shadow: 0 4px 8px rgba(82, 196, 26, 0.3);
+            transform: translateY(-1px);
+        }
+    }
+
     &.edit-btn {
         background-color: #ffffff;
         color: rgb(14, 57, 98);

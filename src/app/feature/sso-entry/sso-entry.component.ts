@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { AuthService } from '../../share/service/service';
@@ -19,7 +20,14 @@ export class SsoEntryComponent implements OnInit {
   private tokenService = inject(TokenService);
   private router = inject(Router);
 
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
+
   ngOnInit(): void {
+    // SSR 環境下沒有 window，等瀏覽器端再執行 SSO 登入邏輯
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     // 檢查是否已經登入
     if (this.tokenService.hasToken()) {
       console.log('已有有效 Token，導向個人資訊頁');

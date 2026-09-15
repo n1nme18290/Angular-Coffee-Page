@@ -129,7 +129,8 @@
         <div class="table-wrapper">
             <nz-table #basicTable [nzData]="devicesList || []" [nzBordered]="true" [nzLoading]="loading"
                 [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage" [nzPageSize]="pageSize"
-                [nzTotal]="total" [nzScroll]="{ x: '1000px' }" class="device-table">
+                [nzTotal]="total" [nzScroll]="{ x: '1100px' }" class="device-table"
+                (nzPageIndexChange)="onPageIndexChange($event)" (nzPageSizeChange)="onPageSizeChange($event)">
                 <thead>
                     <tr>
                         <th nzWidth="80px">序號</th>
@@ -138,7 +139,7 @@
                         <th nzWidth="110px">狀態</th>
                         <th nzWidth="120px">兌換數</th>
                         <th nzWidth="140px">清潔時間</th>
-                        <th [nzWidth]="isMobile ? '80px' : '180px'" nzRight>操作</th>
+                        <th [nzWidth]="isMobile ? '80px' : '300px'" nzRight>操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -153,6 +154,10 @@
                         <td>{{ data.cleaned_at || '尚未清潔' }}</td>
                         <td nzRight>
                             <div class="action-btns">
+                                <button *ngIf="canMarkCleaned" nz-button class="action-btn clean-btn"
+                                    (click)="deviceCleanedModal(data)">
+                                    <i nz-icon nzType="clear" nzTheme="outline"></i>清潔
+                                </button>
                                 <button *ngIf="canEdit" nz-button class="action-btn edit-btn"
                                     (click)="updateDeviceModal(data)">
                                     <i nz-icon nzType="edit" nzTheme="outline"></i>編輯

@@ -259,13 +259,14 @@ export class EquipmentComponent {
     const deviceId = this.editingDeviceId || '';
     this.deviceService.deviceCleaned(deviceId, memberId).subscribe({
       next: (res) => {
+        this.cleanedDeviceVisible = false;
+        this.message.success('已標記為清潔');
         this.getPageDevices();
       },
       error: (error) => {
         console.error('Error updating device cleaned status:', error);
-      },
-      complete: () => {
         this.cleanedDeviceVisible = false;
+        this.message.error('標記清潔失敗，請稍後再試');
       }
     });
   }
