@@ -206,7 +206,8 @@ nz-header {
     }
 }
 
-/* 搜尋工具列 */
+/* 搜尋工具列：依容器實際寬度以 flex-wrap 自動換行，不依賴 viewport grid 斷點，
+   因此 sidebar 展開/收合造成的可用寬度變化不會壓縮到 input/select/button */
 .search-filter-bar {
     background: #fff;
     padding: 20px;
@@ -215,18 +216,41 @@ nz-header {
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
 
     ::ng-deep {
-        .ant-input-affix-wrapper,
-        .ant-input {
+        .ant-input-affix-wrapper {
             height: 40px;
+
+            .ant-input {
+                height: 100%;
+            }
         }
     }
 
-    /* 搜尋按鈕 */
-    .full-width-btn {
-        width: 100%;
-        height: 35px;
+    /* 搜尋條件群組 */
+    .search-section {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+    }
+
+    .search-input {
+        flex: 1;
+        min-width: 150px;
+        max-width: 200px;
+    }
+
+    /* 搜尋按鈕：以內容＋padding決定寬度，只保留合理最小寬度，不再用 width:100% 被欄位撐大 */
+    .search-btn {
+        flex: 0 0 auto;
+        height: 40px;
+        min-width: 80px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -242,9 +266,14 @@ nz-header {
         }
     }
 
-    /* 篩選下拉按鈕 */
+    /* 篩選下拉按鈕（文字長度會變動，保留較大 min-width 避免換行跳動） */
     .filter-dropdown {
-        height: 35px;
+        flex: 0 0 auto;
+        height: 40px;
+        min-width: 140px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
         border-radius: 6px;
         font-weight: 500;
         transition: all 0.3s ease;
@@ -266,7 +295,9 @@ nz-header {
 
     /* 清除按鈕 */
     .clear-btn {
-        height: 35px;
+        flex: 0 0 auto;
+        height: 40px;
+        min-width: 80px;
         border-radius: 6px;
         font-weight: 500;
         color: rgb(170, 20, 20);
@@ -282,22 +313,44 @@ nz-header {
         }
     }
 
-    .action-col {
+    /* 新增設備：獨立分組並靠右對齊，維持原本的位置邏輯；
+       寬度不足時整組依 flex-wrap 自動換到下一行，不需另外用 viewport 斷點判斷 */
+    .action-group {
+        flex: 0 0 auto;
         display: flex;
-        justify-content: flex-end;
         align-items: center;
 
-        @media (max-width: 991px) {
-            justify-content: flex-start;
-        }
-
         .create-device-btn {
+            flex: 0 0 auto;
             height: 40px;
             border-radius: 6px;
             min-width: 120px;
             font-weight: 600;
+        }
+    }
+}
 
-            @media (max-width: 991px) {
+/* 手機：搜尋條件與操作按鈕改為單欄、滿版寬度，屬於真正需要改成單欄的情況 */
+@media (max-width: 768px) {
+    .search-filter-bar {
+        .search-section {
+            width: 100%;
+        }
+
+        .search-input {
+            max-width: 100%;
+        }
+
+        .search-btn,
+        .filter-dropdown,
+        .clear-btn {
+            width: 100%;
+        }
+
+        .action-group {
+            width: 100%;
+
+            .create-device-btn {
                 width: 100%;
             }
         }

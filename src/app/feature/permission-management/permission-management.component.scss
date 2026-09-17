@@ -253,10 +253,11 @@ nz-content {
         }
 
         .search-btn {
-            height: 35px;
+            flex: 0 0 auto;
+            height: 40px;
             border-radius: 6px;
             font-weight: 500;
-            min-width: 110px;
+            min-width: 80px;
             box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
 
             &:hover {
@@ -268,9 +269,10 @@ nz-content {
         }
 
         .filter-dropdown {
-            height: 35px;
+            flex: 0 0 auto;
+            height: 40px;
             border-radius: 6px;
-            min-width: 160px;
+            min-width: 140px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -289,9 +291,10 @@ nz-content {
         }
 
         .clear-btn {
-            height: 35px;
+            flex: 0 0 auto;
+            height: 40px;
             border-radius: 6px;
-            min-width: 110px;
+            min-width: 80px;
             transition: all 0.3s ease;
             color: rgb(170, 20, 20);
             border-color: rgb(170, 20, 20);
@@ -559,16 +562,8 @@ nz-content {
 /* 平板大 */
 @media (max-width: 1200px) {
     .search-filter-bar {
-        flex-direction: column;
-        gap: 16px;
-
         &.has-clear-button {
             margin-bottom: 32px;
-        }
-
-        .search-section {
-            width: 100%;
-            flex-wrap: wrap;
         }
     }
 

@@ -105,6 +105,8 @@ nz-sider {
     bottom: 0;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden; // 收合/展開動畫過程避免出現暫時性的水平捲軸
+    transition: width 0.2s ease; // 與內容區 margin-left 動畫時長一致，讓收合/展開更同步自然
     z-index: 100;
 }
 
@@ -112,10 +114,18 @@ nz-sider {
 nz-layout > nz-layout {
     margin-left: 300px;
     transition: margin-left 0.2s;
+    min-width: 0; // 允許內容區在寬度縮減時正常換行，而非把子元素往外推擠出現水平捲動
 }
 
 nz-sider.ant-layout-sider-collapsed + nz-layout {
     margin-left: 80px;
+}
+
+// 平板橫向／較窄桌機：側欄展開寬度縮減為 240px，內容區同步調整，避免主內容被過度壓縮
+@media (min-width: 769px) and (max-width: 1200px) {
+    nz-layout > nz-layout {
+        margin-left: 240px;
+    }
 }
 
 // 無側邊欄（一般會員）：nz-sider 不渲染，nz-layout 是第一個子元素，margin 歸零
@@ -126,6 +136,9 @@ nz-layout > nz-layout:first-child {
 // ========== 選單互動效果 ==========
 
 ul.main-menu li[nz-menu-item] {
+    display: flex;
+    align-items: center; // icon 與文字垂直對齊，避免大字級文字造成視覺偏移
+    gap: 12px; // icon 與文字間距一致化
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
@@ -214,11 +227,40 @@ nz-sider.ant-layout-sider-collapsed {
         }
     }
 
+    // ng-zorro 收合時只會把文字設為 opacity:0，本身仍保留原本寬度（大字級文字實際寬度遠大於 80px 側欄），
+    // 導致選單項目在收合狀態下內容被撐寬、造成壓縮/變形。這裡明確歸零寬度以配合收合版面。
+    //
+    // 注意：一般 menu item 的 .menu-item-large 是套在「純文字」的內層 span 上（與 icon 是手足元素），
+    // 但「系統管理」submenu 的 .menu-item-large 是套在整個 <li nz-submenu> 本身（nzTitle 為字串時，
+    // icon／文字／箭頭都是 ng-zorro 內部自動產生），兩者結構不同，不能用同一條規則處理，
+    // 否則會把整個 submenu（含 icon）一起 display:none。
+    .menu-item-large:not([nz-submenu]),
     .logout-text {
         opacity: 0;
         width: 0;
         overflow: hidden;
+        white-space: nowrap;
         display: none;
+    }
+
+    // 系統管理（submenu）：只隱藏 ng-zorro 產生的標題文字與展開箭頭，icon 保留、li 本身不隱藏
+    // .ant-menu-title-content / .ant-menu-submenu-arrow 是 ng-zorro 子元件（NzSubMenuTitleComponent）
+    // 自己 template 產生的節點，不屬於本元件的 view encapsulation 範圍，需要 ::ng-deep 才能命中
+    li[nz-submenu] {
+        ::ng-deep {
+            .ant-menu-title-content,
+            .ant-menu-submenu-arrow {
+                opacity: 0;
+                width: 0;
+                overflow: hidden;
+                white-space: nowrap;
+                display: none;
+            }
+        }
+    }
+
+    ul.main-menu li[nz-menu-item] {
+        gap: 0; // 收合時文字已隱藏，icon 需置中而非保留原本的文字間距
     }
 }
 
