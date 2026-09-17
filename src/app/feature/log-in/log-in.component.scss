@@ -3,7 +3,7 @@
       }
 
 button[nz-button] {
-    margin-right: 8px;
+    margin-right: 0;
     margin-bottom: 12px;
     height: 40px; //增加上下寬度
     border-radius: 100px; //圓角設定
@@ -68,7 +68,8 @@ button[nz-button].btn-styles4 {
 }
 
 .box { //白色大框
-    width: 610px;
+    width: 100%;
+    max-width: 610px;
     height: 430px;
     border: 2px solid black; // 黑邊框
     border-radius: 12px; // 圓角
@@ -83,4 +84,26 @@ button[nz-button].btn-styles4 {
 
 }
 
+@media (max-width: 576px) {
+    nz-layout {
+        height: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow: visible;
+    }
+
+    nz-header {
+        height: 64px;
+    }
+
+    nz-content {
+        flex: 1 0 auto;
+        padding: 24px 16px;
+    }
+
+    .box {
+        height: auto;
+        padding: 24px 16px;
+    }
+}
 

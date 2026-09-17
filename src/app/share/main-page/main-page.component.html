@@ -10,7 +10,9 @@
       [nzWidth]="sidebarWidth">
       <div class="logo"></div>
       <div class="menu-container">
-        <ul nz-menu nzTheme="dark" nzMode="inline" class="main-menu">
+        <ul nz-menu nzTheme="dark" nzMode="inline" class="main-menu"
+          [nzInlineCollapsed]="isMobile ? false : sidebarService.isCollapsed"
+          [nzInlineIndent]="menuIndent">
           @for (item of menuItems; track item.path) {
             <li nz-menu-item (click)="item.method && item.method()">
               <span nz-icon [nzType]="item.icon"></span>
@@ -23,7 +25,7 @@
               <ul>
                 @for (item of systemManagementItems; track item.path) {
                   <li nz-menu-item class="menu-item-large" (click)="item.method && item.method()">
-                    <span nz-icon [nzType]="item.icon" style="margin-right: 8px;"></span>
+                    <span nz-icon [nzType]="item.icon" class="submenu-icon"></span>
                     {{ item.label }}
                   </li>
                 }

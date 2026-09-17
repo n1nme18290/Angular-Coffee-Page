@@ -910,3 +910,63 @@ h3 {
         .btn-text { font-size: 13px; }
     }
 }
+
+/* ===== 手機內容：只覆寫 576px 以下，保留 Tablet / Desktop ===== */
+@media (max-width: 576px) {
+    nz-content {
+        padding-top: 16px;
+    }
+
+    .user-page-container {
+        padding: 0 16px 16px;
+    }
+
+    .welcome-section {
+        overflow-wrap: anywhere;
+    }
+
+    .info-card.points-card .card-content .card-info {
+        min-width: 0;
+
+        .card-value {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .card-unit {
+            flex-shrink: 0;
+        }
+    }
+
+    .rule-item {
+        align-items: flex-start;
+
+        span {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+    }
+
+    button[nz-button].transfer-btn {
+        height: 44px;
+    }
+
+    :host .table-wrapper .history-table ::ng-deep .ant-pagination {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0;
+        margin: 12px 8px;
+
+        > ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+
+            > li {
+                margin-right: 0;
+            }
+        }
+    }
+}

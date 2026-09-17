@@ -30,6 +30,10 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
 
   private chart2Instance?: echarts.ECharts;
   private chart3Instance?: echarts.ECharts;
+  private resizeObserver?: ResizeObserver;
+  private resizeFrame?: number;
+  private initTimer?: ReturnType<typeof setTimeout>;
+  private mobileCharts = new WeakSet<echarts.ECharts>();
 
   chart2Loading = false;
   chart3Loading = false;
@@ -52,9 +56,10 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => {
+      this.initTimer = setTimeout(() => {
         this.initChart2();
         this.initChart3();
+        this.observeChartContainers();
         this.loadAllCharts();
       }, 300);
       window.addEventListener('resize', this.onResize);
@@ -64,6 +69,9 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
   ngOnDestroy(): void {
     if (isPlatformBrowser(this.platformId)) {
       window.removeEventListener('resize', this.onResize);
+      clearTimeout(this.initTimer);
+      this.resizeObserver?.disconnect();
+      if (this.resizeFrame !== undefined) cancelAnimationFrame(this.resizeFrame);
     }
     this.chart2Instance?.dispose();
     this.chart3Instance?.dispose();
@@ -160,14 +168,14 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
     if (!isPlatformBrowser(this.platformId) || !this.chart2El?.nativeElement) return;
     this.chart2Instance = echarts.init(this.chart2El.nativeElement);
     this.chart2Instance.setOption(this.twoLevelOption('杯'));
-    this.chart2Instance.resize();
+    this.resizeChart(this.chart2Instance);
   }
 
   private initChart3(): void {
     if (!isPlatformBrowser(this.platformId) || !this.chart3El?.nativeElement) return;
     this.chart3Instance = echarts.init(this.chart3El.nativeElement);
     this.chart3Instance.setOption(this.twoLevelOption('點'));
-    this.chart3Instance.resize();
+    this.resizeChart(this.chart3Instance);
   }
 
   // ======================= 載入資料 =======================
@@ -257,7 +265,7 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
             series: [{ data: [0] }, { data: [0] }, { data: [0] }]
           });
         }
-        this.chart2Instance?.resize();
+        this.resizeChart(this.chart2Instance);
       },
       error: (err) => {
         console.error('Chart2 error:', err);
@@ -266,7 +274,7 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
           xAxis: [{ data: ['載入失敗'] }, { data: ['載入失敗'] }],
           series: [{ data: [0] }, { data: [0] }, { data: [0] }]
         });
-        this.chart2Instance?.resize();
+        this.resizeChart(this.chart2Instance);
       }
     });
   }
@@ -302,7 +310,7 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
             series: [{ data: [0] }, { data: [0] }, { data: [0] }]
           });
         }
-        this.chart3Instance?.resize();
+        this.resizeChart(this.chart3Instance);
       },
       error: (err) => {
         console.error('Chart3 error:', err);
@@ -311,7 +319,7 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
           xAxis: [{ data: ['載入失敗'] }, { data: ['載入失敗'] }],
           series: [{ data: [0] }, { data: [0] }, { data: [0] }]
         });
-        this.chart3Instance?.resize();
+        this.resizeChart(this.chart3Instance);
       }
     });
   }
@@ -325,9 +333,69 @@ export class BackendManagementComponent implements OnInit, AfterViewInit, OnDest
 
   // ======================= 視窗縮放 =======================
 
+  private resizeChart(chart?: echarts.ECharts): void {
+    if (!chart) return;
+    const isMobile = window.innerWidth <= 576;
+    if (isMobile || this.mobileCharts.has(chart)) {
+      const option = chart.getOption();
+      const series = option['series'] as Array<echarts.BarSeriesOption | echarts.LineSeriesOption>;
+      const xAxes = option['xAxis'] as echarts.XAXisComponentOption[];
+      const pointCount = series[0].data?.length ?? 0;
+      const desktop = series[0].type === 'line'
+        ? this.lineChartOption('', [], [], [], [])
+        : this.twoLevelOption('');
+      const desktopSeries = desktop.series as Array<echarts.BarSeriesOption | echarts.LineSeriesOption>;
+      const desktopAxes = desktop.yAxis as echarts.YAXisComponentOption[];
+
+      // Only presentation is updated: axes/categories and series data stay intact.
+      chart.setOption({
+        legend: isMobile
+          ? { left: 'center', right: 'auto', top: 4, padding: 4, itemWidth: 18,
+              itemHeight: 10, itemGap: 12, textStyle: { fontSize: 11 } }
+          : { ...desktop.legend, left: null, padding: 5, itemWidth: 25,
+              itemHeight: 14, itemGap: 10, textStyle: { fontSize: 12 } },
+        grid: isMobile ? [
+          { top: 68, left: 12, right: 16, height: 130, bottom: null, containLabel: true },
+          { top: 248, left: 12, right: 16, bottom: 24, height: null, containLabel: true }
+        ] : (desktop.grid as echarts.GridComponentOption[]).map(grid => ({ ...grid, containLabel: false })),
+        xAxis: xAxes.map(() => ({ axisLabel: {
+          margin: 8, fontSize: isMobile ? 11 : 12, interval: 'auto',
+          rotate: 0, hideOverlap: isMobile,
+          formatter: isMobile ? (value: string) => value.replace('~', '\n') : null
+        } })),
+        yAxis: desktopAxes.map(axis => ({
+          nameGap: isMobile ? 16 : axis.nameGap,
+          nameTextStyle: { ...axis.nameTextStyle, fontSize: isMobile ? 11 : 12 },
+          splitNumber: isMobile ? 3 : 5,
+          axisLabel: { fontSize: isMobile ? 11 : 12, margin: 8, hideOverlap: isMobile }
+        })),
+        series: desktopSeries.map(s => ({
+          label: { ...s.label, show: isMobile ? pointCount <= 1 : true,
+            fontSize: isMobile ? 10 : 11 },
+          labelLayout: { hideOverlap: isMobile }
+        }))
+      } as echarts.EChartsOption);
+    }
+    if (isMobile) this.mobileCharts.add(chart);
+    else this.mobileCharts.delete(chart);
+    chart.resize();
+  }
+
+  private observeChartContainers(): void {
+    if (typeof ResizeObserver === 'undefined') return;
+    this.resizeObserver = new ResizeObserver(this.onResize);
+    for (const element of [this.chart2El, this.chart3El]) {
+      if (element) this.resizeObserver.observe(element.nativeElement);
+    }
+  }
+
   private onResize = (): void => {
-    this.chart2Instance?.resize();
-    this.chart3Instance?.resize();
+    if (this.resizeFrame !== undefined) return;
+    this.resizeFrame = requestAnimationFrame(() => {
+      this.resizeFrame = undefined;
+      this.resizeChart(this.chart2Instance);
+      this.resizeChart(this.chart3Instance);
+    });
   };
 
   toggleCollapsed(): void {

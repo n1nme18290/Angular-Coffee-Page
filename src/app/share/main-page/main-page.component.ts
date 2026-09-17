@@ -183,12 +183,16 @@ export class MainPageComponent implements OnInit {
   // 依照裝置寬度動態回傳側欄寬度數值
   get sidebarWidth(): number {
     const width = window.innerWidth;
-    if (width <= 420) return 160;
+    if (width <= 576) return 220;
     if (width <= 768) return 200;
     // 平板橫向／較窄桌機（例如筆電視窗、分割畫面）：縮減側欄寬度，
     // 避免固定 300px 側欄搭配展開狀態時過度壓縮主內容區的可用寬度
     if (width <= 1200) return 240;
     return 300;
+  }
+
+  get menuIndent(): number {
+    return window.innerWidth <= 576 ? 16 : 24;
   }
 
   // 監聽視窗大小變化事件

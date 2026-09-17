@@ -10,6 +10,7 @@
             <label nz-radio-button nzValue="month">月</label>
         </nz-radio-group>
         <nz-range-picker [(ngModel)]="sharedDateRange" nzAllowClear
+            nzDropdownClassName="backend-management-range-popup"
             (ngModelChange)="loadAllCharts()">
         </nz-range-picker>
     </div>

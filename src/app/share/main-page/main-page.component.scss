@@ -81,6 +81,10 @@ nz-breadcrumb {
     transition: all 0.3s ease;
 }
 
+.submenu-icon {
+    margin-right: 8px;
+}
+
 .menu-container {
     display: flex;
     flex-direction: column;
@@ -298,5 +302,50 @@ nz-sider.ant-layout-sider-collapsed {
 
     .menu-item-large {
         font-size: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .menu-container {
+        height: calc(100vh - 64px);
+        height: calc(100dvh - 64px);
+    }
+
+    .main-menu {
+        min-height: 0;
+    }
+
+    .menu-item-large {
+        font-size: 16px;
+    }
+
+    ul.main-menu li[nz-menu-item] {
+        justify-content: flex-start;
+        gap: 12px;
+
+        span[nz-icon] {
+            flex-shrink: 0;
+            margin-right: 0;
+        }
+
+        .menu-item-large {
+            margin-left: 0;
+        }
+    }
+
+    // Menu wrappers and submenu titles are generated inside ng-zorro's view.
+    :host ::ng-deep .main-menu .ant-menu-item > .ant-menu-title-content,
+    :host ::ng-deep .main-menu .ant-menu-submenu-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        > .anticon {
+            flex-shrink: 0;
+        }
+
+        > .ant-menu-title-content {
+            margin-left: 0;
+        }
     }
 }
