@@ -1,0 +1,21 @@
+<div class="sso-error-container">
+  <div class="error-content">
+    <div class="error-icon">⚠️</div>
+    <h1 class="error-title">身份驗證失敗</h1>
+    <p class="error-message">
+      無法驗證您的身份，請重新嘗試或聯繫系統管理員。
+    </p>
+    <div class="error-details">
+      <p>可能的原因：</p>
+      <ul>
+        <li>SSO 登入憑證無效或已過期</li>
+        <li>網路連線問題</li>
+        <li>系統維護中</li>
+      </ul>
+    </div>
+    <div class="action-buttons">
+      <button class="retry-button" (click)="retry()">重新嘗試</button>
+      <a class="contact-link" href="mailto:support@example.com">聯繫支援</a>
+    </div>
+  </div>
+</div>

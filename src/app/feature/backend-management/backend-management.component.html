@@ -1,0 +1,44 @@
+<app-common-header title="兌換資料分析頁面"></app-common-header>
+
+<nz-content>
+    <!-- ===== 共用工具列 ===== -->
+    <div class="global-toolbar">
+        <nz-radio-group [(ngModel)]="sharedRange" nzButtonStyle="solid"
+            (ngModelChange)="sharedDateRange = null; loadAllCharts()">
+            <label nz-radio-button nzValue="day">日</label>
+            <label nz-radio-button nzValue="week">週</label>
+            <label nz-radio-button nzValue="month">月</label>
+        </nz-radio-group>
+        <nz-range-picker [(ngModel)]="sharedDateRange" nzAllowClear
+            (ngModelChange)="loadAllCharts()">
+        </nz-range-picker>
+    </div>
+
+    <div class="charts-container">
+
+        <!-- ===== 圖表二：教職員/學生咖啡兌換數量 ===== -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <span class="chart-title">咖啡兌換數量</span>
+            </div>
+            <nz-spin [nzSpinning]="chart2Loading">
+                <div #chart2Container class="echart-container"></div>
+            </nz-spin>
+        </div>
+
+        <!-- ===== 圖表三：點數累積數量 ===== -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="title-wrapper">
+                    <span class="chart-title">點數累積數量</span>
+                    <span class="chart-remark">※ 該數量為使用者收集的點數數量</span>
+                </div>
+            </div>
+            <nz-spin [nzSpinning]="chart3Loading">
+                <div #chart3Container class="echart-container"></div>
+            </nz-spin>
+        </div>
+
+
+    </div>
+</nz-content>

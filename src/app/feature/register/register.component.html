@@ -13,31 +13,34 @@
         <input nz-input placeholder="請輸入帳號" nzSize="large" />
       </div>
 
+
       <div class="input-block">
         <h5 nz-typography style="margin: 0;">請輸入密碼：</h5>
 
-        <nz-input-group [nzSuffix]="suffixTemplate" nzSize="large">
-            <input [type]="passwordVisible ? 'text' : 'password'" nz-input placeholder="請輸入密碼" [(ngModel)]="password" />
+        <nz-input-group [nzSuffix]="suffixTemplate1" nzSize="large">
+          <input [type]="passwordVisible1 ? 'text' : 'password'" nz-input placeholder="請輸入密碼" [(ngModel)]="password" />
         </nz-input-group>
 
-        <ng-template #suffixTemplate>
-            <span nz-icon class="ant-input-password-icon" [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
-                (click)="passwordVisible = !passwordVisible"></span>
+        <ng-template #suffixTemplate1>
+          <span nz-icon class="ant-input-password-icon" [nzType]="passwordVisible1 ? 'eye-invisible' : 'eye'"
+            (click)="passwordVisible1 = !passwordVisible1"></span>
         </ng-template>
       </div>
 
       <div class="input-block">
         <h5 nz-typography style="margin: 0;">再次確認密碼：</h5>
 
-        <nz-input-group [nzSuffix]="suffixTemplate" nzSize="large">
-            <input [type]="passwordVisible ? 'text' : 'password'" nz-input placeholder="再次確認密碼" [(ngModel)]="password" />
+        <nz-input-group [nzSuffix]="suffixTemplate2" nzSize="large">
+          <input [type]="passwordVisible2 ? 'text' : 'password'" nz-input placeholder="再次確認密碼"
+            [(ngModel)]="confirmPassword" />
         </nz-input-group>
 
-        <ng-template #suffixTemplate>
-            <span nz-icon class="ant-input-password-icon" [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
-                (click)="passwordVisible = !passwordVisible"></span>
+        <ng-template #suffixTemplate2>
+          <span nz-icon class="ant-input-password-icon" [nzType]="passwordVisible2 ? 'eye-invisible' : 'eye'"
+            (click)="passwordVisible2 = !passwordVisible2"></span>
         </ng-template>
       </div>
+
 
 
       <br>
