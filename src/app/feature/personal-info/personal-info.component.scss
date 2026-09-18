@@ -1,3 +1,5 @@
+@use '../../../styles/motion' as motion;
+
 /* ===== 整體布局 ===== */
 .personal-info-layout {
     display: flex;
@@ -57,7 +59,8 @@ button[nz-button] {
     font-weight: bold;
     background-color: #ffffff;
     color: #27496D;
-    transition: all 0.3s ease;
+    transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                border-color motion.$motion-duration-fast motion.$motion-ease-standard;
 }
 
 /* Header 左側折疊按鈕 */
@@ -71,11 +74,14 @@ button[nz-button].btn-styles4 {
     border-radius: 50%;
     font-weight: 500;
     flex-shrink: 0;
-    transition: all 0.3s ease;
+    transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                background-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                box-shadow motion.$motion-duration-fast motion.$motion-ease-standard,
+                transform motion.$motion-duration-fast motion.$motion-ease-standard;
 
     .big-icon {
         font-size: 24px;
-        transition: all 0.3s ease;
+        transition: transform motion.$motion-duration-fast motion.$motion-ease-standard;
     }
 
     &:hover {
@@ -103,7 +109,11 @@ button[nz-button].btn-logout {
     display: flex;
     align-items: center;
     gap: 6px;
-    transition: all 0.3s ease;
+    transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                background-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                box-shadow motion.$motion-duration-fast motion.$motion-ease-standard,
+                transform motion.$motion-duration-fast motion.$motion-ease-standard;
     white-space: nowrap;
 
     span[nz-icon] {
@@ -170,7 +180,8 @@ nz-content {
     border: none;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     background: #ffffff;
-    transition: all 0.3s ease;
+    transition: box-shadow motion.$motion-duration-normal motion.$motion-ease-standard,
+                transform motion.$motion-duration-normal motion.$motion-ease-standard;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -295,7 +306,10 @@ nz-content {
     border-color: rgb(14, 57, 98) !important;
     color: rgb(14, 57, 98) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
+    transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                box-shadow motion.$motion-duration-fast motion.$motion-ease-standard,
+                transform motion.$motion-duration-fast motion.$motion-ease-standard;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -323,7 +337,8 @@ nz-content {
     padding: 14px;
     background: #fafafa;
     border-radius: 8px;
-    transition: all 0.3s ease;
+    transition: background-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                transform motion.$motion-duration-fast motion.$motion-ease-standard;
 
     i {
         font-size: 20px;
@@ -400,7 +415,7 @@ nz-content {
             }
 
             .ant-table-tbody>tr {
-                transition: all 0.3s ease;
+                transition: background-color motion.$motion-duration-fast motion.$motion-ease-standard;
 
                 &:hover {
                     background: #fafafa;
@@ -498,9 +513,10 @@ nz-content {
     }
 }
 
-/* Modal 外框圓角 */
+/* Modal 外框圓角／陰影（保留 16px 圓角與 overflow:hidden 邏輯，只補上 shadow token） */
 ::ng-deep .round-modal .ant-modal-content {
     border-radius: 16px;
+    box-shadow: motion.$shadow-modal;
     overflow: hidden;
 }
 
@@ -569,7 +585,11 @@ nz-content {
             border-radius: 6px;
             font-weight: 500;
             font-size: 16px;
-            transition: all 0.3s ease;
+            transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        background-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        box-shadow motion.$motion-duration-fast motion.$motion-ease-standard,
+                        transform motion.$motion-duration-fast motion.$motion-ease-standard;
             display: flex;
             align-items: center;
             justify-content: center;

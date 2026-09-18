@@ -1,3 +1,5 @@
+@use '../../../styles/motion' as motion;
+
 button[nz-button] {
     margin-right: 8px;
     height: 40px;
@@ -182,7 +184,9 @@ nz-header {
             align-items: center;
             gap: 8px;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        transform motion.$motion-duration-fast motion.$motion-ease-standard;
 
             &:hover {
                 border-color: #1890ff;
@@ -200,7 +204,9 @@ nz-header {
             height: 40px;
             border-radius: 6px;
             min-width: 80px;
-            transition: all 0.3s ease;
+            transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        transform motion.$motion-duration-fast motion.$motion-ease-standard;
 
             &:hover {
                 border-color: #ff4d4f;
@@ -214,8 +220,8 @@ nz-header {
 /* ===== 下拉選單 ===== */
 ::ng-deep {
     .ant-dropdown-menu {
-        border-radius: 6px;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        border-radius: motion.$radius-md;
+        box-shadow: motion.$shadow-popup;
         padding: 4px 0;
 
         .ant-dropdown-menu-item {
@@ -224,7 +230,8 @@ nz-header {
             align-items: center;
             gap: 10px;
             font-size: 14px;
-            transition: all 0.2s;
+            transition: background-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        color motion.$motion-duration-fast motion.$motion-ease-standard;
 
             i {
                 font-size: 16px;

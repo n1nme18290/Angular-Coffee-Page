@@ -1,3 +1,5 @@
+@use '../../../styles/motion' as motion;
+
 /* ===== 按鈕共用樣式 ===== */
 button[nz-button] {
     margin-right: 8px;
@@ -234,6 +236,14 @@ nz-content {
     .echart-container {
         height: 260px;
     }
+}
+
+// Date-range popup 視覺 token：只加 radius/shadow，不動 placement / width / overflow 邏輯。
+// .ant-picker-panel-container 才是實際可見的白色卡片（ng-zorro 預設已是 overflow:hidden，
+// 因此這裡刻意不覆寫 overflow，避免影響下方手機版 overflow:auto 的垂直捲動）。
+::ng-deep .backend-management-range-popup .ant-picker-panel-container {
+    border-radius: motion.$radius-md;
+    box-shadow: motion.$shadow-popup;
 }
 
 @media (max-width: 576px) {

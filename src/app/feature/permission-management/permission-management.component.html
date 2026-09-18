@@ -118,7 +118,8 @@
 
     <!-- 編輯管理人員角色 Modal -->
     <nz-modal [(nzVisible)]="editAdminRoleVisible" [nzTitle]="'管理角色 - ' + (currentEditAdmin?.name || '')"
-        [nzFooter]="editAdminRoleFooter" nzWidth="900px" nzCentered (nzOnCancel)="cancelEditAdminRole()">
+        [nzFooter]="editAdminRoleFooter" nzWidth="900px" nzCentered (nzOnCancel)="cancelEditAdminRole()"
+        nzWrapClassName="permission-management-modal">
         <ng-container *nzModalContent>
             <!-- 管理人員資訊卡片 -->
             <div
@@ -325,7 +326,7 @@
 
     <!-- 發送點數 Modal -->
     <nz-modal [(nzVisible)]="sendPointsVisible" nzTitle="發送點數" [nzFooter]="sendPointsFooter" nzWidth="600px" nzCentered
-        [nzClosable]="false">
+        [nzClosable]="false" nzWrapClassName="permission-management-modal">
         <ng-container *nzModalContent>
             <div class="modal-form">
                 <!-- 會員資訊顯示 -->
@@ -371,7 +372,7 @@
 
     <!-- 綁定管理員 Modal -->
     <nz-modal [(nzVisible)]="bindAdminVisible" nzTitle="綁定為管理員" [nzFooter]="bindAdminFooter" nzWidth="600px" nzCentered
-        [nzClosable]="false">
+        [nzClosable]="false" nzWrapClassName="permission-management-modal">
         <ng-container *nzModalContent>
             <div class="modal-form">
                 <!-- 警告提示 -->

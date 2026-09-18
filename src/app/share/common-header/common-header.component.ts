@@ -41,16 +41,16 @@ export class CommonHeaderComponent {
   }
 
   logout(): void {
-    this.authService.logout();
-    this.permissionService.clearPermissions();
-
-    this.modal.success({
-      nzTitle: '登出成功',
-      nzContent: '您已成功登出系統，即將關閉此分頁',
+    this.modal.confirm({
+      nzTitle: '確認登出',
+      nzContent: '確定要登出系統嗎？',
       nzOkText: '確定',
+      nzCancelText: '取消',
       nzWidth: this.getModalWidth(),
       nzCentered: true,
       nzOnOk: () => {
+        this.authService.logout();
+        this.permissionService.clearPermissions();
         this.closeTabOrRedirect();
       }
     });

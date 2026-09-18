@@ -78,7 +78,7 @@ nz-breadcrumb {
 
 .menu-item-large {
     font-size: 24px;
-    transition: all 0.3s ease;
+    transition: color 0.3s ease, font-weight 0.3s ease, opacity 0.3s ease, width 0.3s ease;
 }
 
 .submenu-icon {
@@ -143,7 +143,7 @@ ul.main-menu li[nz-menu-item] {
     display: flex;
     align-items: center; // icon 與文字垂直對齊，避免大字級文字造成視覺偏移
     gap: 12px; // icon 與文字間距一致化
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, gap 0.3s ease;
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -161,7 +161,7 @@ ul.main-menu li[nz-menu-item] {
 }
 
 li[nz-submenu] {
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     overflow: hidden;
 
@@ -178,7 +178,7 @@ li[nz-submenu]:hover .ant-menu-submenu-title {
 }
 
 li[nz-submenu] ul li[nz-menu-item] {
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
 
     &:hover {
         background-color: rgba(39, 73, 109, 0.25) !important;
@@ -194,7 +194,7 @@ li[nz-submenu] ul li[nz-menu-item] {
 }
 
 span[nz-icon] {
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
 li[nz-menu-item]:hover span[nz-icon],

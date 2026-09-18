@@ -113,18 +113,17 @@ export class MainPageComponent implements OnInit {
 
   // 導航方法
   GoLogIn() {
-    // 先清除權限和 Token
-    this.authService.logout();
-    this.permissionService.clearPermissions();
-
-    // 顯示登出成功彈窗（響應式寬度）
-    this.modal.success({
-      nzTitle: '登出成功',
-      nzContent: '您已成功登出系統，即將關閉此分頁',
+    // 顯示確認登出彈窗（響應式寬度），使用者按確定後才清除權限和 Token
+    this.modal.confirm({
+      nzTitle: '確認登出',
+      nzContent: '確定要登出系統嗎？',
       nzOkText: '確定',
+      nzCancelText: '取消',
       nzWidth: this.getModalWidth(),
       nzCentered: true,
       nzOnOk: () => {
+        this.authService.logout();
+        this.permissionService.clearPermissions();
         // 嘗試關閉分頁
         this.closeTabOrRedirect();
       }

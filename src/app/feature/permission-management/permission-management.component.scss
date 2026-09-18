@@ -1,3 +1,5 @@
+@use '../../../styles/motion' as motion;
+
 button[nz-button] {
     margin-right: 8px;
     height: 40px;
@@ -277,7 +279,9 @@ nz-content {
             align-items: center;
             gap: 8px;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        transform motion.$motion-duration-fast motion.$motion-ease-standard;
 
             &:hover {
                 border-color: #1890ff;
@@ -295,7 +299,9 @@ nz-content {
             height: 40px;
             border-radius: 6px;
             min-width: 80px;
-            transition: all 0.3s ease;
+            transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        transform motion.$motion-duration-fast motion.$motion-ease-standard;
             color: rgb(170, 20, 20);
             border-color: rgb(170, 20, 20);
             animation: fadeIn 0.3s ease;
@@ -323,8 +329,8 @@ nz-content {
 /* ================= 下拉選單樣式 ================= */
 ::ng-deep {
     .ant-dropdown-menu {
-        border-radius: 6px;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        border-radius: motion.$radius-md;
+        box-shadow: motion.$shadow-popup;
         padding: 4px 0;
 
         .ant-dropdown-menu-item {
@@ -333,7 +339,8 @@ nz-content {
             align-items: center;
             gap: 10px;
             font-size: 14px;
-            transition: all 0.2s;
+            transition: background-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        color motion.$motion-duration-fast motion.$motion-ease-standard;
 
             i {
                 font-size: 16px;
@@ -384,7 +391,10 @@ nz-content {
     border-radius: 6px;
     min-width: 80px;
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                box-shadow motion.$motion-duration-fast motion.$motion-ease-standard,
+                transform motion.$motion-duration-fast motion.$motion-ease-standard;
     margin-right: 8px;
 
     &.edit-btn {
@@ -443,6 +453,17 @@ nz-content {
     }
 }
 
+/* ================= Modal 外框圓角／陰影（透過 nzWrapClassName scope，僅影響本頁 modal） =================
+   overflow: hidden 只作用在 .ant-modal-content，不動 .ant-modal-body，不影響表單內容顯示。
+   保留 ng-zorro 原生 enter/leave 動畫，只調整靜態視覺。 */
+::ng-deep {
+    .permission-management-modal .ant-modal-content {
+        border-radius: motion.$radius-lg;
+        box-shadow: motion.$shadow-modal;
+        overflow: hidden;
+    }
+}
+
 /* ================= Modal 樣式 ================= */
 ::ng-deep {
     .ant-modal-body {
@@ -461,7 +482,11 @@ nz-content {
             border-radius: 6px;
             font-weight: 500;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        background-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        box-shadow motion.$motion-duration-fast motion.$motion-ease-standard,
+                        transform motion.$motion-duration-fast motion.$motion-ease-standard;
 
             &:first-child {
                 margin-left: 8px;

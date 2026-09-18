@@ -1,3 +1,5 @@
+@use '../../../styles/motion' as motion;
+
 .layout-container {
     min-height: 100vh;
     background-color: #f0f2f5;
@@ -24,11 +26,14 @@ button[nz-button].btn-styles4 {
     border-radius: 50%;
     font-weight: 500;
     flex-shrink: 0;
-    transition: all 0.3s ease;
+    transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                background-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                box-shadow motion.$motion-duration-fast motion.$motion-ease-standard,
+                transform motion.$motion-duration-fast motion.$motion-ease-standard;
 
     .big-icon {
         font-size: 24px;
-        transition: all 0.3s ease;
+        transition: transform motion.$motion-duration-fast motion.$motion-ease-standard;
     }
 
     &:hover {
@@ -121,11 +126,13 @@ nz-header {
 
     .stat-card {
         border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s ease;
+        box-shadow: motion.$shadow-card-resting;
+        transition: transform motion.$motion-duration-normal motion.$motion-ease-standard,
+                    box-shadow motion.$motion-duration-normal motion.$motion-ease-standard;
 
         &:hover {
-            transform: translateY(-4px);
+            transform: translateY(-2px);
+            box-shadow: motion.$shadow-card-hover;
         }
 
         ::ng-deep .ant-card-body {
@@ -224,6 +231,8 @@ nz-header {
     ::ng-deep {
         .ant-input-affix-wrapper {
             height: 40px;
+            transition: border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        box-shadow motion.$motion-duration-fast motion.$motion-ease-standard;
 
             .ant-input {
                 height: 100%;
@@ -257,12 +266,22 @@ nz-header {
         border-radius: 6px;
         font-weight: 500;
         box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+        transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                    border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                    box-shadow motion.$motion-duration-fast motion.$motion-ease-standard,
+                    transform motion.$motion-duration-fast motion.$motion-ease-standard;
 
         &:hover {
             box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
             transform: translateY(-1px);
             border-color: #1890ff;
             color: #1890ff;
+        }
+
+        &:active {
+            transform: translateY(0);
+            transition-duration: motion.$motion-duration-fast;
+            transition-timing-function: motion.$motion-ease-accelerate;
         }
     }
 
@@ -276,7 +295,9 @@ nz-header {
         gap: 8px;
         border-radius: 6px;
         font-weight: 500;
-        transition: all 0.3s ease;
+        transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                    border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                    transform motion.$motion-duration-fast motion.$motion-ease-standard;
 
         .filter-text {
             flex: 1;
@@ -291,6 +312,12 @@ nz-header {
             color: #1890ff;
             transform: translateY(-1px);
         }
+
+        &:active {
+            transform: translateY(0);
+            transition-duration: motion.$motion-duration-fast;
+            transition-timing-function: motion.$motion-ease-accelerate;
+        }
     }
 
     /* 清除按鈕 */
@@ -303,13 +330,22 @@ nz-header {
         color: rgb(170, 20, 20);
         border-color: rgb(170, 20, 20);
         box-shadow: 0 2px 4px rgba(255, 24, 24, 0.15);
-        transition: all 0.3s ease;
+        transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                    border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                    box-shadow motion.$motion-duration-fast motion.$motion-ease-standard,
+                    transform motion.$motion-duration-fast motion.$motion-ease-standard;
 
         &:hover {
             border-color: #ff4d4f;
             color: #ff4d4f;
             box-shadow: 0 4px 8px rgba(255, 24, 24, 0.25);
             transform: translateY(-1px);
+        }
+
+        &:active {
+            transform: translateY(0);
+            transition-duration: motion.$motion-duration-fast;
+            transition-timing-function: motion.$motion-ease-accelerate;
         }
     }
 
@@ -367,11 +403,11 @@ nz-header {
     }
 }
 
-/* 下拉選單 */
+/* 下拉選單（篩選按鈕的 ant-dropdown-menu，維持 ng-zorro 原生 enter/leave 動畫，僅調整靜態視覺與 hover transition） */
 ::ng-deep {
     .ant-dropdown-menu {
-        border-radius: 6px;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        border-radius: motion.$radius-md;
+        box-shadow: motion.$shadow-popup;
         padding: 4px 0;
 
         .ant-dropdown-menu-item {
@@ -380,7 +416,8 @@ nz-header {
             align-items: center;
             gap: 10px;
             font-size: 14px;
-            transition: all 0.2s;
+            transition: background-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        color motion.$motion-duration-fast motion.$motion-ease-standard;
 
             i {
                 font-size: 16px;
@@ -398,14 +435,36 @@ nz-header {
     }
 }
 
+/* nz-select popup（透過 nzDropdownClassName scope，僅影響 equipment 頁面的 select，不影響其他頁面） */
+::ng-deep {
+    .equipment-select-dropdown {
+        border-radius: motion.$radius-md;
+        box-shadow: motion.$shadow-popup;
+
+        .ant-select-item {
+            transition: background-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        color motion.$motion-duration-fast motion.$motion-ease-standard;
+        }
+    }
+}
+
 /* 表格操作按鈕 */
 .action-btn {
     height: 35px;
     border-radius: 6px;
     min-width: 80px;
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                box-shadow motion.$motion-duration-fast motion.$motion-ease-standard,
+                transform motion.$motion-duration-fast motion.$motion-ease-standard;
     margin-right: 4px;
+
+    &:active {
+        transform: translateY(0);
+        transition-duration: motion.$motion-duration-fast;
+        transition-timing-function: motion.$motion-ease-accelerate;
+    }
 
     &.clean-btn {
         background-color: #ffffff;
@@ -510,6 +569,19 @@ nz-header {
     }
 }
 
+/* ===== Modal 外觀（透過 nzWrapClassName scope，僅影響 equipment 頁面的 modal） =====
+   只調整 panel 圓角／陰影，不動 nzOnOk / nzOnCancel / nzVisible 等開關邏輯，
+   保留 ng-zorro 原生 enter/leave 動畫。
+   overflow: hidden 只套用在 .ant-modal-content（外層卡片，讓 header/footer 背景服貼圓角），
+   不套用在 .ant-modal-body，避免影響表單內容原本的捲動/顯示行為。 */
+::ng-deep {
+    .equipment-modal .ant-modal-content {
+        border-radius: motion.$radius-lg;
+        box-shadow: motion.$shadow-modal;
+        overflow: hidden;
+    }
+}
+
 /* ===== Modal 表單 ===== */
 .modal-form {
     display: flex;
@@ -531,5 +603,18 @@ nz-header {
     .required {
         color: #ff4d4f;
         margin-left: 2px;
+    }
+
+    /* input / select focus 手感：只調整 transition 屬性與時長，不改尺寸與圓角，維持 ng-zorro 預設外觀 */
+    ::ng-deep {
+        input.ant-input {
+            transition: border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        box-shadow motion.$motion-duration-fast motion.$motion-ease-standard;
+        }
+
+        .ant-select-selector {
+            transition: border-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                        box-shadow motion.$motion-duration-fast motion.$motion-ease-standard;
+        }
     }
 }

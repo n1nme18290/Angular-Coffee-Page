@@ -1,3 +1,5 @@
+@use '../../../styles/motion' as motion;
+
 .common-header {
     display: flex;
     justify-content: space-between;
@@ -43,11 +45,14 @@ button[nz-button].btn-styles4 {
     border-radius: 50%;
     font-weight: 500;
     flex-shrink: 0;
-    transition: all 0.3s ease;
+    transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
+                background-color motion.$motion-duration-fast motion.$motion-ease-standard,
+                box-shadow motion.$motion-duration-fast motion.$motion-ease-standard,
+                transform motion.$motion-duration-fast motion.$motion-ease-standard;
 
     .big-icon {
         font-size: 24px;
-        transition: all 0.3s ease;
+        transition: transform motion.$motion-duration-fast motion.$motion-ease-standard;
     }
 
     &:hover {
@@ -71,7 +76,7 @@ button[nz-button].btn-styles4 {
     padding: 8px 16px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
-    transition: all 0.3s ease;
+    transition: background-color motion.$motion-duration-fast motion.$motion-ease-standard;
 
     &:hover {
         background-color: rgba(255, 255, 255, 0.15);
@@ -96,7 +101,7 @@ button[nz-button].btn-styles4 {
     background-color: rgba(255, 255, 255, 0.12);
     color: #ffffff;
     border: 1px solid rgba(255, 255, 255, 0.35);
-    transition: all 0.3s ease;
+    transition: background-color motion.$motion-duration-fast motion.$motion-ease-standard;
 
     &:hover {
         background-color: rgba(255, 255, 255, 0.2);

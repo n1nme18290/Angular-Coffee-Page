@@ -1,0 +1,24 @@
+// Motion / elevation tokens — Interaction & Visual Polish POC
+// 目前僅供 equipment 頁面使用（@use '../../../styles/motion' as motion）
+// 尚未套用到其他頁面，其他頁面的既有樣式不受影響。
+
+// Duration
+$motion-duration-fast: 140ms;
+$motion-duration-normal: 200ms;
+$motion-duration-slow: 320ms;
+
+// Easing
+$motion-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+$motion-ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+$motion-ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+
+// Radius（本次 POC：card 沿用既有 12px，input 沿用 ng-zorro 預設，不在此定義）
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-lg: 16px;
+
+// Shadow / elevation
+$shadow-card-resting: 0 2px 8px rgba(0, 0, 0, 0.06);
+$shadow-card-hover: 0 6px 16px rgba(0, 0, 0, 0.10);
+$shadow-popup: 0 3px 12px rgba(0, 0, 0, 0.12);
+$shadow-modal: 0 12px 32px rgba(0, 0, 0, 0.18);
