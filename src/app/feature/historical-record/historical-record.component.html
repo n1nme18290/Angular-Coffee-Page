@@ -1,10 +1,19 @@
 <nz-layout>
-    <app-common-header [title]="getCurrentTitle()"></app-common-header>
+    <app-common-header title="歷史紀錄"></app-common-header>
 
     <nz-tabset [(nzSelectedIndex)]="selectedIndex" class="tabs">
 
         <!-- ================= 使用者使用紀錄 ================= -->
         <nz-tab *ngIf="canViewTab(0)" [nzTitle]="Title01">
+            <div class="section-heading">
+                <div class="section-heading-icon">
+                    <i nz-icon nzType="history" nzTheme="outline"></i>
+                </div>
+                <div class="section-heading-content">
+                    <h2 class="section-heading-title">使用者使用紀錄</h2>
+                    <p class="section-heading-subtitle">查看會員點數異動與使用紀錄</p>
+                </div>
+            </div>
             <nz-content>
                 <!-- 搜尋和篩選區域 -->
                 <div class="search-filter-bar">
@@ -66,6 +75,58 @@
             </nz-content>
 
             <div class="table-container">
+                <!-- Record Card List（全尺寸統一顯示）：與 <nz-table> 同一份 pointsHistoryList，不建立第二份資料狀態；
+                     <nz-table> 保留作為 server-side pagination / loading host，.ant-table 本體全尺寸隱藏 -->
+                <div class="record-list">
+                    @if (pointsHistoryList && pointsHistoryList.length > 0) {
+                    @for (data of pointsHistoryList; track data.id; let i = $index) {
+                    <div class="record-card">
+                        <div class="record-card-header">
+                            <div class="record-header-main">
+                                <span class="record-index">#{{ getSerialNumber(i) }}</span>
+                                <span class="record-title">{{ data.member_name }}</span>
+                            </div>
+                            <span class="record-amount">
+                                @if (data.type === 'add_points') {
+                                <span class="amount-negative">-{{ data.amount }}</span>
+                                } @else {
+                                <span
+                                    [ngClass]="data.after_balance >= data.before_balance? 'amount-positive': 'amount-negative'">
+                                    {{ data.after_balance >= data.before_balance ? '+' : '-' }}{{ data.amount }}
+                                </span>
+                                }
+                            </span>
+                        </div>
+                        <div class="record-card-body">
+                            <div class="record-row">
+                                <span class="record-label">異動事件</span>
+                                <span class="record-value">{{ typeMap[data.type] }}</span>
+                            </div>
+                            <div class="record-row">
+                                <span class="record-label">餘額變化</span>
+                                <span class="record-value">{{ data.before_balance }} → {{ data.after_balance }}</span>
+                            </div>
+                            <div class="record-row">
+                                <span class="record-label">異動時間</span>
+                                <span class="record-value">{{ data.created_at }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    } @else {
+                    <div class="empty-state">
+                        @if (historyLoading) {
+                        <nz-spin nzSimple></nz-spin>
+                        <p style="margin-top: 8px;">載入中...</p>
+                        } @else {
+                        <i nz-icon nzType="inbox" nzTheme="outline" class="empty-state-icon"></i>
+                        <p class="empty-state-title">查無紀錄</p>
+                        <p class="empty-state-subtitle">請調整搜尋條件或日期範圍後再試一次</p>
+                        }
+                    </div>
+                    }
+                </div>
+
                 <nz-table #memberHistoryTable [nzData]="pointsHistoryList" [nzLoading]="historyLoading"
                     [nzBordered]="true" [nzShowPagination]="true" [nzFrontPagination]="false"
                     [nzPageIndex]="historyPageIndex" [nzPageSize]="historyPageSize" [nzTotal]="historyTotal"
@@ -115,9 +176,11 @@
                                 <nz-spin nzSimple></nz-spin>
                                 <p style="margin-top: 8px;">載入中...</p>
                                 } @else {
-                                <i nz-icon nzType="inbox" nzTheme="outline"
-                                    style="font-size: 48px; color: #d9d9d9;"></i>
-                                <p style="color: #999;">暫無資料</p>
+                                <div class="empty-state">
+                                    <i nz-icon nzType="inbox" nzTheme="outline" class="empty-state-icon"></i>
+                                    <p class="empty-state-title">查無紀錄</p>
+                                    <p class="empty-state-subtitle">請調整搜尋條件或日期範圍後再試一次</p>
+                                </div>
                                 }
                             </td>
                         </tr>
@@ -129,6 +192,15 @@
 
         <!-- ================= 設備使用紀錄 ================= -->
         <nz-tab *ngIf="canViewTab(1)" [nzTitle]="Title02">
+            <div class="section-heading">
+                <div class="section-heading-icon">
+                    <i nz-icon nzType="laptop" nzTheme="outline"></i>
+                </div>
+                <div class="section-heading-content">
+                    <h2 class="section-heading-title">設備使用紀錄</h2>
+                    <p class="section-heading-subtitle">查看咖啡機操作、刷卡與設備使用狀況</p>
+                </div>
+            </div>
             <nz-content>
                 <!-- 搜尋和篩選區域 -->
                 <div class="search-filter-bar">
@@ -197,6 +269,49 @@
             </nz-content>
 
             <div class="table-container">
+                <!-- Record Card List（全尺寸統一顯示）：與 <nz-table> 同一份 deviceLogList，不建立第二份資料狀態；
+                     Desktop 原本沒有顯示 member_id / amount，這裡同樣不顯示。
+                     額外加上 .device-record-list 視覺 modifier：三個 tab 共用 .record-list/.record-card-body，
+                     但 *ngIf="canViewTab(x)" 可能讓某些角色（例如維護人員）只看到這個 tab，
+                     用 nth-child 之類的位置選擇器並不安全，因此改用這個純視覺 class 精準辨識本 tab，
+                     不影響任何 binding 或資料 -->
+                <div class="record-list device-record-list">
+                    @if (deviceLogList && deviceLogList.length > 0) {
+                    @for (data of deviceLogList; track data.id; let i = $index) {
+                    <div class="record-card">
+                        <div class="record-card-header">
+                            <div class="record-header-main">
+                                <span class="record-index">#{{ getSerialNumber(i) }}</span>
+                                <span class="record-title">{{ data.device_name }}</span>
+                            </div>
+                            <span class="record-tag">{{ typeMapEquipment[data.operation_type] }}</span>
+                        </div>
+                        <div class="record-card-body">
+                            <div class="record-row">
+                                <span class="record-label">操作內容</span>
+                                <span class="record-value">{{ data.operation }}</span>
+                            </div>
+                            <div class="record-row">
+                                <span class="record-label">操作時間</span>
+                                <span class="record-value">{{ data.created_at }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    } @else {
+                    <div class="empty-state">
+                        @if (deviceLogLoading) {
+                        <nz-spin nzSimple></nz-spin>
+                        <p style="margin-top: 8px;">載入中...</p>
+                        } @else {
+                        <i nz-icon nzType="inbox" nzTheme="outline" class="empty-state-icon"></i>
+                        <p class="empty-state-title">查無紀錄</p>
+                        <p class="empty-state-subtitle">請調整搜尋條件或日期範圍後再試一次</p>
+                        }
+                    </div>
+                    }
+                </div>
+
                 <nz-table #deviceLogTable [nzData]="deviceLogList" [nzBordered]="true" [nzLoading]="deviceLogLoading"
                     [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="devicePageIndex"
                     [nzPageSize]="devicePageSize" [nzTotal]="deviceTotal" [nzShowSizeChanger]="true"
@@ -229,9 +344,11 @@
                                 <nz-spin nzSimple></nz-spin>
                                 <p style="margin-top: 8px;">載入中...</p>
                                 } @else {
-                                <i nz-icon nzType="inbox" nzTheme="outline"
-                                    style="font-size: 48px; color: #d9d9d9;"></i>
-                                <p style="color: #999;">暫無資料</p>
+                                <div class="empty-state">
+                                    <i nz-icon nzType="inbox" nzTheme="outline" class="empty-state-icon"></i>
+                                    <p class="empty-state-title">查無紀錄</p>
+                                    <p class="empty-state-subtitle">請調整搜尋條件或日期範圍後再試一次</p>
+                                </div>
                                 }
                             </td>
                         </tr>
@@ -243,6 +360,15 @@
 
         <!-- ================= 會員點數資訊 ================= -->
         <nz-tab *ngIf="canViewTab(2)" [nzTitle]="Title03">
+            <div class="section-heading">
+                <div class="section-heading-icon">
+                    <i nz-icon nzType="wallet" nzTheme="outline"></i>
+                </div>
+                <div class="section-heading-content">
+                    <h2 class="section-heading-title">會員點數資訊</h2>
+                    <p class="section-heading-subtitle">查看會員目前點數與最近異動時間</p>
+                </div>
+            </div>
             <nz-content>
                 <!-- 搜尋和篩選區域 -->
                 <div class="search-filter-bar">
@@ -260,6 +386,27 @@
                             搜尋
                         </button>
 
+                        <!-- 日期篩選 trigger 從 <thead> 搬移過來（table 本體已全尺寸隱藏，原位置無法再被使用者觸發）；
+                             pointsFilterVisible / pointsSelectedDate / pointsMenu / filterPointsByDate() / resetPointsDate() 皆為既有狀態與方法，未新增 -->
+                        <nz-filter-trigger class="filter-dropdown date-filter-trigger"
+                            [(nzVisible)]="pointsFilterVisible" [nzActive]="!!pointsSelectedDate"
+                            [nzDropdownMenu]="pointsMenu">
+                            <i nz-icon nzType="calendar" nzTheme="outline"></i>
+                            篩選日期
+                        </nz-filter-trigger>
+                        <nz-dropdown-menu #pointsMenu="nzDropdownMenu">
+                            <div style="padding: 8px; width: 220px;">
+                                <nz-date-picker nzFormat="yyyy-MM-dd"
+                                    [(ngModel)]="pointsSelectedDate"></nz-date-picker>
+                                <div style="margin-top: 8px; text-align: right;">
+                                    <button nz-button nzSize="small" (click)="filterPointsByDate()"
+                                        class="btn-styles2">確定</button>
+                                    <button nz-button nzSize="small" (click)="resetPointsDate()"
+                                        class="btn-styles2">清除</button>
+                                </div>
+                            </div>
+                        </nz-dropdown-menu>
+
                         <button nz-button nzType="default" class="clear-btn" (click)="clearPointsSearch()"
                             *ngIf="pointsSearchName">
                             <i nz-icon nzType="close-circle" nzTheme="outline"></i>
@@ -270,6 +417,43 @@
             </nz-content>
 
             <div class="table-container">
+                <!-- Record Card List（全尺寸統一顯示）：與 <nz-table> 同一份 pointsList，不建立第二份資料狀態 -->
+                <div class="record-list">
+                    @if (pointsList && pointsList.length > 0) {
+                    @for (data of pointsList; track data.id; let i = $index) {
+                    <div class="record-card">
+                        <div class="record-card-header">
+                            <div class="record-header-main">
+                                <span class="record-index">#{{ getSerialNumber(i) }}</span>
+                                <span class="record-title">{{ data.member_name }}</span>
+                            </div>
+                        </div>
+                        <div class="record-card-body">
+                            <div class="record-row">
+                                <span class="record-label">點數數量</span>
+                                <span class="record-value">{{ data.balance }}</span>
+                            </div>
+                            <div class="record-row">
+                                <span class="record-label">上次變動時間</span>
+                                <span class="record-value">{{ data.updated_at }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    } @else {
+                    <div class="empty-state">
+                        @if (loading) {
+                        <nz-spin nzSimple></nz-spin>
+                        <p style="margin-top: 8px;">載入中...</p>
+                        } @else {
+                        <i nz-icon nzType="inbox" nzTheme="outline" class="empty-state-icon"></i>
+                        <p class="empty-state-title">查無紀錄</p>
+                        <p class="empty-state-subtitle">請調整搜尋條件或日期範圍後再試一次</p>
+                        }
+                    </div>
+                    }
+                </div>
+
                 <nz-table #pointsTable [nzData]="pointsList" [nzBordered]="true" [nzLoading]="loading"
                     [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="currentPage"
                     [nzPageSize]="pageSize" [nzTotal]="total" [nzShowSizeChanger]="true"
@@ -281,26 +465,7 @@
                             <th>序號</th>
                             <th>會員名稱</th>
                             <th>點數數量</th>
-                            <th>
-                                上次變動時間
-                                <nz-filter-trigger [(nzVisible)]="pointsFilterVisible" [nzActive]="!!pointsSelectedDate"
-                                    [nzDropdownMenu]="pointsMenu">
-                                    <span nz-icon nzType="calendar"></span>
-                                </nz-filter-trigger>
-
-                                <nz-dropdown-menu #pointsMenu="nzDropdownMenu">
-                                    <div style="padding: 8px; width: 220px;">
-                                        <nz-date-picker nzFormat="yyyy-MM-dd"
-                                            [(ngModel)]="pointsSelectedDate"></nz-date-picker>
-                                        <div style="margin-top: 8px; text-align: right;">
-                                            <button nz-button nzSize="small" (click)="filterPointsByDate()"
-                                                class="btn-styles2">確定</button>
-                                            <button nz-button nzSize="small" (click)="resetPointsDate()"
-                                                class="btn-styles2">清除</button>
-                                        </div>
-                                    </div>
-                                </nz-dropdown-menu>
-                            </th>
+                            <th>上次變動時間</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -320,9 +485,11 @@
                                 <nz-spin nzSimple></nz-spin>
                                 <p style="margin-top: 8px;">載入中...</p>
                                 } @else {
-                                <i nz-icon nzType="inbox" nzTheme="outline"
-                                    style="font-size: 48px; color: #d9d9d9;"></i>
-                                <p style="color: #999;">暫無資料</p>
+                                <div class="empty-state">
+                                    <i nz-icon nzType="inbox" nzTheme="outline" class="empty-state-icon"></i>
+                                    <p class="empty-state-title">查無紀錄</p>
+                                    <p class="empty-state-subtitle">請調整搜尋條件或日期範圍後再試一次</p>
+                                </div>
                                 }
                             </td>
                         </tr>

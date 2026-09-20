@@ -1,4 +1,15 @@
 @use '../../../styles/motion' as motion;
+@use '../../../styles/empty-state';
+@use '../../../styles/spacing' as spacing;
+@use '../../../styles/section-heading';
+
+/* ===== Tab 內容最上方的 section heading（跟 equipment「設備總覽」同一套視覺語言）=====
+   共用 _section-heading.scss 本身有 padding:16px 4px（上下 16px），這裡只補「外部」的
+   margin-top，讓「Tabs 底部 → heading 標題可視起點」落在 24px（8 + 16）。
+   heading 下方到搜尋區的間距則改由下面 nz-content 的 padding-top 負責（同一個公式）。 */
+.section-heading {
+    margin-top: spacing.$space-xs;
+}
 
 button[nz-button] {
     margin-right: 8px;
@@ -104,6 +115,10 @@ nz-header {
 /* ===== Tabs ===== */
 :host ::ng-deep nz-tabset.tabs .ant-tabs-nav {
     background-color: #27496D;
+    /* ng-zorro 預設 margin-bottom:16px 會跟下方 nz-content 的 padding-top 疊加，
+       造成 Tabs 到搜尋區的間距明顯過大（實測 16px + 20px = 36px）。這裡移除這一層，
+       改由 nz-content 的 padding-top 單獨控制間距（見下方）。 */
+    margin-bottom: 0;
 }
 
 :host ::ng-deep nz-tabset.tabs .ant-tabs-tab {
@@ -123,7 +138,7 @@ nz-header {
 
     .search-section {
         display: flex;
-        gap: 12px;
+        gap: spacing.$space-sm;
         flex: 1;
         align-items: center;
         flex-wrap: wrap;
@@ -182,7 +197,7 @@ nz-header {
             min-width: 140px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: spacing.$space-xs;
             font-weight: 500;
             transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
                         border-color motion.$motion-duration-fast motion.$motion-ease-standard,
@@ -196,6 +211,41 @@ nz-header {
 
             i {
                 font-size: 14px;
+            }
+        }
+
+        // Tab3 日期篩選 trigger（<nz-filter-trigger> 非 <button nz-button>，套用 .filter-dropdown 只會拿到
+        // height/display/gap，拿不到全站 button[nz-button] 的邊框/底色，這裡補齊讓它跟其他工具列按鈕一致）
+        nz-filter-trigger.date-filter-trigger {
+            box-sizing: border-box;
+            padding: 0 spacing.$space-md;
+            border: 1px solid #27496D;
+            border-radius: 100px;
+            background-color: #ffffff;
+            color: #27496D;
+
+            &:hover {
+                border-color: #1890ff;
+                color: #1890ff;
+                transform: translateY(-1px);
+            }
+
+            // .ant-table-filter-trigger 是 ng-zorro 內部節點，帶有表格表頭情境用的負 margin／灰階配色，
+            // 這裡改成獨立工具列按鈕使用，需要 ::ng-deep 覆寫，範圍已限定在 .date-filter-trigger 內
+            ::ng-deep .ant-table-filter-trigger {
+                margin: 0;
+                padding: 0;
+                color: inherit;
+                font-size: inherit;
+
+                &:hover {
+                    background: transparent;
+                    color: inherit;
+                }
+
+                &.active {
+                    color: #1890ff;
+                }
             }
         }
 
@@ -225,7 +275,7 @@ nz-header {
         padding: 4px 0;
 
         .ant-dropdown-menu-item {
-            padding: 8px 16px;
+            padding: spacing.$space-xs spacing.$space-md;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -280,18 +330,175 @@ nz-header {
     }
 }
 
+/* ===== Record Card List（全尺寸統一顯示，取代 desktop table 視覺；三個 tab 共用）=====
+   <nz-table> 保留作為 server-side pagination / loading host：本體（thead/tbody，即 .ant-table）
+   全尺寸隱藏，同一顆 nz-pagination（内建於 <nz-table>）繼續顯示在 card list 下方。 */
+.table-container ::ng-deep .ant-table {
+    display: none;
+}
+
+// .ant-table 隱藏後版面高度塌陷為 0，但 [nzLoading] 的 spin 指示器是絕對定位、不受版面高度限制，
+// 仍會在該處畫出一個小圖示、跟 record-list 自己的 loading 疊在一起，故一併隱藏
+// （record-list 內的 nz-spin 是完全獨立的節點，不受此規則影響）
+.table-container ::ng-deep .ant-spin {
+    display: none;
+}
+
+.record-list {
+    display: flex;
+    flex-direction: column;
+    gap: spacing.$space-sm;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.record-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: spacing.$space-md;
+    background: #ffffff;
+    border-radius: motion.$radius-md;
+    box-shadow: motion.$shadow-card-resting;
+
+    .record-card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: spacing.$space-sm;
+
+        .record-header-main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: spacing.$space-xs;
+        }
+
+        .record-index {
+            flex-shrink: 0;
+            color: #bfbfbf;
+            font-size: 12px;
+        }
+
+        .record-title {
+            flex: 1;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            color: #262626;
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        // 顏色沿用 .amount-info 既有的 amount-positive / amount-negative 數值，不新增顏色語意
+        .record-amount,
+        .record-tag {
+            flex-shrink: 0;
+            white-space: nowrap;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .record-amount {
+            .amount-positive { color: #52c41a; }
+            .amount-negative { color: #ff4d4f; }
+        }
+
+        // Tab2 操作類型：desktop 本來就是純文字，不新增顏色/tag 視覺語意
+        .record-tag {
+            color: #595959;
+            font-weight: 500;
+            font-size: 14px;
+        }
+    }
+
+    .record-card-body {
+        margin-top: spacing.$space-sm;
+        padding-top: spacing.$space-sm;
+        border-top: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .record-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: spacing.$space-sm;
+
+            .record-label {
+                flex-shrink: 0;
+                color: #8c8c8c;
+                font-size: 13px;
+            }
+
+            .record-value {
+                flex: 1;
+                min-width: 0;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+                text-align: right;
+                color: #595959;
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+/* Desktop / Tablet（>=768px）：card 更緊湊，body 的 record-row 橫向並排，避免卡片過高 */
+@media (min-width: 768px) {
+    .record-card {
+        padding: spacing.$space-sm spacing.$space-md;
+    }
+
+    .record-card .record-card-body {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: spacing.$space-sm spacing.$space-lg;
+
+        .record-row {
+            flex: 1 1 auto;
+            min-width: 220px;
+            justify-content: flex-start;
+            gap: spacing.$space-xs;
+
+            .record-value {
+                flex: 0 1 auto;
+                text-align: left;
+            }
+        }
+    }
+
+    /* Tab2「設備使用紀錄」專用：上面共用的 flex-row 版面裡，.record-row 是 flex:1 1 auto（flex-basis:auto），
+       欄寬完全由「這一筆」的內容自然寬度決定，所以「操作內容」文字長度不同，會直接讓同一列的
+       「操作時間」起始 x 座標跟著每筆卡片改變（已用 getBoundingClientRect() 實測證實，5 筆卡片的
+       操作時間 x 座標分別落在 586/711/628/836/669，差異達 250px）。
+       改用 CSS Grid：欄寬由 .record-card-body 容器本身的 grid-template-columns 決定，
+       跟各別 .record-row 的內容長度完全無關，因此每張卡片的「操作時間」欄位可以精準對齊在同一個 x。
+       只作用在 .device-record-list（Tab2 專屬的視覺 modifier class），不影響 Tab1/Tab3 共用的 flex 版面。 */
+    .device-record-list .record-card .record-card-body {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        align-items: start;
+
+        .record-row {
+            min-width: 0;
+        }
+    }
+}
+
 .text-center {
     text-align: center;
-    padding: 40px 0;
+    padding: spacing.$space-xl 0;
     color: #999;
 }
 
 nz-content {
     padding: 20px;
-}
-
-.point-information-container {
-    padding: 0 20px 20px 20px;
+    /* 現在 heading 插到 Tabs 和搜尋區中間，這裡的 padding-top 改負責「heading 底部 → 搜尋區」
+       這一段：heading 自己的 padding-bottom（16px，共用樣式）+ 這裡的 space-xs（8px）= 24px。 */
+    padding-top: spacing.$space-xs;
 }
 
 /* ===== 表格樣式 ===== */
@@ -362,13 +569,20 @@ nz-content {
 
         .ant-tabs-tab {
             font-size: 13px;
-            padding: 8px 12px !important;
+            padding: spacing.$space-xs spacing.$space-sm !important;
             white-space: nowrap;
         }
     }
 
+    .section-heading {
+        /* Mobile：margin-top 歸零，只靠 heading 自己的 padding-top(16px) 當作「Tabs → heading」間距 */
+        margin-top: 0;
+    }
+
     nz-content {
-        padding: 12px;
+        padding: spacing.$space-sm;
+        /* Mobile：padding-top 歸零，只靠 heading 自己的 padding-bottom(16px) 當作「heading → 搜尋區」間距 */
+        padding-top: 0;
     }
 
     .search-filter-bar {
@@ -390,21 +604,7 @@ nz-content {
     }
 
     .table-container {
-        padding: 0 12px;
-    }
-
-    ::ng-deep {
-        nz-table {
-            .ant-table-thead>tr>th {
-                font-size: 14px;
-                padding: 12px 8px;
-            }
-
-            .ant-table-tbody>tr>td {
-                font-size: 14px;
-                padding: 12px 8px;
-            }
-        }
+        padding: 0 spacing.$space-sm;
     }
 }
 
@@ -436,41 +636,21 @@ nz-content {
         }
     }
 
+    .section-heading {
+        margin-top: 0;
+    }
+
     nz-content {
         padding: 10px;
+        /* 與 768px 斷點同一個間距來源，維持 375/390/430 一致的視覺間距 */
+        padding-top: 0;
     }
 
     .search-filter-bar {
-        padding: 12px;
+        padding: spacing.$space-sm;
     }
 
     .table-container {
-        padding: 0 8px;
-    }
-
-    ::ng-deep {
-        nz-table {
-            .ant-table-thead>tr>th {
-                font-size: 13px;
-                padding: 10px 6px;
-            }
-
-            .ant-table-tbody>tr>td {
-                font-size: 13px;
-                padding: 10px 6px;
-            }
-        }
-
-        /* ✅ 點數異動欄位字體縮小 */
-        .amount-info {
-            .amount-positive,
-            .amount-negative {
-                font-size: 15px !important;
-            }
-
-            .balance-info {
-                font-size: 12px !important;
-            }
-        }
+        padding: 0 spacing.$space-xs;
     }
 }

@@ -7,14 +7,18 @@
       </button>
     }
     @if (title) {
-      <h2 nz-typography class="h2">{{ title }}</h2>
+      <div class="header-context">
+        <h2 nz-typography class="header-title">{{ title }}</h2>
+      </div>
     }
   </div>
 
   <div class="header-right">
     @if (showUser) {
       <div class="user-info">
-        <span nz-icon nzType="user" nzTheme="outline"></span>
+        <span class="user-avatar" aria-hidden="true">
+          <span nz-icon nzType="user" nzTheme="outline"></span>
+        </span>
         <span class="username">{{ currentUsername }}</span>
       </div>
     }

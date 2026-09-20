@@ -290,6 +290,7 @@ export class PersonalInfoComponent implements OnInit {
       nzCancelText: '取消',
       nzWidth: this.getModalWidth(),
       nzCentered: true,
+      nzWrapClassName: 'logout-confirm-modal',
       nzOnOk: () => {
         this.authService.logout();
         this.permissionService.clearPermissions();

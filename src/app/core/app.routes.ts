@@ -9,7 +9,6 @@ import { LogInComponent } from '../feature/log-in/log-in.component';
 import { RegisterComponent } from '../feature/register/register.component';
 
 import { PersonalInfoComponent } from '../feature/personal-info/personal-info.component';
-import { PointInformationComponent } from '../feature/point-information/point-information.component';
 
 import { EquipmentComponent } from '../feature/equipment/equipment.component';
 import { EquipmentInformationComponent } from '../feature/equipment-information/equipment-information.component';
@@ -47,12 +46,7 @@ export const routes: Routes = [
         component: PersonalInfoComponent,
         // personal-info 為公開路由，所有登入用戶都可訪問（頁面 3）
       },
-      // { 
-      //   path: 'point-information',
-      //   component: PointInformationComponent,
-      //   canActivate: [permissionGuard], // 需要權限：Admin、僅可檢視（頁面 4）
-      // },
-      { 
+      {
         path: 'equipment',
         component: EquipmentComponent,
         canActivate: [permissionGuard], // 需要權限：Admin、維護人員（頁面 6）

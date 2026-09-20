@@ -1,13 +1,22 @@
 <nz-layout>
     <app-common-header title="權限管理頁面"></app-common-header>
 
-    <nz-content>
-        <div nz-row class="row-style">
-            <div nz-col [nzSpan]="12" class="left-col">
-                <h2 nz-typography class="boxword">管理人員清單</h2>
-            </div>
+    <nz-tabset class="tabs">
+        <!-- ================= Tab 1：管理人員清單 ================= -->
+        <nz-tab nzTitle="管理人員清單">
+
+    <!-- Tab 標籤維持「管理人員清單」，這裡用完整的 section heading（跟 equipment「設備總覽」同一套
+         視覺語言），title 用「管理人員」跟 Tab 名稱做出區隔，避免完全重複 -->
+    <div class="section-heading">
+        <div class="section-heading-icon">
+            <i nz-icon nzType="team" nzTheme="outline"></i>
         </div>
-    </nz-content>
+        <div class="section-heading-content">
+            <h2 class="section-heading-title">管理人員</h2>
+            <p class="section-heading-subtitle">管理系統管理員、角色與權限設定</p>
+        </div>
+        <span class="section-heading-count">共 {{ totalAdmin }} 位</span>
+    </div>
 
     <!-- 管理人員搜尋和篩選區域 -->
     <nz-content>
@@ -59,6 +68,49 @@
 
     <div class="admin-information-container">
         <div class="send-request">
+            <!-- Management Card List（全尺寸統一顯示）：與 <nz-table> 同一份 adminList，不建立第二份資料狀態；
+                 <nz-table> 保留作為 server-side / 篩選時前端切頁的 pagination host，.ant-table 本體全尺寸隱藏 -->
+            <div class="management-card-list">
+                @if (adminList && adminList.length > 0) {
+                @for (data of adminList; track data.id) {
+                <div class="management-card">
+                    <div class="management-card-header">
+                        <div class="identity">
+                            <span class="identity-title">{{ data.name }}</span>
+                            <span class="identity-subtitle">{{ data.email }}</span>
+                        </div>
+                        <div class="status-area">
+                            <nz-tag [nzColor]="'blue'">
+                                {{ getAdminRoleNames(data) }}
+                            </nz-tag>
+                            <nz-tag [nzColor]="data.status === '啟用' ? 'green' : 'red'">
+                                {{ data.status }}
+                            </nz-tag>
+                        </div>
+                    </div>
+                    <div class="management-card-actions">
+                        <button nz-button nzType="primary" class="action-btn edit-btn"
+                            (click)="editAdminRoleModal(data)">
+                            <i nz-icon nzType="team" nzTheme="outline"></i>
+                            管理角色
+                        </button>
+                    </div>
+                </div>
+                }
+                } @else {
+                <div class="empty-state">
+                    @if (loading) {
+                    <nz-spin nzSimple></nz-spin>
+                    <p style="margin-top: 8px;">載入中...</p>
+                    } @else {
+                    <i nz-icon nzType="inbox" nzTheme="outline" class="empty-state-icon"></i>
+                    <p class="empty-state-title">暫無資料</p>
+                    <p class="empty-state-subtitle">目前沒有可顯示的管理人員資料</p>
+                    }
+                </div>
+                }
+            </div>
+
             <!-- 管理人員列表 Table -->
             <nz-table #basicTable [nzData]="adminList || []" [nzBordered]="true" [nzLoading]="loading"
                 [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="adminCurrentPage"
@@ -115,6 +167,190 @@
         </div>
     </div>
 
+        </nz-tab>
+
+        <!-- ================= Tab 2：會員清單 ================= -->
+        <nz-tab nzTitle="會員清單">
+
+    <!-- Tab 標籤維持「會員清單」，title 用「會員資料」跟 Tab 名稱做出區隔 -->
+    <div class="section-heading">
+        <div class="section-heading-icon">
+            <i nz-icon nzType="idcard" nzTheme="outline"></i>
+        </div>
+        <div class="section-heading-content">
+            <h2 class="section-heading-title">會員資料</h2>
+            <p class="section-heading-subtitle">查看與管理會員帳號、卡片類別與授權狀態</p>
+        </div>
+        <span class="section-heading-count">共 {{ totalMember }} 位</span>
+    </div>
+
+    <!-- 會員搜尋和篩選區域 -->
+    <nz-content>
+        <div class="search-filter-bar">
+            <div class="search-section">
+                <nz-input-group [nzSuffix]="memberSearchIcon" class="search-input">
+                    <input type="text" nz-input placeholder="輸入會員ID搜尋" [(ngModel)]="memberSearchId"
+                        (keyup.enter)="searchMember()" />
+                </nz-input-group>
+                <ng-template #memberSearchIcon>
+                    <span nz-icon nzType="search" class="search-icon" (click)="searchMember()"></span>
+                </ng-template>
+
+                <button nz-button nzType="primary" class="search-btn" (click)="searchMember()">
+                    <i nz-icon nzType="search" nzTheme="outline"></i>
+                    搜尋
+                </button>
+
+                <button nz-button nz-dropdown [nzDropdownMenu]="memberCardMenu" class="filter-dropdown">
+                    <i nz-icon nzType="filter" nzTheme="outline"></i>
+                    {{ getMemberCardFilterLabel(memberFilterCard) }}
+                    <span nz-icon nzType="down"></span>
+                </button>
+                <nz-dropdown-menu #memberCardMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                        <li nz-menu-item (click)="onMemberCardFilterChange('全部類別')">
+                            <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                            全部類別
+                        </li>
+                        <li nz-menu-item (click)="onMemberCardFilterChange('學生卡')">
+                            <i nz-icon nzType="idcard" nzTheme="outline"></i>
+                            學生卡
+                        </li>
+                        <li nz-menu-item (click)="onMemberCardFilterChange('教職員卡')">
+                            <i nz-icon nzType="team" nzTheme="outline"></i>
+                            教職員卡
+                        </li>
+                    </ul>
+                </nz-dropdown-menu>
+
+                <button nz-button nzType="default" class="clear-btn" (click)="clearMemberSearch()"
+                    *ngIf="memberSearchId || memberFilterCard !== '全部類別'">
+                    <i nz-icon nzType="close-circle" nzTheme="outline"></i>
+                    清除
+                </button>
+            </div>
+        </div>
+    </nz-content>
+
+    <div class="memberlist-information-container">
+        <div class="send-request">
+            <!-- Management Card List（全尺寸統一顯示）：與 <nz-table> 同一份 memberlist，不建立第二份資料狀態 -->
+            <div class="management-card-list">
+                @if (memberlist && memberlist.length > 0) {
+                @for (data of memberlist; track data.id) {
+                <div class="management-card">
+                    <div class="management-card-header">
+                        <div class="identity">
+                            <span class="identity-title">{{ data.name }}</span>
+                            <span class="identity-subtitle">{{ data.student_id }}</span>
+                        </div>
+                        <div class="status-area">
+                            <nz-tag [nzColor]="data.is_admin_bound === true ? 'purple' : 'blue'">
+                                {{ data.is_admin_bound === true ? '部分授權' : '一般' }}
+                            </nz-tag>
+                        </div>
+                    </div>
+                    <div class="management-card-body">
+                        <div class="info-row">
+                            <span class="info-label">卡片類別</span>
+                            <span class="info-value">{{ cardTypeMap[data.title] || data.title }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">狀態</span>
+                            <span class="info-value">{{ data.status }}</span>
+                        </div>
+                    </div>
+                    <div class="management-card-actions">
+                        <button nz-button nzType="primary" class="action-btn send-points-btn"
+                            (click)="sendPointsToMember(data)">
+                            <i nz-icon nzType="gift" nzTheme="outline"></i>
+                            發送點數
+                        </button>
+                        <button nz-button nzType="default" class="action-btn bind-admin-btn"
+                            [disabled]="data.is_admin_bound" (click)="bindMemberToAdmin(data)">
+                            <i nz-icon nzType="user-add" nzTheme="outline"></i>
+                            綁定管理員
+                        </button>
+                    </div>
+                </div>
+                }
+                } @else {
+                <div class="empty-state">
+                    @if (loading) {
+                    <nz-spin nzSimple></nz-spin>
+                    <p style="margin-top: 8px;">載入中...</p>
+                    } @else {
+                    <i nz-icon nzType="inbox" nzTheme="outline" class="empty-state-icon"></i>
+                    <p class="empty-state-title">暫無資料</p>
+                    <p class="empty-state-subtitle">目前沒有可顯示的會員資料</p>
+                    }
+                </div>
+                }
+            </div>
+
+            <nz-table #memberTable [nzData]="memberlist || []" [nzBordered]="true" [nzLoading]="loading"
+                [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="memberCurrentPage"
+                [nzPageSize]="memberPageSize" [nzTotal]="totalMember" [nzShowSizeChanger]="true"
+                [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onMemberPageIndexChange($event)"
+                (nzPageSizeChange)="onMemberPageSizeChange($event)">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>名稱</th>
+                        <th>卡片類別</th>
+                        <th>狀態</th>
+                        <th>授權</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (memberlist && memberlist.length > 0) {
+                    @for (data of memberlist; track data.id) {
+                    <tr>
+                        <td>{{ data.student_id }}</td>
+                        <td>{{ data.name }}</td>
+                        <td>{{ cardTypeMap[data.title] || data.title }}</td>
+                        <td>{{ data.status }}</td>
+                        <td>
+                            <nz-tag [nzColor]="data.is_admin_bound === true ? 'purple' : 'blue'">
+                                {{ data.is_admin_bound === true ? '部分授權' : '一般' }}
+                            </nz-tag>
+                        </td>
+                        <td>
+                            <button nz-button nzType="primary" class="action-btn send-points-btn"
+                                (click)="sendPointsToMember(data)">
+                                <i nz-icon nzType="gift" nzTheme="outline"></i>
+                                發送點數
+                            </button>
+                            <button nz-button nzType="default" class="action-btn bind-admin-btn"
+                                [disabled]="data.is_admin_bound" (click)="bindMemberToAdmin(data)">
+                                <i nz-icon nzType="user-add" nzTheme="outline"></i>
+                                綁定管理員
+                            </button>
+                        </td>
+                    </tr>
+                    }
+                    } @else {
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            @if (loading) {
+                            載入中...
+                            } @else {
+                            暫無資料
+                            }
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </nz-table>
+        </div>
+    </div>
+
+        </nz-tab>
+    </nz-tabset>
+
+    <!-- 以下 3 個 Modal 是全域覆蓋層，跟目前選中的 Tab 無關，集中放在 nz-tabset 之後；
+         nzVisible / nzOnCancel / click handler 全部原樣未動 -->
 
     <!-- 編輯管理人員角色 Modal -->
     <nz-modal [(nzVisible)]="editAdminRoleVisible" [nzTitle]="'管理角色 - ' + (currentEditAdmin?.name || '')"
@@ -206,123 +442,6 @@
             </button>
         </ng-template>
     </nz-modal>
-
-    <!-- 會員列表 -->
-    <nz-content>
-        <div nz-row class="row-style">
-            <div nz-col [nzSpan]="12" class="left-col">
-                <h2 nz-typography class="boxword">會員清單</h2>
-            </div>
-        </div>
-    </nz-content>
-
-    <!-- 會員搜尋和篩選區域 -->
-    <nz-content>
-        <div class="search-filter-bar">
-            <div class="search-section">
-                <nz-input-group [nzSuffix]="memberSearchIcon" class="search-input">
-                    <input type="text" nz-input placeholder="輸入會員ID搜尋" [(ngModel)]="memberSearchId"
-                        (keyup.enter)="searchMember()" />
-                </nz-input-group>
-                <ng-template #memberSearchIcon>
-                    <span nz-icon nzType="search" class="search-icon" (click)="searchMember()"></span>
-                </ng-template>
-
-                <button nz-button nzType="primary" class="search-btn" (click)="searchMember()">
-                    <i nz-icon nzType="search" nzTheme="outline"></i>
-                    搜尋
-                </button>
-
-                <button nz-button nz-dropdown [nzDropdownMenu]="memberCardMenu" class="filter-dropdown">
-                    <i nz-icon nzType="filter" nzTheme="outline"></i>
-                    {{ getMemberCardFilterLabel(memberFilterCard) }}
-                    <span nz-icon nzType="down"></span>
-                </button>
-                <nz-dropdown-menu #memberCardMenu="nzDropdownMenu">
-                    <ul nz-menu>
-                        <li nz-menu-item (click)="onMemberCardFilterChange('全部類別')">
-                            <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
-                            全部類別
-                        </li>
-                        <li nz-menu-item (click)="onMemberCardFilterChange('學生卡')">
-                            <i nz-icon nzType="idcard" nzTheme="outline"></i>
-                            學生卡
-                        </li>
-                        <li nz-menu-item (click)="onMemberCardFilterChange('教職員卡')">
-                            <i nz-icon nzType="team" nzTheme="outline"></i>
-                            教職員卡
-                        </li>
-                    </ul>
-                </nz-dropdown-menu>
-
-                <button nz-button nzType="default" class="clear-btn" (click)="clearMemberSearch()"
-                    *ngIf="memberSearchId || memberFilterCard !== '全部類別'">
-                    <i nz-icon nzType="close-circle" nzTheme="outline"></i>
-                    清除
-                </button>
-            </div>
-        </div>
-    </nz-content>
-
-    <div class="memberlist-information-container">
-        <div class="send-request">
-            <nz-table #memberTable [nzData]="memberlist || []" [nzBordered]="true" [nzLoading]="loading"
-                [nzShowPagination]="true" [nzFrontPagination]="false" [nzPageIndex]="memberCurrentPage"
-                [nzPageSize]="memberPageSize" [nzTotal]="totalMember" [nzShowSizeChanger]="true"
-                [nzPageSizeOptions]="[5, 10, 20]" (nzPageIndexChange)="onMemberPageIndexChange($event)"
-                (nzPageSizeChange)="onMemberPageSizeChange($event)">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>名稱</th>
-                        <th>卡片類別</th>
-                        <th>狀態</th>
-                        <th>授權</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (memberlist && memberlist.length > 0) {
-                    @for (data of memberlist; track data.id) {
-                    <tr>
-                        <td>{{ data.student_id }}</td>
-                        <td>{{ data.name }}</td>
-                        <td>{{ cardTypeMap[data.title] || data.title }}</td>
-                        <td>{{ data.status }}</td>
-                        <td>
-                            <nz-tag [nzColor]="data.is_admin_bound === true ? 'purple' : 'blue'">
-                                {{ data.is_admin_bound === true ? '部分授權' : '一般' }}
-                            </nz-tag>
-                        </td>
-                        <td>
-                            <button nz-button nzType="primary" class="action-btn send-points-btn"
-                                (click)="sendPointsToMember(data)">
-                                <i nz-icon nzType="gift" nzTheme="outline"></i>
-                                發送點數
-                            </button>
-                            <button nz-button nzType="default" class="action-btn bind-admin-btn"
-                                [disabled]="data.is_admin_bound" (click)="bindMemberToAdmin(data)">
-                                <i nz-icon nzType="user-add" nzTheme="outline"></i>
-                                綁定管理員
-                            </button>
-                        </td>
-                    </tr>
-                    }
-                    } @else {
-                    <tr>
-                        <td colspan="6" class="text-center">
-                            @if (loading) {
-                            載入中...
-                            } @else {
-                            暫無資料
-                            }
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-            </nz-table>
-        </div>
-    </div>
 
     <!-- 發送點數 Modal -->
     <nz-modal [(nzVisible)]="sendPointsVisible" nzTitle="發送點數" [nzFooter]="sendPointsFooter" nzWidth="600px" nzCentered

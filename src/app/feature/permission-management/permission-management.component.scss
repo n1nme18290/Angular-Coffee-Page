@@ -1,4 +1,28 @@
 @use '../../../styles/motion' as motion;
+@use '../../../styles/section-heading';
+@use '../../../styles/spacing' as spacing;
+@use '../../../styles/empty-state';
+
+/* ===== Tabs（管理人員清單／會員清單）=====
+   數值直接沿用 historical-record.component.scss 已經在用的 nz-tabset 視覺（深藍 tab bar、白字、
+   selected tab 用 ng-zorro 預設的藍色 ink-bar），component-scoped、非共用檔案，
+   本次不額外抽成共用樣式，維持最小修改。 */
+:host ::ng-deep nz-tabset.tabs .ant-tabs-nav {
+    background-color: #27496D;
+    /* ng-zorro 預設 margin-bottom:16px 會跟下面 .section-heading／.search-filter-bar 的間距疊加，
+       這裡移除這一層，改由 .section-heading 自己的 margin-top 單獨控制間距（見下方），
+       比照 historical-record 已驗證過的做法。 */
+    margin-bottom: 0;
+}
+
+:host ::ng-deep nz-tabset.tabs .ant-tabs-tab {
+    color: #ffffff;
+}
+
+/* Tab 內容最上方改用完整的 .section-heading（跟 equipment「設備總覽」同一套視覺語言），
+   取代原本的 .tab-meta-bar。共用 _section-heading.scss 本身有 padding:16px 4px（上下 16px），
+   實際的 margin-top 設定跟「讓 .section-heading 撐滿寬度」的既有規則合併在同一條，
+   請見下方 .section-heading { flex:1 1 auto; margin:...; } 那一條規則，避免兩條規則互相覆蓋。 */
 
 button[nz-button] {
     margin-right: 8px;
@@ -173,13 +197,162 @@ nz-header {
 /* ================= 表格容器樣式 ================= */
 .admin-information-container,
 .memberlist-information-container {
-    margin: 40px 16px 24px 16px;
+    margin-top: spacing.$space-xl;
+    margin-right: 16px;
+    margin-bottom: 24px;
+    margin-left: 16px;
     padding: 16px;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     /* ✅ 防止表格超出容器 */
     overflow-x: auto;
+}
+
+/* ===== Management Card List（全尺寸統一顯示，取代 desktop table 視覺）=====
+   <nz-table> 保留作為 server-side / 篩選時前端切頁的 pagination + loading binding host：
+   本體（thead/tbody，即 .ant-table）全尺寸隱藏，同一顆 nz-pagination 繼續顯示在 card list 下方。
+   選擇器精準限制在這兩個容器內，不會命中「編輯管理人員角色」Modal 裡的 #roleTable（角色勾選清單，
+   維持原本 table 視覺、checkbox、nzScroll y:'400px'、nzShowPagination=false，完全不受影響）。 */
+.admin-information-container ::ng-deep .ant-table,
+.memberlist-information-container ::ng-deep .ant-table {
+    display: none;
+}
+
+// .ant-table 隱藏後版面高度塌陷為 0，但 [nzLoading] 的 spin 指示器是絕對定位、不受版面高度限制，
+// 仍會在該處畫出一個小圖示、跟 management-card-list 自己的 loading 疊在一起，故一併隱藏
+// （management-card-list 內的 nz-spin 是完全獨立的節點，不受此規則影響；同理不影響 #roleTable）
+.admin-information-container ::ng-deep .ant-spin,
+.memberlist-information-container ::ng-deep .ant-spin {
+    display: none;
+}
+
+.management-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: spacing.$space-sm;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.management-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: spacing.$space-md;
+    background: #ffffff;
+    border-radius: motion.$radius-lg;
+    box-shadow: motion.$shadow-card-resting;
+
+    .management-card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: spacing.$space-sm;
+
+        .identity {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .identity-title {
+                color: #262626;
+                font-weight: 600;
+                font-size: 16px;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+
+            .identity-subtitle {
+                color: #8c8c8c;
+                font-size: 13px;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+        }
+
+        .status-area {
+            flex-shrink: 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+    }
+
+    .management-card-body {
+        margin-top: spacing.$space-sm;
+        padding-top: spacing.$space-sm;
+        border-top: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: spacing.$space-sm;
+
+            .info-label {
+                flex-shrink: 0;
+                color: #8c8c8c;
+                font-size: 13px;
+            }
+
+            .info-value {
+                flex: 1;
+                min-width: 0;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+                text-align: right;
+                color: #595959;
+                font-size: 14px;
+            }
+        }
+    }
+
+    .management-card-actions {
+        margin-top: spacing.$space-sm;
+        padding-top: spacing.$space-sm;
+        border-top: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: spacing.$space-sm;
+
+        // 卡片內用 gap 控制按鈕間距，蓋掉既有 table 版 .action-btn 的 margin-right，避免間距重複疊加
+        .action-btn {
+            margin-right: 0;
+        }
+    }
+}
+
+/* Desktop / Tablet（>=768px）：card 更緊湊，body 的 info-row 橫向並排，避免卡片過高 */
+@media (min-width: 768px) {
+    .management-card {
+        padding: spacing.$space-sm spacing.$space-md;
+    }
+
+    .management-card .management-card-body {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: spacing.$space-sm spacing.$space-lg;
+
+        .info-row {
+            flex: 1 1 auto;
+            min-width: 200px;
+            justify-content: flex-start;
+            gap: spacing.$space-xs;
+
+            .info-value {
+                flex: 0 1 auto;
+                text-align: left;
+            }
+        }
+    }
 }
 
 .send-request {
@@ -193,10 +366,29 @@ nz-header {
     margin-bottom: 16px;
 }
 
-/* ================= 控制 nz-content 間距 ================= */
+/* ================= 控制 nz-content 間距 =================
+   padding-top 這裡刻意留 0：跟 historical-record 不同，這個頁面的 .search-filter-bar
+   本身已經有 margin-top:8px（既有頁面樣式，這次沒有動），所以「heading 底部 → 搜尋區」
+   這段間距＝ heading 自己的 padding-bottom（16px，共用樣式）＋ search-filter-bar 自己的
+   margin-top（8px）＝ 24px，不需要再疊一層 nz-content padding-top。 */
 nz-content {
     padding-top: 0;
     padding-bottom: 0;
+}
+
+/* .section-heading 使用共用的 _section-heading.scss，本身寬度是 auto（跟內容一樣寬）。
+   但父層 <nz-content> 吃到全站共用的 .ant-layout-content { display:flex; justify-content:center }
+   （src/styles.scss，影響全站所有頁面，本次不可改），導致這個「內容窄縮的置中 flex item」整塊
+   被推到畫面中間，形成「偏中間」的視覺（實測：heading 起始 x=608.7，同一列的 .search-filter-bar
+   起始 x 只有 96，相差超過 500px）。這裡比照下面 .search-filter-bar 已經在用的手法
+   （明確撐滿寬度＋左右邊界），讓 .section-heading 撐滿可用寬度、不再被父層置中；
+   不觸碰共用的 _section-heading.scss，也不改全站的 styles.scss。 */
+.section-heading {
+    flex: 1 1 auto;
+    /* top 用 space-xs：heading 自己的 padding-top(16px，共用樣式) + 這裡的 8px = 24px，
+       是「Tabs 底部 → heading 標題可視起點」的目標值；bottom 維持 0（不疊加，見上方 nz-content 說明） */
+    margin: spacing.$space-xs 16px 0;
+    box-sizing: border-box;
 }
 
 /* ================= 搜尋和篩選列樣式 ================= */
@@ -211,10 +403,6 @@ nz-content {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     width: calc(100% - 32px);
     transition: all 0.3s ease;
-
-    &.has-clear-button {
-        margin-bottom: 24px;
-    }
 
     .search-section {
         display: flex;
@@ -584,20 +772,6 @@ nz-content {
 
 /* ================= RWD ================= */
 
-/* 平板大 */
-@media (max-width: 1200px) {
-    .search-filter-bar {
-        &.has-clear-button {
-            margin-bottom: 32px;
-        }
-    }
-
-    .admin-information-container,
-    .memberlist-information-container {
-        margin-top: 48px;
-    }
-}
-
 /* 平板小 / 手機橫向 */
 @media (max-width: 768px) {
     nz-header {
@@ -624,20 +798,45 @@ nz-content {
         }
     }
 
+    .section-heading {
+        margin: 0 12px;
+    }
+
+    /* Tabs 手機版：跟 historical-record 一致的做法 —— tab bar 可橫向捲動、文字縮小，
+       避免「管理人員清單」/「會員清單」在窄螢幕被截斷 */
+    :host ::ng-deep nz-tabset.tabs {
+        .ant-tabs-nav {
+            overflow-x: auto;
+            overflow-y: hidden;
+
+            &::-webkit-scrollbar {
+                height: 3px;
+            }
+        }
+
+        .ant-tabs-tab {
+            font-size: 13px;
+            padding: spacing.$space-xs spacing.$space-sm !important;
+            white-space: nowrap;
+        }
+    }
+
+    nz-content {
+        padding-top: 0;
+    }
+
     .search-filter-bar {
         flex-direction: column;
         margin: 0 12px 16px 12px;
         width: calc(100% - 24px);
 
-        &.has-clear-button {
-            margin-bottom: 36px;
-        }
-
         .search-section {
             flex-direction: column;
+            width: 100%;
 
             .search-input {
                 max-width: 100%;
+                width: 100%;
             }
 
             .search-btn,
@@ -650,7 +849,9 @@ nz-content {
 
     .admin-information-container,
     .memberlist-information-container {
-        margin: 56px 12px 24px 12px;
+        margin-right: 12px;
+        margin-bottom: 24px;
+        margin-left: 12px;
     }
 
     .row-style {
@@ -701,18 +902,30 @@ nz-content {
         }
     }
 
+    .section-heading {
+        margin: 0 12px;
+    }
+
+    /* 極小螢幕再縮小一階，跟 historical-record 576px 斷點一致 */
+    :host ::ng-deep nz-tabset.tabs .ant-tabs-tab {
+        font-size: 12px;
+        padding: 6px 10px !important;
+    }
+
+    nz-content {
+        padding-top: 0;
+    }
+
     .search-filter-bar {
         margin: 0 12px 16px 12px;
         width: calc(100% - 24px);
-
-        &.has-clear-button {
-            margin-bottom: 40px;
-        }
     }
 
     .admin-information-container,
     .memberlist-information-container {
-        margin: 64px 12px 24px 12px;
+        margin-right: 12px;
+        margin-bottom: 24px;
+        margin-left: 12px;
         padding: 10px;
     }
 

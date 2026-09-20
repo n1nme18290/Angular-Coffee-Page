@@ -1,4 +1,6 @@
 @use '../../../styles/motion' as motion;
+@use '../../../styles/spacing' as spacing;
+@use '../../../styles/section-heading';
 
 /* ===== 按鈕共用樣式 ===== */
 button[nz-button] {
@@ -62,6 +64,26 @@ nz-content {
     overflow-y: auto;
     width: 100%;
     box-sizing: border-box;
+    /* 全站共用的 .ant-layout-content 預設 padding-top:35px（src/styles.scss，影響所有頁面，本次不可動），
+       跟下面 .section-heading 自己的 padding-top:16px（共用 _section-heading.scss，同樣不可動）疊加，
+       實測 Header 底部到標題文字有 47px（35+16 再加上少量文字渲染誤差），明顯比 equipment 已修好的
+       24px 大。這裡在本頁既有的 nz-content 局部覆寫裡多補一個 padding-top，蓋掉全域的 35px，
+       讓「這個元件內」的 nz-content 頂部間距改由 spacing.$space-xs 提供，
+       8 + 16（section-heading 自己的 padding-top）= 24px，跟 equipment 同一個公式。 */
+    padding-top: spacing.$space-xs;
+}
+
+/* 頁面說明：改用跟 equipment/permission-management 一致的共用 .section-heading，
+   但沿用原本 .analytics-intro 的水平對齊方式（max-width/margin/padding-left/right），
+   讓標題與下方 .charts-container 左右邊界對齊；不覆寫共用partial 的 padding 上下值與字體樣式，
+   確保三頁的 icon 尺寸、title/subtitle 字級顏色、垂直內距完全一致。 */
+.section-heading {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    padding-left: spacing.$space-sm;
+    padding-right: spacing.$space-sm;
+    box-sizing: border-box;
 }
 
 /* 共用工具列 */
@@ -71,8 +93,8 @@ nz-content {
     gap: 10px;
     flex-wrap: wrap;
     max-width: 1400px;
-    margin: 12px auto 0;
-    padding: 0 12px;
+    margin: spacing.$space-sm auto 0;
+    padding: 0 spacing.$space-sm;
 }
 
 /* 三欄並列，置中 */
@@ -81,7 +103,7 @@ nz-content {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
-    padding: 12px;
+    padding: spacing.$space-sm;
     max-width: 1400px;
     width: 100%;
     box-sizing: border-box;
@@ -95,7 +117,7 @@ nz-content {
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 12px 14px 12px;
+    padding: spacing.$space-sm 14px spacing.$space-sm;
     display: flex;
     flex-direction: column;
 }
@@ -177,6 +199,12 @@ nz-content {
 
 /* 手機橫向：兩欄 → 單欄 */
 @media (max-width: 768px) {
+    /* 同樣道理：mobile 讓 nz-content 的 top padding 歸零，
+       只靠 .section-heading 自己的 16px padding-top 當作視覺間距（貼近 space-md 目標） */
+    nz-content {
+        padding-top: 0;
+    }
+
     nz-header {
         padding: 0 16px !important;
 
@@ -197,7 +225,7 @@ nz-content {
 
     .charts-container {
         grid-template-columns: 1fr;
-        padding: 8px;
+        padding: spacing.$space-xs;
     }
 
     .chart-header {

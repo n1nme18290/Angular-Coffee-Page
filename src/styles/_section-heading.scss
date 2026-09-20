@@ -1,0 +1,81 @@
+// Section/page heading 共用樣式 — icon badge + 主標題 + 副標題。
+// 後台系統密度，不做 hero、不新增品牌色（icon 顏色沿用既有 #27496D，
+// icon badge 背景沿用專案既有淺灰 #f0f2f5，equipment/permission-management 已使用過）。
+// 目前供 permission-management / point-information 兩頁使用
+// （@use '../../../styles/section-heading';）。純樣式 class，不含任何邏輯。
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 4px;
+}
+
+.section-heading-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #f0f2f5;
+    color: #27496D;
+    font-size: 18px;
+}
+
+.section-heading-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.section-heading-title {
+    margin: 0;
+    color: #27496D;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.section-heading-subtitle {
+    margin: 0;
+    color: #8c8c8c;
+    font-size: 13px;
+}
+
+// 輕量筆數顯示（例如「共 X 位」）。透過 margin-left:auto 自行靠右，
+// 不依賴 .section-heading 的 justify-content，因此沒有這個 class 的
+// 既有頁面（例如 equipment）版面完全不受影響。字級比 title 小、比照
+// subtitle 的灰階色，避免搶過主標題視覺重量。
+.section-heading-count {
+    margin-left: auto;
+    color: #8c8c8c;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+@media (max-width: 576px) {
+    .section-heading {
+        gap: 8px;
+    }
+
+    .section-heading-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+
+    .section-heading-title {
+        font-size: 16px;
+    }
+
+    .section-heading-subtitle {
+        font-size: 12px;
+    }
+
+    .section-heading-count {
+        font-size: 12px;
+    }
+}

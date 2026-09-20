@@ -1,6 +1,17 @@
 <app-common-header title="兌換資料分析頁面"></app-common-header>
 
 <nz-content>
+    <!-- ===== 頁面說明：改用跟 equipment/permission-management 一致的共用 section-heading ===== -->
+    <div class="section-heading">
+        <div class="section-heading-icon">
+            <i nz-icon nzType="area-chart" nzTheme="outline"></i>
+        </div>
+        <div class="section-heading-content">
+            <h2 class="section-heading-title">資料分析</h2>
+            <p class="section-heading-subtitle">依日期範圍查看咖啡兌換與點數累積趨勢</p>
+        </div>
+    </div>
+
     <!-- ===== 共用工具列 ===== -->
     <div class="global-toolbar">
         <nz-radio-group [(ngModel)]="sharedRange" nzButtonStyle="solid"

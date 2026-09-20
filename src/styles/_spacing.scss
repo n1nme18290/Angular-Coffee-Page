@@ -1,0 +1,9 @@
+// Spacing tokens — 代表設計節奏的間距顆粒度，不是所有 magic number 的百科。
+// Phase A（point-information / equipment / historical-record）只做「完全等值」的數字替換，
+// 20 / 14 / 10 / 6 / 4px 等目前沒有對應 token 的既有數值一律保留，不強制套用相近值。
+
+$space-xs: 8px;
+$space-sm: 12px;
+$space-md: 16px;
+$space-lg: 24px;
+$space-xl: 40px;

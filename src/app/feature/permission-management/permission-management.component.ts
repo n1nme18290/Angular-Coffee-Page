@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { CommonModule } from '@angular/common';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { SidebarService } from '../../share/service/sidebar.service';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -37,7 +38,7 @@ import { CommonHeaderComponent } from '../../share/common-header/common-header.c
   imports: [CommonModule, NzLayoutModule, NzButtonModule, NzIconModule, NzInputModule, NzTypographyModule, NzDropDownModule, FormsModule
     , NzSelectModule, NzSwitchModule, NzAvatarModule, NzTabsModule, NzPageHeaderModule, NzDrawerModule, NzGridModule,
     NzRadioModule, NzModalModule, CommonModule, NzTableModule, NzDividerModule, NzCheckboxModule, NzTagModule,
-    CommonHeaderComponent],
+    NzSpinModule, CommonHeaderComponent],
   templateUrl: './permission-management.component.html',
   styleUrl: './permission-management.component.scss'
 })

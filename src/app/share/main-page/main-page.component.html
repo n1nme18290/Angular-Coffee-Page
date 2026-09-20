@@ -8,11 +8,24 @@
       [nzTrigger]="null"
       [nzCollapsedWidth]="isMobile ? 0 : 80"
       [nzWidth]="sidebarWidth">
-      <div class="logo"></div>
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <span class="brand-mark">
+            <span nz-icon nzType="coffee" nzTheme="outline"></span>
+          </span>
+          <span class="brand-name">咖啡會員系統</span>
+        </div>
+        <div class="sidebar-toggle" (click)="toggleCollapsed()">
+          <span nz-icon [nzType]="sidebarService.isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"></span>
+        </div>
+      </div>
       <div class="menu-container">
         <ul nz-menu nzTheme="dark" nzMode="inline" class="main-menu"
           [nzInlineCollapsed]="isMobile ? false : sidebarService.isCollapsed"
           [nzInlineIndent]="menuIndent">
+          @if (menuItems.length > 0) {
+            <li class="menu-section-label">個人專區</li>
+          }
           @for (item of menuItems; track item.path) {
             <li nz-menu-item (click)="item.method && item.method()">
               <span nz-icon [nzType]="item.icon"></span>
@@ -21,7 +34,7 @@
           }
 
           @if (isSystemManagementVisible()) {
-            <li nz-submenu nzTitle="系統管理" nzIcon="setting" class="menu-item-large">
+            <li nz-submenu nzTitle="系統管理" nzIcon="setting" class="menu-item-large" nzMenuClassName="sidebar-submenu-popup">
               <ul>
                 @for (item of systemManagementItems; track item.path) {
                   <li nz-menu-item class="menu-item-large" (click)="item.method && item.method()">

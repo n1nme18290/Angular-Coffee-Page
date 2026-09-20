@@ -1,0 +1,29 @@
+// Empty-state 共用視覺樣式 — icon + 主文字 + 輔助文字，置中、灰階、無動畫。
+// 目前供 point-information / historical-record 兩頁 POC 使用
+// （@use '../../../styles/empty-state';）。純樣式 class，不含任何邏輯。
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 32px 16px;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    color: #d9d9d9;
+}
+
+.empty-state-title {
+    margin: 0;
+    color: #999;
+    font-size: 14px;
+}
+
+.empty-state-subtitle {
+    margin: 0;
+    color: #bfbfbf;
+    font-size: 13px;
+}

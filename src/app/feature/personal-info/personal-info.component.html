@@ -1,6 +1,6 @@
 <nz-layout class="personal-info-layout">
     <!-- ===== 頂部 Header ===== -->
-    <nz-header>
+    <nz-header class="personal-info-header">
         <div class="header-left">
             @if (sidebarService.showSidebar) {
             <button nz-button nzType="primary" (click)="toggleCollapsed()" class="btn-styles4">
@@ -8,14 +8,18 @@
                     class="big-icon"></span>
             </button>
             }
-            <h1 nz-typography class="h2">
-                <span nz-icon nzType="user" nzTheme="outline"></span>
-                {{username}}
-            </h1>
+            <div class="header-context">
+                <h1 nz-typography class="header-title">個人資訊</h1>
+            </div>
         </div>
 
-        <!-- 登出按鈕 -->
         <div class="header-right">
+            <div class="user-info">
+                <span class="user-avatar" aria-hidden="true">
+                    <span nz-icon nzType="user" nzTheme="outline"></span>
+                </span>
+                <span class="username">{{username}}</span>
+            </div>
             <button nz-button class="btn-logout" (click)="LogOut()">
                 <span nz-icon nzType="logout" nzTheme="outline"></span>
                 <span>登出</span>
@@ -91,6 +95,48 @@
                 </div>
                 <nz-card class="history-card">
                     <div class="table-wrapper">
+                        <!-- Record Card List（全尺寸統一顯示）：與 nz-table 同一份 memberPointsHistoryList，不建立第二份資料狀態；
+                             desktop/mobile 皆隱藏 .ant-table 本體，同一顆 nz-pagination 繼續作為分頁 host -->
+                        <div class="mobile-record-list">
+                            @if (memberPointsHistoryList && memberPointsHistoryList.length > 0) {
+                            @for (data of memberPointsHistoryList; track data.id) {
+                            <div class="mobile-record-card"
+                                [ngClass]="data.amount === 0 ? 'record-card-neutral' : (data.after_balance >= data.before_balance ? 'record-card-positive' : 'record-card-negative')">
+                                <div class="record-card-header">
+                                    <span class="record-title">{{ data.description || data.type }}</span>
+                                    <span class="record-amount"
+                                        [ngClass]="data.after_balance >= data.before_balance? 'amount-positive': 'amount-negative'">
+                                        {{
+                                        data.after_balance >= data.before_balance ? '+' : '-'
+                                        }}{{ data.amount }}
+                                    </span>
+                                </div>
+                                <div class="record-card-body">
+                                    <div class="record-row">
+                                        <span class="record-label">餘額變化</span>
+                                        <span class="record-value">{{ data.before_balance }} → {{ data.after_balance }}</span>
+                                    </div>
+                                    <div class="record-row">
+                                        <span class="record-label">異動時間</span>
+                                        <span class="record-value">
+                                            {{ data.created_at | date:'yyyy / MM / dd' }} {{ data.created_at | date:'HH:mm' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            }
+                            } @else {
+                            <div class="empty-state">
+                                @if (memberHistoryLoading) {
+                                <nz-spin [nzSimple]="true"></nz-spin>
+                                <p>載入中...</p>
+                                } @else {
+                                <i nz-icon nzType="file-text" nzTheme="outline"></i>
+                                <p>暫無交易紀錄</p>
+                                }
+                            </div>
+                            }
+                        </div>
                         <nz-table #memberHistoryTable [nzData]="memberPointsHistoryList"
                             [nzLoading]="memberHistoryLoading" [nzBordered]="false" [nzShowPagination]="true"
                             [nzPageSize]="10" [nzHideOnSinglePage]="false" [nzScroll]="{ x: '600px' }"

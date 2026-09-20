@@ -1,3 +1,12 @@
+@use '../../../styles/motion' as motion;
+
+$sidebar-bg: #20364d;
+$sidebar-divider: rgba(226, 232, 240, 0.18);
+$sidebar-text: #c8d3df;
+$sidebar-muted: #8294a7;
+$sidebar-hover: rgba(255, 255, 255, 0.07);
+$sidebar-active: #b95309;
+
 button[nz-button] {
     margin-right: 8px;
     margin-bottom: 12px;
@@ -62,10 +71,83 @@ button[nz-button].btn-styles4 {
     transition: color 0.3s;
 }
 
-.logo {
-    height: 32px;
-    background-color: #001529;
-    margin: 16px;
+.sidebar-header {
+    min-width: 0;
+    height: 72px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-brand {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ffffff;
+}
+
+.brand-mark {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: $sidebar-active;
+    color: #ffffff;
+
+    span[nz-icon] {
+        font-size: 20px;
+    }
+}
+
+.brand-name {
+    min-width: 0;
+    overflow: hidden;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.sidebar-toggle {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    color: $sidebar-text;
+    transition: color 0.2s ease, background-color 0.2s ease;
+
+    span[nz-icon] {
+        font-size: 20px;
+    }
+
+    &:hover {
+        color: #ffffff;
+        background-color: $sidebar-hover;
+    }
+}
+
+// 收合時只保留置中的 toggle，品牌不佔空間。
+nz-sider.ant-layout-sider-collapsed .sidebar-header {
+    justify-content: center;
+    padding: 0;
+}
+
+nz-sider.ant-layout-sider-collapsed .sidebar-brand {
+    display: none;
 }
 
 nz-breadcrumb {
@@ -77,23 +159,38 @@ nz-breadcrumb {
 }
 
 .menu-item-large {
-    font-size: 24px;
-    transition: color 0.3s ease, font-weight 0.3s ease, opacity 0.3s ease, width 0.3s ease;
+    font-size: 16px;
+    transition: color 0.2s ease, opacity 0.2s ease, width 0.2s ease;
 }
 
 .submenu-icon {
-    margin-right: 8px;
+    margin-right: 0;
 }
 
 .menu-container {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 64px);
+    height: calc(100vh - 72px);
+    min-height: 0;
 }
 
 .main-menu {
     flex: 1;
+    min-height: 0;
+    padding: 18px 0 12px;
+    background: $sidebar-bg;
     overflow-y: auto;
+}
+
+.menu-section-label {
+    height: 28px;
+    padding: 0 20px;
+    color: $sidebar-muted;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 28px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
 }
 
 // 登出項目：上方分隔線做視覺區隔，不再推到最底
@@ -109,9 +206,22 @@ nz-sider {
     bottom: 0;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+    background: $sidebar-bg;
     overflow-x: hidden; // 收合/展開動畫過程避免出現暫時性的水平捲軸
     transition: width 0.2s ease; // 與內容區 margin-left 動畫時長一致，讓收合/展開更同步自然
     z-index: 100;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 1px;
+        background: $sidebar-divider;
+        pointer-events: none;
+    }
 }
 
 // 有側邊欄時，內容區推開
@@ -141,94 +251,128 @@ nz-layout > nz-layout:first-child {
 
 ul.main-menu li[nz-menu-item] {
     display: flex;
-    align-items: center; // icon 與文字垂直對齊，避免大字級文字造成視覺偏移
-    gap: 12px; // icon 與文字間距一致化
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, gap 0.3s ease;
+    align-items: center;
+    width: calc(100% - 24px);
+    height: 48px;
+    margin: 4px 12px;
+    border-radius: 8px;
+    gap: 14px;
+    color: $sidebar-text;
+    font-size: 16px;
+    line-height: 48px;
+    transition: color 0.2s ease, background-color 0.2s ease;
     cursor: pointer;
     position: relative;
     overflow: hidden;
 
-    &:hover {
-        background-color: rgba(39, 73, 109, 0.2) !important;
-        transform: scale(1.01);
-        box-shadow: 0 4px 12px rgba(39, 73, 109, 0.3);
-    }
-
-    &:active {
-        background-color: rgba(39, 73, 109, 0.35) !important;
-        transform: scale(1.01);
-    }
-}
-
-li[nz-submenu] {
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-
-    &:hover {
-        background-color: rgba(39, 73, 109, 0.2) !important;
-        transform: scale(1.01);
-        box-shadow: 0 4px 12px rgba(39, 73, 109, 0.3);
-    }
-}
-
-li[nz-submenu]:hover .ant-menu-submenu-title {
-    color: #9cccff !important;
-    font-weight: bold;
-}
-
-li[nz-submenu] ul li[nz-menu-item] {
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
-
-    &:hover {
-        background-color: rgba(39, 73, 109, 0.25) !important;
-        transform: scale(1.03);
-        box-shadow: 0 2px 8px rgba(39, 73, 109, 0.2);
-        color: #9cccff !important;
-    }
-
-    &:active {
-        background-color: rgba(39, 73, 109, 0.4) !important;
-        transform: scale(1.01);
-    }
-}
-
-span[nz-icon] {
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-li[nz-menu-item]:hover span[nz-icon],
-li[nz-submenu]:hover span[nz-icon] {
-    transform: scale(1.15);
-    color: #9cccff;
-}
-
-li[nz-menu-item]:hover .menu-item-large {
-    color: #9cccff !important;
-    font-weight: bold;
-}
-
-// 登出項目 hover 維持紅色效果
-ul.main-menu li.logout-item[nz-menu-item]:hover {
-    background-color: rgba(255, 77, 79, 0.15) !important;
-
     span[nz-icon] {
-        color: #ff4d4f !important;
+        flex-shrink: 0;
+        margin-right: 0;
+        font-size: 19px;
+    }
+}
+
+:host ::ng-deep .main-menu {
+    &.ant-menu-dark,
+    .ant-menu-sub {
+        background: $sidebar-bg;
     }
 
-    .menu-item-large {
-        color: #ff4d4f !important;
+    .ant-menu-title-content {
+        min-width: 0;
+    }
+
+    > .ant-menu-item > .ant-menu-title-content {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        > .menu-item-large {
+            margin-left: 0;
+        }
+    }
+
+    > .ant-menu-item:hover {
+        color: #ffffff;
+        background-color: $sidebar-hover !important;
+    }
+
+    > .ant-menu-submenu {
+        margin-top: 12px;
+        overflow: visible;
+    }
+
+    > .ant-menu-submenu > .ant-menu-submenu-title {
+        width: calc(100% - 24px);
+        height: 40px;
+        margin: 0 12px 4px;
+        border-radius: 8px;
+        color: $sidebar-muted;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 40px;
+        transition: color 0.2s ease, background-color 0.2s ease;
+
+        &:hover {
+            color: #ffffff;
+            background-color: $sidebar-hover;
+        }
+
+        > .anticon {
+            margin-right: 14px;
+            font-size: 18px;
+        }
+
+        > .ant-menu-title-content {
+            margin-left: 0;
+        }
+
+        .ant-menu-submenu-arrow {
+            color: currentColor;
+        }
+    }
+
+    .ant-menu-sub .ant-menu-item {
+        width: calc(100% - 24px);
+        height: 48px;
+        margin: 4px 12px;
+        border-radius: 8px;
+        color: $sidebar-text;
+        font-size: 16px;
+        line-height: 48px;
+        transition: color 0.2s ease, background-color 0.2s ease;
+
+        &:hover {
+            color: #ffffff;
+            background-color: $sidebar-hover !important;
+        }
+
+        .ant-menu-title-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .anticon {
+            flex-shrink: 0;
+            margin-right: 0;
+            font-size: 18px;
+        }
+    }
+
+    > .ant-menu-item.ant-menu-item-selected,
+    .ant-menu-sub .ant-menu-item.ant-menu-item-selected,
+    > .ant-menu-item.ant-menu-item-selected:hover,
+    .ant-menu-sub .ant-menu-item.ant-menu-item-selected:hover {
+        color: #ffffff;
+        background-color: $sidebar-active !important;
+        box-shadow: none;
     }
 }
 
 nz-sider.ant-layout-sider-collapsed {
-    li[nz-menu-item]:hover,
-    li[nz-submenu]:hover {
-        transform: scale(1.1);
-
-        span[nz-icon] {
-            transform: scale(1.3) rotate(360deg);
-        }
+    .menu-section-label {
+        display: none;
     }
 
     // ng-zorro 收合時只會把文字設為 opacity:0，本身仍保留原本寬度（大字級文字實際寬度遠大於 80px 側欄），
@@ -264,7 +408,36 @@ nz-sider.ant-layout-sider-collapsed {
     }
 
     ul.main-menu li[nz-menu-item] {
-        gap: 0; // 收合時文字已隱藏，icon 需置中而非保留原本的文字間距
+        width: 48px;
+        margin-right: auto;
+        margin-left: auto;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+        justify-content: center;
+        gap: 0;
+
+        span[nz-icon] {
+            font-size: 19px;
+        }
+    }
+
+}
+
+:host ::ng-deep nz-sider.ant-layout-sider-collapsed .main-menu > .ant-menu-submenu {
+    margin-top: 4px;
+}
+
+:host ::ng-deep nz-sider.ant-layout-sider-collapsed .main-menu > .ant-menu-submenu > .ant-menu-submenu-title {
+    width: 48px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    text-align: center;
+
+    > .anticon {
+        margin-right: 0;
+        font-size: 19px;
     }
 }
 
@@ -300,15 +473,40 @@ nz-sider.ant-layout-sider-collapsed {
         margin-left: 0 !important;
     }
 
-    .menu-item-large {
-        font-size: 20px;
+    .sidebar-header {
+        padding: 0 12px;
+    }
+
+    .brand-mark {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+        border-radius: 9px;
+
+        span[nz-icon] {
+            font-size: 18px;
+        }
+    }
+
+    .brand-name {
+        font-size: 14px;
+    }
+
+    .sidebar-toggle {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+
+        span[nz-icon] {
+            font-size: 19px;
+        }
     }
 }
 
 @media (max-width: 576px) {
     .menu-container {
-        height: calc(100vh - 64px);
-        height: calc(100dvh - 64px);
+        height: calc(100vh - 72px);
+        height: calc(100dvh - 72px);
     }
 
     .main-menu {
@@ -321,7 +519,7 @@ nz-sider.ant-layout-sider-collapsed {
 
     ul.main-menu li[nz-menu-item] {
         justify-content: flex-start;
-        gap: 12px;
+        gap: 14px;
 
         span[nz-icon] {
             flex-shrink: 0;
@@ -333,19 +531,33 @@ nz-sider.ant-layout-sider-collapsed {
         }
     }
 
-    // Menu wrappers and submenu titles are generated inside ng-zorro's view.
-    :host ::ng-deep .main-menu .ant-menu-item > .ant-menu-title-content,
-    :host ::ng-deep .main-menu .ant-menu-submenu-title {
+    :host ::ng-deep .main-menu .ant-menu-item > .ant-menu-title-content {
         display: flex;
         align-items: center;
-        gap: 12px;
-
-        > .anticon {
-            flex-shrink: 0;
-        }
-
-        > .ant-menu-title-content {
-            margin-left: 0;
-        }
+        gap: 14px;
     }
+}
+
+/* 登出確認 Modal 外框圓角／陰影（nzWrapClassName，DOM 由 CDK Overlay 掛在 body，需頂層 ::ng-deep） */
+::ng-deep .logout-confirm-modal .ant-modal-content {
+    border-radius: motion.$radius-lg;
+    box-shadow: motion.$shadow-modal;
+    overflow: hidden;
+}
+
+/*
+ * Sidebar collapsed → hover「系統管理」浮出的 submenu popup（nzMenuClassName）。
+ *
+ * ng-zorro 在 collapsed（非 inline）情境下，會把 nzMenuClassName 加在實際可見的
+ * `.ant-menu.ant-menu-vertical.ant-menu-sub` 內層節點上（外層 .ant-menu-submenu-popup
+ * 本身是透明的 hover 判定框，沒有背景／圓角意義）。同一個 class 在展開時的 inline 版本
+ * 會落在 `.ant-menu.ant-menu-inline.ant-menu-sub`，因此這裡用 .ant-menu-vertical 做
+ * 交集限定，確保只命中 collapsed popup，不影響展開後的 inline 子選單或 mobile drawer。
+ * 這段 DOM 由 CDK Overlay 掛在 body（脫離 :host 範圍），因此用頂層 ::ng-deep。
+ */
+::ng-deep .sidebar-submenu-popup.ant-menu-vertical {
+    padding: 4px 0;
+    overflow: hidden;
+    border-radius: motion.$radius-md;
+    box-shadow: motion.$shadow-popup;
 }

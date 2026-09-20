@@ -1,4 +1,7 @@
 @use '../../../styles/motion' as motion;
+@use '../../../styles/spacing' as spacing;
+@use '../../../styles/section-heading';
+@use '../../../styles/empty-state';
 
 .layout-container {
     min-height: 100vh;
@@ -6,7 +9,7 @@
 }
 
 button[nz-button] {
-    margin-right: 8px;
+    margin-right: spacing.$space-xs;
     height: 40px;
     border-radius: 100px;
     border: 1px solid #27496D;
@@ -110,61 +113,290 @@ nz-header {
 }
 
 .devices-information-container {
-    padding: 24px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    /* top 改用較小的 space-xs：實測 common-header 本身底部沒有額外留白（height:72px 到底就是 72px），
+       但共用的 _section-heading.scss 本身有 padding:16px 4px（不可修改，其他頁面共用），
+       這裡的 top padding 會跟 section-heading 自己的 16px 疊加成視覺間距，
+       所以只需要再補 8px（spacing.$space-xs）即可讓「Header 底部 → 設備總覽文字」落在 24px（8+16）。
+       right/bottom 維持原本 spacing.$space-lg，不受影響。 */
+    padding: spacing.$space-xs spacing.$space-lg spacing.$space-lg;
 
     @media (max-width: 576px) {
-        padding: 12px;
+        /* 同樣道理：這裡 top 改 0，讓 section-heading 自己的 16px 直接成為視覺間距（貼近 space-md 目標） */
+        padding: 0 spacing.$space-sm spacing.$space-sm;
     }
+
+    /* 頁面級 section-heading 只在 equipment 這頁（透過 view encapsulation 天然限定範圍）
+       多留一點呼吸空間，不影響共用 _section-heading.scss 本身或其他頁面。 */
+    .section-heading {
+        margin-bottom: spacing.$space-sm;
+    }
+}
+
+/* ===== 設備清單：heading + table 合成同一張 card（container/card 感），
+   .device-table 本身的 background/radius/shadow 已移除，避免卡片疊卡片。 ===== */
+.table-section {
+    background: #fff;
+    border-radius: motion.$radius-lg;
+    box-shadow: motion.$shadow-card-resting;
+    overflow: hidden;
+}
+
+/* 表格區塊標題：現在是 table-section 卡片本身的 header，底部加一條分隔線 */
+.table-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 4px spacing.$space-md;
+    padding: spacing.$space-lg spacing.$space-lg spacing.$space-md;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.table-section-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #27496D;
+}
+
+.table-section-subtitle {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: #8c8c8c;
+}
+
+.table-section-count {
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #595959;
+    white-space: nowrap;
 }
 
 .table-wrapper {
     overflow-x: auto;
+    padding-top: spacing.$space-md;
+    padding-right: spacing.$space-md;
+    padding-bottom: spacing.$space-lg;
+    padding-left: spacing.$space-md;
+}
+
+/* ===== Equipment Management Card List（全尺寸統一顯示，取代 desktop table 視覺）=====
+   <nz-table class="device-table"> 保留作為 server-side pagination / loading / page event host：
+   本體（thead/tbody，即 .ant-table）全尺寸隱藏，同一顆 nz-pagination 繼續顯示在 card list 下方。
+   選擇器精準限制在 .table-wrapper .device-table 內，避免誤傷其他頁面的 table 或未來新增的 modal table。 */
+.table-wrapper .device-table ::ng-deep .ant-table {
+    display: none;
+}
+
+// .ant-table 隱藏後版面高度塌陷為 0，但 [nzLoading] 的 spin 指示器是絕對定位、不受版面高度限制，
+// 仍會在該處畫出一個小圖示、跟 device-management-card-list 自己的 loading 疊在一起，故一併隱藏
+// （device-management-card-list 內的 nz-spin 是完全獨立的節點，不受此規則影響）
+.table-wrapper .device-table ::ng-deep .ant-spin {
+    display: none;
+}
+
+.device-management-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: spacing.$space-sm;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.device-management-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: spacing.$space-md;
+    background: #ffffff;
+    border-radius: motion.$radius-lg;
+    box-shadow: motion.$shadow-card-resting;
+
+    .device-card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: spacing.$space-sm;
+
+        .device-identity {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .device-name {
+                color: #262626;
+                font-weight: 600;
+                font-size: 16px;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+
+            .device-location {
+                color: #8c8c8c;
+                font-size: 13px;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+        }
+
+        .device-status {
+            flex-shrink: 0;
+        }
+    }
+
+    .device-card-body {
+        margin-top: spacing.$space-sm;
+        padding-top: spacing.$space-sm;
+        border-top: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .device-info-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: spacing.$space-sm;
+
+            .device-info-label {
+                flex-shrink: 0;
+                color: #8c8c8c;
+                font-size: 13px;
+            }
+
+            .device-info-value {
+                flex: 1;
+                min-width: 0;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+                text-align: right;
+                color: #595959;
+                font-size: 14px;
+            }
+        }
+    }
+
+    .device-card-actions {
+        margin-top: spacing.$space-sm;
+        padding-top: spacing.$space-sm;
+        border-top: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: spacing.$space-sm;
+
+        // 卡片內用 gap 控制按鈕間距，蓋掉既有 table 版 .action-btn 的 margin-right，避免間距重複疊加
+        .action-btn {
+            margin-right: 0;
+        }
+    }
+}
+
+/* Desktop / Tablet（>=768px）：card 更緊湊，body 的 device-info-row 橫向並排，避免卡片過高 */
+@media (min-width: 768px) {
+    .device-management-card {
+        padding: spacing.$space-sm spacing.$space-md;
+    }
+
+    .device-management-card .device-card-body {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: spacing.$space-sm spacing.$space-lg;
+
+        .device-info-row {
+            flex: 1 1 auto;
+            min-width: 200px;
+            justify-content: flex-start;
+            gap: spacing.$space-xs;
+
+            .device-info-value {
+                flex: 0 1 auto;
+                text-align: left;
+            }
+        }
+    }
+}
+
+/* Mobile（<768px）：action 按鈕垂直排列、滿版寬度，跟既有 .action-btn 手機規則同一方向，避免橫向溢出 */
+@media (max-width: 767px) {
+    .device-management-card .device-card-actions {
+        flex-direction: column;
+        align-items: stretch;
+
+        .action-btn {
+            width: 100%;
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    .table-section-heading {
+        padding: spacing.$space-sm spacing.$space-sm spacing.$space-xs;
+    }
+
+    .table-wrapper {
+        padding-top: spacing.$space-xs;
+        padding-right: spacing.$space-sm;
+        padding-bottom: spacing.$space-sm;
+        padding-left: spacing.$space-sm;
+    }
 }
 
 .stats-row {
-    margin-bottom: 20px;
+    margin-bottom: spacing.$space-lg;
 
     .stat-card {
-        border-radius: 12px;
+        border-radius: motion.$radius-lg;
         box-shadow: motion.$shadow-card-resting;
         transition: transform motion.$motion-duration-normal motion.$motion-ease-standard,
                     box-shadow motion.$motion-duration-normal motion.$motion-ease-standard;
 
         &:hover {
-            transform: translateY(-2px);
+            transform: translateY(-4px);
             box-shadow: motion.$shadow-card-hover;
         }
 
         ::ng-deep .ant-card-body {
-            padding: 16px;
+            padding: spacing.$space-lg;
         }
 
         .stat-content {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: spacing.$space-md;
         }
 
         .stat-icon-wrapper {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
+            flex-shrink: 0;
         }
 
         .stat-info {
             flex: 1;
+            min-width: 0;
 
             .stat-label {
                 color: #8c8c8c;
-                font-size: 14px;
+                font-size: 13px;
+                font-weight: 500;
+                letter-spacing: 0.2px;
             }
 
             .stat-value {
-                font-size: 24px;
+                margin-top: 2px;
+                font-size: 28px;
                 font-weight: 700;
                 line-height: 1.2;
                 color: #262626;
@@ -192,9 +424,14 @@ nz-header {
         }
 
         @media (max-width: 767px) {
+            ::ng-deep .ant-card-body {
+                padding: spacing.$space-md;
+            }
+
             .stat-content {
                 justify-content: center;
                 text-align: center;
+                gap: spacing.$space-sm;
             }
 
             .stat-icon-wrapper {
@@ -217,16 +454,16 @@ nz-header {
    因此 sidebar 展開/收合造成的可用寬度變化不會壓縮到 input/select/button */
 .search-filter-bar {
     background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: spacing.$space-lg;
+    border-radius: motion.$radius-lg;
+    margin-top: spacing.$space-lg;
+    margin-bottom: spacing.$space-lg;
+    box-shadow: motion.$shadow-card-resting;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: spacing.$space-md;
 
     ::ng-deep {
         .ant-input-affix-wrapper {
@@ -245,7 +482,7 @@ nz-header {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 12px;
+        gap: spacing.$space-sm;
         flex: 1;
     }
 
@@ -292,7 +529,7 @@ nz-header {
         min-width: 140px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: spacing.$space-xs;
         border-radius: 6px;
         font-weight: 500;
         transition: color motion.$motion-duration-fast motion.$motion-ease-standard,
@@ -411,7 +648,7 @@ nz-header {
         padding: 4px 0;
 
         .ant-dropdown-menu-item {
-            padding: 8px 16px;
+            padding: spacing.$space-xs spacing.$space-md;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -512,16 +749,12 @@ nz-header {
     }
 }
 
-/* 表格 */
+/* 表格：background/radius/shadow 已上移到外層 .table-section 卡片，避免卡片疊卡片 */
 .device-table {
-    background: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-
     .action-btns {
         display: flex;
         justify-content: center;
-        gap: 8px;
+        gap: spacing.$space-xs;
     }
 }
 
@@ -552,7 +785,7 @@ nz-header {
         .ant-table-thead>tr>th {
             font-size: 16px;
             font-weight: 600;
-            padding: 16px 15px;
+            padding: spacing.$space-md 15px;
             line-height: 1.3;
             text-align: center;
             white-space: nowrap;
